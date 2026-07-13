@@ -1,66 +1,31 @@
-# Imaginable Things — Day 1 Foundation
+# Imaginable Things — Official Website V1
 
-Este paquete contiene la base funcional del nuevo sitio de Imaginable Things.
+Esta versión usa HTML, CSS y JavaScript sencillo.
 
-## Incluye
-
-- Next.js con App Router
+## No necesita
+- npm
+- Node.js
 - TypeScript
-- Tailwind CSS
-- Logo oficial
-- Navegación adaptable a celular
-- Hero inicial
-- Historia de la empresa
-- Servicios
-- Área de portafolio
-- Botones de texto, WhatsApp y correo
-- Metadata básica para SEO
-- Diseño oscuro inspirado en el mockup aprobado
+- compilación
 
-## Probarlo en tu computadora
+Abre `index.html` directamente para ver la página.
 
-Necesitas Node.js instalado.
+## Subirla al repositorio existente
+Reemplaza los archivos del repositorio por estos y ejecuta:
 
-```bash
-npm install
-npm run dev
-```
-
-Luego abre:
-
-```text
-http://localhost:3000
-```
-
-## Subirlo a GitHub
-
-1. Crea un repositorio nuevo llamado `imaginable-things`.
-2. Descomprime este paquete.
-3. Abre la carpeta en Visual Studio Code.
-4. En la terminal ejecuta:
-
-```bash
-git init
+```bat
 git add .
-git commit -m "Day 1 foundation"
-git branch -M main
-git remote add origin PEGA_AQUI_LA_DIRECCION_DE_TU_REPOSITORIO
-git push -u origin main
+git commit -m "Nueva pagina oficial sin build"
+git push
 ```
 
-## Publicarlo gratis en Vercel
+## Configurar Vercel
+1. Abre el proyecto en Vercel.
+2. Ve a **Settings**.
+3. En **Framework Preset**, selecciona **Other**.
+4. Deja **Build Command** vacío.
+5. Deja **Output Directory** vacío.
+6. Haz un nuevo deployment.
 
-1. Entra a Vercel y selecciona **Add New → Project**.
-2. Conecta GitHub.
-3. Selecciona el repositorio `imaginable-things`.
-4. Vercel reconocerá Next.js automáticamente.
-5. Pulsa **Deploy**.
-
-Cada vez que subamos cambios a GitHub, Vercel publicará una versión nueva.
-
-## Próximo paso — Day 2
-
-- Sustituir el área visual del Hero por un video o fotografía real.
-- Crear la galería filtrable.
-- Añadir enlaces oficiales de Facebook, Instagram y TikTok.
-- Afinar el diseño con los colores exactos del logo.
+## Próxima fase
+Reemplazar las imágenes de ejemplo con fotografías reales y añadir Facebook, Instagram y TikTok.
