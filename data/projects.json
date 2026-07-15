@@ -1,0 +1,102 @@
+{
+  "projects": [
+    {
+      "title": "School Logo Embroidery",
+      "category": "embroidery",
+      "image": "/assets/images/embroider-chargers.webp",
+      "description": "Custom school logo embroidery.",
+      "featured": true
+    },
+    {
+      "title": "Business Logo Embroidery",
+      "category": "embroidery",
+      "image": "/assets/images/embroider-matt.webp",
+      "description": "Professional business logo stitched with precision.",
+      "featured": true
+    },
+    {
+      "title": "Motorcycle Embroidery",
+      "category": "embroidery",
+      "image": "/assets/images/embroider-harley.webp",
+      "description": "Detailed custom motorcycle embroidery.",
+      "featured": false
+    },
+    {
+      "title": "Educator Embroidery",
+      "category": "embroidery",
+      "image": "/assets/images/embroider-school.webp",
+      "description": "Personalized educator apparel.",
+      "featured": false
+    },
+    {
+      "title": "Automotive Business Embroidery",
+      "category": "embroidery",
+      "image": "/assets/images/embroider-auto.webp",
+      "description": "Branded apparel for an automotive business.",
+      "featured": false
+    },
+    {
+      "title": "Custom Printed Shirt",
+      "category": "apparel",
+      "image": "/assets/images/apparel-shirt.webp",
+      "description": "Personalized shirt design.",
+      "featured": true
+    },
+    {
+      "title": "Children's Custom Shirt",
+      "category": "apparel",
+      "image": "/assets/images/apparel-kids1.webp",
+      "description": "Custom apparel for kids.",
+      "featured": false
+    },
+    {
+      "title": "Children's Event Shirt",
+      "category": "apparel",
+      "image": "/assets/images/apparel-kids2.webp",
+      "description": "Personalized children's event shirt.",
+      "featured": false
+    },
+    {
+      "title": "Puerto Rico Mug",
+      "category": "drinkware",
+      "image": "/assets/images/drinkware-puerto-rico.webp",
+      "description": "Full-color personalized mug.",
+      "featured": false
+    },
+    {
+      "title": "Character Mug",
+      "category": "drinkware",
+      "image": "/assets/images/drinkware-stitch.webp",
+      "description": "Custom character drinkware.",
+      "featured": false
+    },
+    {
+      "title": "Barbershop Mug",
+      "category": "drinkware",
+      "image": "/assets/images/drinkware-barber.webp",
+      "description": "Branded drinkware for a barbershop.",
+      "featured": true
+    },
+    {
+      "title": "Personalized Mug",
+      "category": "drinkware",
+      "image": "/assets/images/drinkware-personal.webp",
+      "description": "Personalized gift mug.",
+      "featured": false
+    },
+    {
+      "title": "Custom Keychain",
+      "category": "accessories",
+      "image": "/assets/images/accessory-keychain.webp",
+      "description": "Personalized accessory and keepsake.",
+      "featured": false
+    },
+    {
+      "title": "Photo Accessory",
+      "category": "accessories",
+      "image": "/assets/images/accessory-zipper.webp",
+      "description": "Custom photo accessory.",
+      "featured": false
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+media:
+  - name: gallery
+    label: Gallery Images
+    input: assets/uploads
+    output: /assets/uploads
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: videos
+    label: Videos
+    input: assets/uploads/videos
+    output: /assets/uploads/videos
+    rename: safe
+    categories: [video]
+
+content:
+  - name: projects
+    label: Portfolio Projects
+    type: file
+    path: data/projects.json
+    fields:
+      - name: projects
+        label: Projects
+        type: object
+        list: true
+        fields:
+          - name: title
+            label: Project title
+            type: string
+          - name: category
+            label: Category
+            type: select
+            options:
+              values:
+                - name: embroidery
+                  label: Embroidery
+                - name: apparel
+                  label: Apparel
+                - name: drinkware
+                  label: Drinkware
+                - name: accessories
+                  label: Accessories
+          - name: image
+            label: Main image
+            type: image
+            options:
+              media: gallery
+          - name: description
+            label: Short description
+            type: text
+          - name: featured
+            label: Featured project
+            type: boolean
+
+settings:
+  content:
+    merge: direct
+  commit:
+    templates:
+      create: "content: add {label}"
+      update: "content: update {label}"
+      delete: "content: remove {label}"
+      uploadMedia: "media: upload {filename}"

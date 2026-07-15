@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Custom embroidery, apparel, hats, uniforms, drinkware and personalized products in Connecticut. No minimum orders." />
   <meta name="theme-color" content="#05060a" />
+  <meta name="version" content="2.0" />
   <title>Imaginable Things | Custom Apparel & Embroidery</title>
   <link rel="icon" href="assets/images/logo.webp" />
   <link rel="stylesheet" href="styles.css" />
@@ -84,21 +85,15 @@
       <div class="filters" role="group" aria-label="Gallery filters">
         <button class="filter active" data-filter="all">All</button><button class="filter" data-filter="embroidery">Embroidery</button><button class="filter" data-filter="apparel">Apparel</button><button class="filter" data-filter="drinkware">Drinkware</button><button class="filter" data-filter="accessories">Accessories</button>
       </div>
-      <div class="gallery-grid">
-        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-chargers.webp"><img src="assets/images/embroider-chargers.webp" alt="School logo embroidery" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-matt.webp"><img src="assets/images/embroider-matt.webp" alt="Business logo embroidery" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-harley.webp"><img src="assets/images/embroider-harley.webp" alt="Motorcycle embroidery" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-school.webp"><img src="assets/images/embroider-school.webp" alt="Educator embroidery" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-auto.webp"><img src="assets/images/embroider-auto.webp" alt="Automotive business embroidery" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-shirt.webp"><img src="assets/images/apparel-shirt.webp" alt="Custom printed shirt" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-kids1.webp"><img src="assets/images/apparel-kids1.webp" alt="Custom children's shirt" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-kids2.webp"><img src="assets/images/apparel-kids2.webp" alt="Custom children's shirt" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-puerto-rico.webp"><img src="assets/images/drinkware-puerto-rico.webp" alt="Puerto Rico mug" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-stitch.webp"><img src="assets/images/drinkware-stitch.webp" alt="Personalized character mug" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-barber.webp"><img src="assets/images/drinkware-barber.webp" alt="Barbershop mug" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-personal.webp"><img src="assets/images/drinkware-personal.webp" alt="Personalized mug" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="accessories" data-src="assets/images/accessory-keychain.webp"><img src="assets/images/accessory-keychain.webp" alt="Personalized keychain" loading="lazy"></button>
-        <button class="gallery-item reveal" data-category="accessories" data-src="assets/images/accessory-zipper.webp"><img src="assets/images/accessory-zipper.webp" alt="Personalized photo accessory" loading="lazy"></button>
+      <div class="gallery-grid" id="dynamic-gallery">
+        <p class="gallery-loading">Loading projects...</p>
+      </div>
+      <div class="cms-note reveal">
+        <div>
+          <strong>Version 2.0 ready</strong>
+          <span>New projects can now be added through a visual content panel connected to GitHub.</span>
+        </div>
+        <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Open Content Panel</a>
       </div>
     </section>
 
