@@ -1,80 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Custom embroidery, apparel, uniforms, drinkware and promotional products with personal service and no minimum orders." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Custom embroidery, apparel, hats, uniforms, drinkware and personalized products in Connecticut. No minimum orders." />
   <meta name="theme-color" content="#05060a" />
   <title>Imaginable Things | Custom Apparel & Embroidery</title>
-  <link rel="icon" href="assets/imaginable-things-logo.jpeg" />
+  <link rel="icon" href="assets/images/logo.webp" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="Imaginable Things home">
-      <img src="assets/imaginable-things-logo.jpeg" alt="Imaginable Things logo" />
-      <span>IMAGINABLE<br />THINGS</span>
+      <img src="assets/images/logo.webp" alt="Imaginable Things" />
+      <span>IMAGINABLE<br>THINGS</span>
     </a>
     <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <nav class="main-nav" aria-label="Main navigation">
-      <a href="#home">Home</a><a href="#services">Services</a><a href="#portfolio">Gallery</a><a href="#about">About</a><a href="#contact">Contact</a>
+      <a href="#home">Home</a><a href="#work">Our Work</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a>
     </nav>
     <a class="header-cta" href="#contact">Get a Quote</a>
   </header>
 
   <main id="home">
     <section class="hero">
+      <video class="hero-video" autoplay muted loop playsinline poster="assets/images/hero-cap.webp">
+        <source src="assets/video/embroidery-process.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-overlay"></div>
       <div class="hero-copy reveal">
-        <p class="eyebrow gradient-text">You Name It, We Make It.</p>
-        <h1>Custom Apparel<br />Made to <span>Stand Out.</span></h1>
-        <p class="hero-description">Premium embroidery, sublimation and personalization with no minimum orders, honest communication and personal service.</p>
-        <div class="hero-actions"><a class="button button-gradient" href="#contact">Get Your Quote</a><a class="button button-outline" href="#portfolio">View Our Work</a></div>
+        <p class="eyebrow">You Name It. We Make It.</p>
+        <h1>Bring Your<br>Ideas to <span>Life.</span></h1>
+        <p>Custom embroidery, apparel and personalized products made with care, honest communication and no minimum order.</p>
+        <div class="hero-actions">
+          <a class="button button-gradient" href="#contact">Start Your Project</a>
+          <a class="button button-outline" href="#work">View Our Work</a>
+        </div>
       </div>
-      <div class="hero-visual reveal"><div class="logo-halo"></div><img src="assets/imaginable-things-logo.jpeg" alt="Imaginable Things colorful logo" /></div>
-      <div class="hero-machine reveal" aria-label="Embroidery craftsmanship"><div class="machine-lines"></div><div class="embroidered-mark"><img src="assets/imaginable-things-logo.jpeg" alt="" /></div></div>
+      <div class="hero-badge reveal"><strong>REAL WORK.</strong><span>REAL CRAFTSMANSHIP.</span></div>
     </section>
 
-    <section class="feature-strip" aria-label="Services overview">
-      <article><span class="feature-icon pink">✦</span><div><h3>Embroidery</h3><p>Logos, names and designs stitched with precision.</p></div></article>
-      <article><span class="feature-icon orange">◈</span><div><h3>Apparel</h3><p>T-shirts, hoodies, hats, jackets and uniforms.</p></div></article>
-      <article><span class="feature-icon blue">◉</span><div><h3>Drinkware</h3><p>Tumblers, mugs, cups and personalized gifts.</p></div></article>
-      <article><span class="feature-icon green">▧</span><div><h3>Sublimation</h3><p>Vibrant, long-lasting, full-color printing.</p></div></article>
-      <article><span class="feature-icon purple">☆</span><div><h3>No Minimums</h3><p>Order one piece or one hundred.</p></div></article>
+    <section class="trust-strip">
+      <span>No minimum orders</span><span>Personal service</span><span>Affordable pricing</span><span>Made in Connecticut</span>
+    </section>
+
+    <section class="section featured" id="work">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Featured Projects</p>
+        <h2>Quality you can <span>see.</span></h2>
+        <p>A selection of real work created by Imaginable Things.</p>
+      </div>
+      <div class="featured-grid">
+        <button class="project project-large reveal" data-src="assets/images/hero-jacket.webp" data-title="Custom Brand Apparel">
+          <img src="assets/images/hero-jacket.webp" alt="Custom embroidered jacket" loading="lazy"><span><b>Custom Brand Apparel</b><small>Embroidery</small></span>
+        </button>
+        <button class="project reveal" data-src="assets/images/hero-cap.webp" data-title="Embroidered Headwear">
+          <img src="assets/images/hero-cap.webp" alt="Custom embroidered cap" loading="lazy"><span><b>Embroidered Headwear</b><small>3D & flat embroidery</small></span>
+        </button>
+        <button class="project reveal" data-src="assets/images/embroider-anchor.webp" data-title="Business Branding">
+          <img src="assets/images/embroider-anchor.webp" alt="Business logo embroidery" loading="lazy"><span><b>Business Branding</b><small>Logo embroidery</small></span>
+        </button>
+        <button class="project reveal" data-src="assets/images/apparel-hoodie.webp" data-title="Custom Apparel">
+          <img src="assets/images/apparel-hoodie.webp" alt="Custom printed hoodie" loading="lazy"><span><b>Custom Apparel</b><small>Personalized hoodie</small></span>
+        </button>
+        <button class="project reveal" data-src="assets/images/drinkware-set.webp" data-title="Personalized Drinkware">
+          <img src="assets/images/drinkware-set.webp" alt="Personalized tumblers" loading="lazy"><span><b>Personalized Drinkware</b><small>Tumblers & gifts</small></span>
+        </button>
+      </div>
     </section>
 
     <section class="section services" id="services">
-      <div class="section-intro reveal"><p class="eyebrow gradient-text">What We Create</p><h2>Ideas turned into<br /><span>real products.</span></h2><p>From a single personalized piece to a full business order, every project receives the same attention and care.</p></div>
+      <div class="section-heading reveal"><p class="eyebrow">What We Create</p><h2>One idea.<br><span>Many possibilities.</span></h2></div>
       <div class="service-grid">
-        <article class="service-card reveal"><span>01</span><h3>Embroidery</h3><p>Chest logos, sleeves, jackets, uniforms, hats and 3D puff embroidery.</p></article>
-        <article class="service-card reveal"><span>02</span><h3>Custom Apparel</h3><p>T-shirts, hoodies, jackets and clothing for brands, groups and events.</p></article>
-        <article class="service-card reveal"><span>03</span><h3>Business Branding</h3><p>Uniforms, logos, stickers and branded products that help you look professional.</p></article>
-        <article class="service-card reveal"><span>04</span><h3>Personalized Gifts</h3><p>Tumblers, mugs, mousepads, keychains and custom keepsakes.</p></article>
+        <article class="service-card reveal"><em>01</em><h3>Embroidery</h3><p>Logos, names, uniforms, jackets, hats and 3D puff embroidery.</p></article>
+        <article class="service-card reveal"><em>02</em><h3>Custom Apparel</h3><p>T-shirts, hoodies, jackets and pieces for brands, events and groups.</p></article>
+        <article class="service-card reveal"><em>03</em><h3>Business Branding</h3><p>Professional uniforms, logos, stickers and branded promotional products.</p></article>
+        <article class="service-card reveal"><em>04</em><h3>Personalized Gifts</h3><p>Tumblers, mugs, mousepads, keychains and custom keepsakes.</p></article>
       </div>
     </section>
 
-    <section class="section portfolio" id="portfolio">
-      <div class="section-intro reveal"><p class="eyebrow gradient-text">Our Work</p><h2>Quality you can <span>see.</span></h2><p>Your real photographs will be added here in the next phase.</p></div>
+    <section class="section gallery-section">
+      <div class="section-heading reveal"><p class="eyebrow">Portfolio</p><h2>Made by <span>Imaginable Things.</span></h2></div>
+      <div class="filters" role="group" aria-label="Gallery filters">
+        <button class="filter active" data-filter="all">All</button><button class="filter" data-filter="embroidery">Embroidery</button><button class="filter" data-filter="apparel">Apparel</button><button class="filter" data-filter="drinkware">Drinkware</button><button class="filter" data-filter="accessories">Accessories</button>
+      </div>
       <div class="gallery-grid">
-        <article class="gallery-card reveal"><div class="placeholder-art hoodie">YOUR<br /><strong>LOGO</strong><br />HERE</div><div><h3>Custom Hoodies</h3><p>Embroidery & apparel</p></div></article>
-        <article class="gallery-card reveal"><div class="placeholder-art cap">FAITH<br />OVER<br />FEAR</div><div><h3>Embroidered Hats</h3><p>Flat & 3D puff</p></div></article>
-        <article class="gallery-card reveal"><div class="placeholder-art tumbler"><img src="assets/imaginable-things-logo.jpeg" alt="" /></div><div><h3>Custom Tumblers</h3><p>Personalized drinkware</p></div></article>
-        <article class="gallery-card reveal"><div class="placeholder-art patch">PREMIUM<br />QUALITY</div><div><h3>Business Uniforms</h3><p>Professional branding</p></div></article>
+        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-chargers.webp"><img src="assets/images/embroider-chargers.webp" alt="School logo embroidery" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-matt.webp"><img src="assets/images/embroider-matt.webp" alt="Business logo embroidery" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-harley.webp"><img src="assets/images/embroider-harley.webp" alt="Motorcycle embroidery" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-school.webp"><img src="assets/images/embroider-school.webp" alt="Educator embroidery" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="embroidery" data-src="assets/images/embroider-auto.webp"><img src="assets/images/embroider-auto.webp" alt="Automotive business embroidery" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-shirt.webp"><img src="assets/images/apparel-shirt.webp" alt="Custom printed shirt" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-kids1.webp"><img src="assets/images/apparel-kids1.webp" alt="Custom children's shirt" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="apparel" data-src="assets/images/apparel-kids2.webp"><img src="assets/images/apparel-kids2.webp" alt="Custom children's shirt" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-puerto-rico.webp"><img src="assets/images/drinkware-puerto-rico.webp" alt="Puerto Rico mug" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-stitch.webp"><img src="assets/images/drinkware-stitch.webp" alt="Personalized character mug" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-barber.webp"><img src="assets/images/drinkware-barber.webp" alt="Barbershop mug" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="drinkware" data-src="assets/images/drinkware-personal.webp"><img src="assets/images/drinkware-personal.webp" alt="Personalized mug" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="accessories" data-src="assets/images/accessory-keychain.webp"><img src="assets/images/accessory-keychain.webp" alt="Personalized keychain" loading="lazy"></button>
+        <button class="gallery-item reveal" data-category="accessories" data-src="assets/images/accessory-zipper.webp"><img src="assets/images/accessory-zipper.webp" alt="Personalized photo accessory" loading="lazy"></button>
       </div>
     </section>
 
     <section class="section story" id="about">
-      <div class="story-visual reveal"><img src="assets/imaginable-things-logo.jpeg" alt="Imaginable Things brand" /></div>
-      <div class="story-copy reveal"><p class="eyebrow gradient-text">Our Story</p><h2>More than a business.<br /><span>It is our purpose.</span></h2><p>Imaginable Things began during a season without work, when a small hobby became a way to create income. Along the way, we discovered a real passion for turning ideas into beautiful, useful products.</p><p>Today, we serve churches, schools, contractors, restaurants, barbershops, clothing brands and individuals with affordable pricing, personalized attention and no minimum order requirement.</p><p>Our Christian values guide how we treat people: with honesty, respect, service and care.</p></div>
+      <div class="story-media reveal"><img src="assets/images/logo.webp" alt="Imaginable Things logo" loading="lazy"></div>
+      <div class="story-copy reveal"><p class="eyebrow">Our Story</p><h2>More than a business.<br><span>It is our purpose.</span></h2><p>Imaginable Things began during a season without work, when a small hobby became a way to create income. Along the way, we discovered a real passion for turning ideas into beautiful, useful products.</p><p>Today, we serve churches, schools, contractors, restaurants, barbershops, clothing brands and individuals with accessible pricing, personalized attention and no minimum order requirement.</p><p>Our Christian values guide how we treat people: with honesty, respect, service and care.</p></div>
     </section>
 
-    <section class="section industries"><div class="section-intro centered reveal"><p class="eyebrow gradient-text">Who We Serve</p><h2>Made for your <span>community.</span></h2></div><div class="industry-grid"><span>Churches</span><span>Schools</span><span>Contractors</span><span>Restaurants</span><span>Barbershops</span><span>Clothing Brands</span><span>Events</span><span>Small Businesses</span></div></section>
+    <section class="section process">
+      <div class="section-heading centered reveal"><p class="eyebrow">How It Works</p><h2>Simple from idea<br>to <span>finished piece.</span></h2></div>
+      <div class="process-grid"><article class="reveal"><b>1</b><h3>Tell Us Your Idea</h3><p>Send your logo, design or inspiration.</p></article><article class="reveal"><b>2</b><h3>Approve the Details</h3><p>We confirm product, placement and quantity.</p></article><article class="reveal"><b>3</b><h3>We Create It</h3><p>Your order is made with attention to detail.</p></article><article class="reveal"><b>4</b><h3>Enjoy the Result</h3><p>Receive a custom piece made for you.</p></article></div>
+    </section>
 
-    <section class="section process"><div class="section-intro centered reveal"><p class="eyebrow gradient-text">How It Works</p><h2>Simple from idea<br />to <span>finished piece.</span></h2></div><div class="process-grid"><article class="reveal"><b>1</b><h3>Tell Us Your Idea</h3><p>Send your design, logo or inspiration.</p></article><article class="reveal"><b>2</b><h3>Approve the Details</h3><p>We confirm the product, placement and quantity.</p></article><article class="reveal"><b>3</b><h3>We Create It</h3><p>Your order is produced with attention to detail.</p></article><article class="reveal"><b>4</b><h3>Enjoy the Result</h3><p>Receive a custom piece made for you.</p></article></div></section>
-
-    <section class="section contact" id="contact"><div class="contact-copy reveal"><p class="eyebrow gradient-text">Start Your Project</p><h2>Ready to bring your<br /><span>idea to life?</span></h2><p>Send us a text or message us on WhatsApp. Tell us what you need, how many pieces you want and when you need them.</p></div><div class="contact-panel reveal"><a class="button button-gradient full" href="sms:+18603369202">Text 860-336-9202</a><a class="button button-outline full" href="https://wa.me/18603369202" target="_blank" rel="noreferrer">Message on WhatsApp</a><a class="email" href="mailto:imaginablethingss@gmail.com">imaginablethingss@gmail.com</a><p>Connecticut • No minimum orders</p></div></section>
+    <section class="section contact" id="contact">
+      <div class="contact-copy reveal"><p class="eyebrow">Start Your Project</p><h2>Ready to bring your<br><span>idea to life?</span></h2><p>Tell us what you need, how many pieces you want and when you need them.</p></div>
+      <div class="contact-card reveal"><a class="button button-gradient full" href="sms:+18603369202">Text 860-336-9202</a><a class="button button-outline full" href="https://wa.me/18603369202" target="_blank" rel="noreferrer">Message on WhatsApp</a><a class="email" href="mailto:imaginablethingss@gmail.com">imaginablethingss@gmail.com</a><small>Connecticut • No minimum orders</small></div>
+    </section>
   </main>
 
-  <footer><div class="footer-brand"><img src="assets/imaginable-things-logo.jpeg" alt="Imaginable Things" /><div><strong>IMAGINABLE THINGS</strong><span>You Name It, We Make It.</span></div></div><p>© <span id="year"></span> Imaginable Things. All rights reserved.</p></footer>
+  <footer><div class="footer-brand"><img src="assets/images/logo.webp" alt=""><div><strong>IMAGINABLE THINGS</strong><span>You Name It. We Make It.</span></div></div><p>© <span id="year"></span> Imaginable Things.</p></footer>
+
+  <div class="lightbox" aria-hidden="true"><button class="lightbox-close" aria-label="Close image">×</button><img src="" alt="Expanded project"><p></p></div>
   <script src="script.js"></script>
 </body>
 </html>
