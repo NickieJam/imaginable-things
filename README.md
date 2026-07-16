@@ -1,5 +1,3 @@
-# Imaginable Things — Version 2.0
+# Imaginable Things — Version 2.1
 
-Static website with a Git-backed visual content panel powered by Pages CMS.
-
-See `VERSION-2-GUIDE.md` for setup instructions.
+Visual CMS for portfolio, homepage content and testimonials.

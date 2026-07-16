@@ -51,6 +51,124 @@ content:
             label: Featured project
             type: boolean
 
+
+  - name: homepage
+    label: Homepage Content
+    type: file
+    path: data/homepage.json
+    fields:
+      - name: announcement
+        label: Announcement line
+        type: string
+      - name: hero
+        label: Hero Section
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Main title line 1
+            type: string
+          - name: title_line_2
+            label: Main title line 2
+            type: string
+          - name: description
+            label: Hero description
+            type: text
+          - name: primary_button_text
+            label: Primary button text
+            type: string
+          - name: primary_button_link
+            label: Primary button link
+            type: string
+          - name: secondary_button_text
+            label: Secondary button text
+            type: string
+          - name: secondary_button_link
+            label: Secondary button link
+            type: string
+          - name: video
+            label: Hero video
+            type: file
+            options:
+              media: videos
+          - name: poster
+            label: Hero poster image
+            type: image
+            options:
+              media: gallery
+      - name: about
+        label: About Section
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title
+            label: Main title
+            type: string
+          - name: paragraph_1
+            label: Paragraph 1
+            type: text
+          - name: paragraph_2
+            label: Paragraph 2
+            type: text
+          - name: paragraph_3
+            label: Paragraph 3
+            type: text
+      - name: contact
+        label: Contact Section
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title
+            label: Main title
+            type: string
+          - name: description
+            label: Description
+            type: text
+          - name: phone
+            label: Phone number
+            type: string
+          - name: whatsapp
+            label: WhatsApp number with country code
+            type: string
+          - name: email
+            label: Email
+            type: string
+          - name: location
+            label: Location
+            type: string
+          - name: note
+            label: Short note
+            type: string
+
+  - name: testimonials
+    label: Testimonials
+    type: file
+    path: data/testimonials.json
+    fields:
+      - name: testimonials
+        label: Testimonials
+        type: object
+        list: true
+        fields:
+          - name: name
+            label: Customer name
+            type: string
+          - name: company
+            label: Business or organization
+            type: string
+          - name: quote
+            label: Testimonial
+            type: text
+          - name: visible
+            label: Show on website
+            type: boolean
+
 settings:
   content:
     merge: direct
