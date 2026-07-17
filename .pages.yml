@@ -45,11 +45,27 @@ content:
             options:
               media: gallery
           - name: description
-            label: Short description
+            label: Project description
             type: text
+          - name: gallery
+            label: Additional project images
+            type: image
+            list: true
+            options:
+              media: gallery
+          - name: services
+            label: Services or techniques
+            type: string
+            list: true
           - name: featured
             label: Featured project
             type: boolean
+          - name: visible
+            label: Show on website
+            type: boolean
+          - name: order
+            label: Display order
+            type: number
 
 
   - name: homepage

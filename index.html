@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Custom embroidery, apparel, hats, uniforms, drinkware and personalized products in Connecticut. No minimum orders." />
   <meta name="theme-color" content="#05060a" />
-  <meta name="version" content="2.2" />
+  <meta name="version" content="3.0" />
   <title>Imaginable Things | Custom Apparel & Embroidery</title>
   <link rel="icon" href="assets/images/logo.webp" />
   <link rel="stylesheet" href="styles.css" />
@@ -177,5 +177,28 @@
 
   <div class="lightbox" aria-hidden="true"><button class="lightbox-close" aria-label="Close image">×</button><img src="" alt="Expanded project"><p></p></div>
   <script src="script.js"></script>
+
+  <div class="project-modal" id="project-modal" aria-hidden="true">
+    <div class="project-modal-backdrop" data-close-project></div>
+    <article class="project-modal-card" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+      <button class="project-modal-close" type="button" aria-label="Close project" data-close-project>×</button>
+
+      <div class="project-modal-media">
+        <button class="project-modal-arrow previous" type="button" aria-label="Previous image">‹</button>
+        <img id="project-modal-image" src="" alt="">
+        <button class="project-modal-arrow next" type="button" aria-label="Next image">›</button>
+        <div class="project-modal-thumbnails" id="project-modal-thumbnails"></div>
+      </div>
+
+      <div class="project-modal-content">
+        <p class="eyebrow" id="project-modal-category">Project</p>
+        <h2 id="project-modal-title">Project title</h2>
+        <p id="project-modal-description"></p>
+        <div class="project-modal-services" id="project-modal-services"></div>
+        <a class="button button-gradient full" id="project-modal-quote" href="#quote">Request Something Similar</a>
+      </div>
+    </article>
+  </div>
+
 </body>
 </html>

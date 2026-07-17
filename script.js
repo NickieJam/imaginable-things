@@ -21,11 +21,13 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
+
 const lightbox = document.querySelector('.lightbox');
-const lightboxImage = lightbox.querySelector('img');
-const lightboxText = lightbox.querySelector('p');
+const lightboxImage = lightbox?.querySelector('img');
+const lightboxText = lightbox?.querySelector('p');
 
 function openLightbox(source, title) {
+  if (!lightbox || !lightboxImage || !lightboxText) return;
   lightboxImage.src = source;
   lightboxText.textContent = title || '';
   lightbox.classList.add('open');
@@ -33,44 +35,157 @@ function openLightbox(source, title) {
 }
 
 function closeLightbox() {
+  if (!lightbox || !lightboxImage) return;
   lightbox.classList.remove('open');
   lightbox.setAttribute('aria-hidden', 'true');
   lightboxImage.src = '';
 }
 
-document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-lightbox.addEventListener('click', (event) => {
+document.querySelector('.lightbox-close')?.addEventListener('click', closeLightbox);
+lightbox?.addEventListener('click', (event) => {
   if (event.target === lightbox) closeLightbox();
-});
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeLightbox();
 });
 
 let allProjects = [];
+let activeProject = null;
+let activeProjectImageIndex = 0;
+
+const projectModal = document.getElementById('project-modal');
+const projectModalImage = document.getElementById('project-modal-image');
+const projectModalTitle = document.getElementById('project-modal-title');
+const projectModalCategory = document.getElementById('project-modal-category');
+const projectModalDescription = document.getElementById('project-modal-description');
+const projectModalServices = document.getElementById('project-modal-services');
+const projectModalThumbnails = document.getElementById('project-modal-thumbnails');
+const projectModalQuote = document.getElementById('project-modal-quote');
+
+function projectImages(project) {
+  return [project.image, ...(Array.isArray(project.gallery) ? project.gallery : [])]
+    .filter(Boolean)
+    .filter((value, index, array) => array.indexOf(value) === index);
+}
+
+function updateProjectModalImage(index) {
+  if (!activeProject || !projectModalImage) return;
+  const images = projectImages(activeProject);
+  if (!images.length) return;
+
+  activeProjectImageIndex = (index + images.length) % images.length;
+  projectModalImage.src = images[activeProjectImageIndex];
+  projectModalImage.alt = activeProject.title || 'Portfolio project';
+
+  projectModalThumbnails.innerHTML = images.map((image, imageIndex) => `
+    <button type="button" class="${imageIndex === activeProjectImageIndex ? 'active' : ''}" data-project-image="${imageIndex}">
+      <img src="${escapeHtml(image)}" alt="">
+    </button>
+  `).join('');
+
+  projectModalThumbnails.querySelectorAll('[data-project-image]').forEach((button) => {
+    button.addEventListener('click', () => updateProjectModalImage(Number(button.dataset.projectImage)));
+  });
+
+  const arrowsVisible = images.length > 1;
+  projectModal.querySelectorAll('.project-modal-arrow').forEach((arrow) => {
+    arrow.hidden = !arrowsVisible;
+  });
+}
+
+function openProjectModal(project) {
+  if (!projectModal || !project) return;
+  activeProject = project;
+  activeProjectImageIndex = 0;
+
+  projectModalTitle.textContent = project.title || 'Custom Project';
+  projectModalCategory.textContent = project.category || 'Project';
+  projectModalDescription.textContent = project.description || '';
+
+  const services = Array.isArray(project.services) ? project.services.filter(Boolean) : [];
+  projectModalServices.innerHTML = services.map((service) => `<span>${escapeHtml(service)}</span>`).join('');
+
+  const quoteText = `I'm interested in something similar to: ${project.title || 'this project'}`;
+  projectModalQuote.href = `#quote`;
+  projectModalQuote.dataset.projectInterest = quoteText;
+
+  updateProjectModalImage(0);
+  projectModal.classList.add('open');
+  projectModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
+
+function closeProjectModal() {
+  if (!projectModal) return;
+  projectModal.classList.remove('open');
+  projectModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  activeProject = null;
+}
+
+document.querySelectorAll('[data-close-project]').forEach((button) => {
+  button.addEventListener('click', closeProjectModal);
+});
+
+projectModal?.querySelector('.project-modal-arrow.previous')?.addEventListener('click', () => {
+  updateProjectModalImage(activeProjectImageIndex - 1);
+});
+
+projectModal?.querySelector('.project-modal-arrow.next')?.addEventListener('click', () => {
+  updateProjectModalImage(activeProjectImageIndex + 1);
+});
+
+projectModalQuote?.addEventListener('click', () => {
+  const details = document.getElementById('quote-details');
+  if (details && projectModalQuote.dataset.projectInterest) {
+    details.value = projectModalQuote.dataset.projectInterest;
+  }
+  closeProjectModal();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeLightbox();
+    closeProjectModal();
+  }
+  if (projectModal?.classList.contains('open') && event.key === 'ArrowLeft') {
+    updateProjectModalImage(activeProjectImageIndex - 1);
+  }
+  if (projectModal?.classList.contains('open') && event.key === 'ArrowRight') {
+    updateProjectModalImage(activeProjectImageIndex + 1);
+  }
+});
 
 function renderProjects(filter = 'all') {
   const gallery = document.getElementById('dynamic-gallery');
+  if (!gallery) return;
+
+  const publishedProjects = allProjects
+    .filter((project) => project.visible !== false)
+    .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+
   const visibleProjects = filter === 'all'
-    ? allProjects
-    : allProjects.filter((project) => project.category === filter);
+    ? publishedProjects
+    : publishedProjects.filter((project) => project.category === filter);
 
   if (!visibleProjects.length) {
     gallery.innerHTML = '<p class="gallery-loading">No projects in this category yet.</p>';
     return;
   }
 
-  gallery.innerHTML = visibleProjects.map((project) => `
-    <button class="gallery-item visible" data-category="${project.category}" data-src="${project.image}" data-title="${project.title}">
-      <img src="${project.image}" alt="${project.title}" loading="lazy">
+  gallery.innerHTML = visibleProjects.map((project, index) => `
+    <button class="gallery-item visible ${project.featured ? 'featured' : ''}" data-project-index="${allProjects.indexOf(project)}">
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy">
       <span class="gallery-caption">
-        <strong>${project.title}</strong>
-        <small>${project.category}</small>
+        <strong>${escapeHtml(project.title)}</strong>
+        <small>${escapeHtml(project.category)}</small>
       </span>
+      ${project.featured ? '<span class="featured-badge">Featured</span>' : ''}
     </button>
   `).join('');
 
-  gallery.querySelectorAll('[data-src]').forEach((item) => {
-    item.addEventListener('click', () => openLightbox(item.dataset.src, item.dataset.title));
+  gallery.querySelectorAll('[data-project-index]').forEach((item) => {
+    item.addEventListener('click', () => {
+      const project = allProjects[Number(item.dataset.projectIndex)];
+      openProjectModal(project);
+    });
   });
 }
 
@@ -85,7 +200,7 @@ async function loadProjects() {
     renderProjects();
   } catch (error) {
     console.error(error);
-    gallery.innerHTML = '<p class="gallery-loading">The gallery could not be loaded. Please refresh the page.</p>';
+    if (gallery) gallery.innerHTML = '<p class="gallery-loading">The gallery could not be loaded. Please refresh the page.</p>';
   }
 }
 

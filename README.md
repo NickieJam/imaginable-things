@@ -1,3 +1,3 @@
-# Imaginable Things — Version 2.2
+# Imaginable Things — Version 3.0
 
-Visual CMS, smart WhatsApp quote form, FAQs and social links.
+Premium multi-image portfolio with CMS-controlled project details, visibility and ordering.
