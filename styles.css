@@ -117,3 +117,154 @@
 @media (max-width: 850px) {
   .testimonial-grid { grid-template-columns: 1fr; }
 }
+
+
+.faq-section {
+  background: rgba(255,255,255,.018);
+}
+.faq-list {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+.faq-item {
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 18px;
+  background: rgba(255,255,255,.025);
+  overflow: hidden;
+}
+.faq-item button {
+  width: 100%;
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border: 0;
+  background: transparent;
+  color: white;
+  text-align: left;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.faq-item button b {
+  color: var(--blue);
+  font-size: 22px;
+}
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .28s ease;
+}
+.faq-answer.open {
+  grid-template-rows: 1fr;
+}
+.faq-answer p {
+  min-height: 0;
+  margin: 0;
+  padding: 0 24px;
+  overflow: hidden;
+  color: #aeb2bd;
+  line-height: 1.7;
+}
+.faq-answer.open p {
+  padding-bottom: 22px;
+}
+
+.quote-section {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  gap: 55px;
+  align-items: start;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(245,37,131,.09), transparent 28rem),
+    radial-gradient(circle at 90% 80%, rgba(27,185,255,.08), transparent 28rem);
+}
+.quote-intro {
+  position: sticky;
+  top: 130px;
+}
+.quote-intro > p:last-child {
+  max-width: 520px;
+  color: #aeb2bd;
+  line-height: 1.75;
+}
+.quote-form {
+  padding: 32px;
+  display: grid;
+  gap: 22px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px;
+  background: rgba(10,12,18,.82);
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+.quote-form label {
+  display: grid;
+  gap: 8px;
+}
+.quote-form label > span {
+  color: #d8dbe2;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.quote-form input,
+.quote-form select,
+.quote-form textarea {
+  width: 100%;
+  padding: 15px 16px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 12px;
+  outline: none;
+  background: #090b10;
+  color: white;
+  font: inherit;
+}
+.quote-form input:focus,
+.quote-form select:focus,
+.quote-form textarea:focus {
+  border-color: var(--blue);
+}
+.quote-form textarea {
+  resize: vertical;
+}
+.quote-form small {
+  color: #9fa5b1;
+  text-align: center;
+}
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.social-links a {
+  color: #b7bdc8;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.social-links a:hover {
+  color: var(--blue);
+}
+@media (max-width: 900px) {
+  .quote-section {
+    grid-template-columns: 1fr;
+  }
+  .quote-intro {
+    position: static;
+  }
+}
+@media (max-width: 620px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .quote-form {
+    padding: 22px;
+  }
+}

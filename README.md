@@ -1,3 +1,3 @@
-# Imaginable Things — Version 2.1
+# Imaginable Things — Version 2.2
 
-Visual CMS for portfolio, homepage content and testimonials.
+Visual CMS, smart WhatsApp quote form, FAQs and social links.

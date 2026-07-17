@@ -210,3 +210,123 @@ async function loadTestimonials() {
 loadHomepageContent();
 loadTestimonials();
 
+let siteSettings = null;
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function renderFaqs(faqs = []) {
+  const list = document.getElementById('faq-list');
+  if (!list) return;
+
+  if (!faqs.length) {
+    list.innerHTML = '<p class="gallery-loading">No frequently asked questions have been published yet.</p>';
+    return;
+  }
+
+  list.innerHTML = faqs.map((item, index) => `
+    <article class="faq-item">
+      <button type="button" aria-expanded="${index === 0 ? 'true' : 'false'}">
+        <span>${escapeHtml(item.question)}</span>
+        <b>+</b>
+      </button>
+      <div class="faq-answer ${index === 0 ? 'open' : ''}">
+        <p>${escapeHtml(item.answer)}</p>
+      </div>
+    </article>
+  `).join('');
+
+  list.querySelectorAll('.faq-item button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = button.nextElementSibling;
+      const open = !answer.classList.contains('open');
+      answer.classList.toggle('open', open);
+      button.setAttribute('aria-expanded', String(open));
+    });
+  });
+}
+
+function renderSocials(socials = {}) {
+  const container = document.getElementById('social-links');
+  if (!container) return;
+
+  const links = [
+    ['Facebook', socials.facebook],
+    ['Instagram', socials.instagram],
+    ['TikTok', socials.tiktok]
+  ].filter(([, url]) => url);
+
+  container.innerHTML = links.map(([label, url]) => `
+    <a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${label}</a>
+  `).join('');
+}
+
+function prepareQuoteForm(settings = {}) {
+  const select = document.getElementById('quote-type');
+  if (!select) return;
+
+  const types = Array.isArray(settings.project_types) ? settings.project_types : [];
+  select.innerHTML = '<option value="">Select a project</option>' +
+    types.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`).join('');
+
+  setText('quote-heading', settings.heading);
+  setText('quote-description', settings.description);
+  setText('quote-note', settings.success_note);
+}
+
+async function loadSiteSettings() {
+  try {
+    const response = await fetch(`/data/site.json?v=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Unable to load site settings');
+    siteSettings = await response.json();
+    renderFaqs(siteSettings.faqs || []);
+    renderSocials(siteSettings.socials || {});
+    prepareQuoteForm(siteSettings.quote_form || {});
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+document.getElementById('quote-form')?.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const name = document.getElementById('quote-name').value.trim();
+  const phone = document.getElementById('quote-phone').value.trim();
+  const email = document.getElementById('quote-email').value.trim();
+  const type = document.getElementById('quote-type').value;
+  const quantity = document.getElementById('quote-quantity').value.trim();
+  const deadline = document.getElementById('quote-deadline').value;
+  const details = document.getElementById('quote-details').value.trim();
+
+  if (!name || !phone || !type || !details) {
+    alert('Please complete the required fields.');
+    return;
+  }
+
+  const message = [
+    'Hello Imaginable Things! I would like to request a quote.',
+    '',
+    `Name: ${name}`,
+    `Phone: ${phone}`,
+    email ? `Email: ${email}` : '',
+    `Project: ${type}`,
+    quantity ? `Estimated quantity: ${quantity}` : '',
+    deadline ? `Needed by: ${deadline}` : '',
+    '',
+    'Project details:',
+    details
+  ].filter(Boolean).join('\n');
+
+  const number = siteSettings?.quote_form?.whatsapp_number || '18603369202';
+  const url = `https://wa.me/${String(number).replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+});
+
+loadSiteSettings();
+

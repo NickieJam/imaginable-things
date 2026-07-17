@@ -169,6 +169,57 @@ content:
             label: Show on website
             type: boolean
 
+
+  - name: site
+    label: FAQs, Social Links & Quote Form
+    type: file
+    path: data/site.json
+    fields:
+      - name: socials
+        label: Social Media
+        type: object
+        fields:
+          - name: facebook
+            label: Facebook URL
+            type: string
+          - name: instagram
+            label: Instagram URL
+            type: string
+          - name: tiktok
+            label: TikTok URL
+            type: string
+      - name: quote_form
+        label: Quote Form
+        type: object
+        fields:
+          - name: heading
+            label: Heading
+            type: string
+          - name: description
+            label: Description
+            type: text
+          - name: whatsapp_number
+            label: WhatsApp number with country code
+            type: string
+          - name: success_note
+            label: Note below form
+            type: string
+          - name: project_types
+            label: Project type options
+            type: string
+            list: true
+      - name: faqs
+        label: Frequently Asked Questions
+        type: object
+        list: true
+        fields:
+          - name: question
+            label: Question
+            type: string
+          - name: answer
+            label: Answer
+            type: text
+
 settings:
   content:
     merge: direct
