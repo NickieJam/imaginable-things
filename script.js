@@ -962,7 +962,6 @@ document.addEventListener('keydown', (event) => {
     closeSmartQuote();
   }
 });
-}
 
 loadSiteSettings();
 
