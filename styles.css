@@ -962,4 +962,312 @@ body.modal-open {
 
     margin-top:40px;
 
+}/* ==================================================
+   SMART QUOTE MODAL
+================================================== */
+
+body.smart-quote-open {
+  overflow: hidden;
+}
+
+.smart-quote-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.smart-quote-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.smart-quote-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 15, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+.smart-quote-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: #ffffff;
+  color: #151515;
+  border-radius: 28px;
+  padding: 38px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  transform: translateY(24px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.smart-quote-modal.is-open .smart-quote-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.smart-quote-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f1f1;
+  color: #171717;
+  font-size: 29px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.smart-quote-close:hover {
+  background: #e4e4e4;
+}
+
+.smart-quote-header {
+  padding-right: 45px;
+  margin-bottom: 30px;
+}
+
+.smart-quote-step-label {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.smart-quote-header h2 {
+  margin: 0 0 22px;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.smart-quote-progress {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e8e8;
+}
+
+.smart-quote-progress-bar {
+  width: 14.28%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary, #2563eb);
+  transition: width 0.35s ease;
+}
+
+.smart-quote-content {
+  min-height: 310px;
+}
+
+.smart-quote-question {
+  margin-bottom: 22px;
+}
+
+.smart-quote-question h3 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+.smart-quote-question p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.smart-quote-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.smart-quote-option {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 18px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #171717;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.smart-quote-option:hover {
+  border-color: #9ca3af;
+  transform: translateY(-2px);
+}
+
+.smart-quote-option.is-selected {
+  border-color: var(--primary, #2563eb);
+  background: rgba(37, 99, 235, 0.08);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11);
+}
+
+.smart-quote-option-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.smart-quote-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.smart-quote-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.smart-quote-field.full {
+  grid-column: 1 / -1;
+}
+
+.smart-quote-field span {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.smart-quote-field input,
+.smart-quote-field textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  padding: 14px;
+  background: #ffffff;
+  color: #171717;
+  font: inherit;
+}
+
+.smart-quote-field textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.smart-quote-field input:focus,
+.smart-quote-field textarea:focus {
+  border-color: var(--primary, #2563eb);
+  outline: 3px solid rgba(37, 99, 235, 0.12);
+}
+
+.smart-quote-review {
+  display: grid;
+  gap: 11px;
+}
+
+.smart-quote-review-row {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.smart-quote-review-row strong {
+  color: #4b5563;
+}
+
+.smart-quote-review-row span {
+  overflow-wrap: anywhere;
+}
+
+.smart-quote-error {
+  min-height: 24px;
+  margin: 12px 0 0;
+  color: #b42318;
+  font-weight: 700;
+}
+
+.smart-quote-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.smart-quote-back {
+  border: 1px solid #d1d5db;
+  background: transparent;
+  color: #171717;
+}
+
+.smart-quote-back:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .smart-quote-modal {
+    align-items: end;
+    padding: 0;
+  }
+
+  .smart-quote-dialog {
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 24px 24px 0 0;
+    padding: 28px 20px 22px;
+  }
+
+  .smart-quote-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .smart-quote-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .smart-quote-field.full {
+    grid-column: auto;
+  }
+
+  .smart-quote-review-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .smart-quote-actions .button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .smart-quote-option {
+    min-height: 96px;
+    padding: 14px 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smart-quote-modal,
+  .smart-quote-dialog,
+  .smart-quote-option,
+  .smart-quote-progress-bar {
+    transition: none;
+  }
 }

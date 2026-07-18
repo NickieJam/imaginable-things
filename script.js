@@ -521,7 +521,448 @@ document.getElementById('quote-form')?.addEventListener('submit', (event) => {
   const number = siteSettings?.quote_form?.whatsapp_number || '18603369202';
   const url = `https://wa.me/${String(number).replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank', 'noopener,noreferrer');
+})/* ==================================================
+   SMART QUOTE WIZARD
+================================================== */
+
+const smartQuoteModal = document.getElementById('smart-quote-modal');
+const smartQuoteContent = document.getElementById('smart-quote-content');
+const smartQuoteStepLabel = document.getElementById('smart-quote-step-label');
+const smartQuoteProgressBar = document.getElementById('smart-quote-progress-bar');
+const smartQuoteBack = document.getElementById('smart-quote-back');
+const smartQuoteNext = document.getElementById('smart-quote-next');
+const smartQuoteClose = document.getElementById('smart-quote-close');
+const smartQuoteError = document.getElementById('smart-quote-error');
+
+const smartQuoteState = {
+  step: 0,
+  product: '',
+  method: '',
+  quantity: '',
+  placement: '',
+  deadline: '',
+  details: '',
+  name: '',
+  phone: '',
+  email: ''
+};
+
+const smartQuoteSteps = [
+  {
+    title: 'What would you like to customize?',
+    description: 'Select the product that best matches your project.',
+    field: 'product',
+    options: [
+      ['👕', 'T-Shirt'],
+      ['🧥', 'Hoodie'],
+      ['🧢', 'Hat'],
+      ['👔', 'Polo'],
+      ['☕', 'Tumbler'],
+      ['📢', 'Banner'],
+      ['🎒', 'Bag'],
+      ['✨', 'Other']
+    ]
+  },
+  {
+    title: 'How would you like it personalized?',
+    description: 'Choose the decoration method you are interested in.',
+    field: 'method',
+    options: [
+      ['🧵', 'Embroidery'],
+      ['🪡', '3D Puff Embroidery'],
+      ['🎨', 'Sublimation'],
+      ['👕', 'DTF'],
+      ['✂️', 'Vinyl'],
+      ['🖨️', 'Screen Printing'],
+      ['❓', 'Not Sure']
+    ]
+  },
+  {
+    title: 'How many do you need?',
+    description: 'Choose the estimated quantity.',
+    field: 'quantity',
+    options: [
+      ['1', '1–5'],
+      ['6', '6–12'],
+      ['13', '13–24'],
+      ['25', '25–50'],
+      ['51', '51–100'],
+      ['+', '100+']
+    ]
+  },
+  {
+    title: 'Where should the design be placed?',
+    description: 'Select the main location for your design.',
+    field: 'placement',
+    options: [
+      ['↖', 'Left Chest'],
+      ['↗', 'Right Chest'],
+      ['⬆', 'Center Chest'],
+      ['🔙', 'Full Back'],
+      ['◀', 'Left Sleeve'],
+      ['▶', 'Right Sleeve'],
+      ['🧢', 'Front of Hat'],
+      ['✨', 'Other']
+    ]
+  }
+];
+
+function openSmartQuote() {
+  if (!smartQuoteModal) return;
+
+  smartQuoteModal.classList.add('is-open');
+  smartQuoteModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('smart-quote-open');
+
+  renderSmartQuoteStep();
+
+  window.setTimeout(() => {
+    smartQuoteClose?.focus();
+  }, 50);
+}
+
+function closeSmartQuote() {
+  if (!smartQuoteModal) return;
+
+  smartQuoteModal.classList.remove('is-open');
+  smartQuoteModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('smart-quote-open');
+}
+
+function selectSmartQuoteOption(field, value, button) {
+  smartQuoteState[field] = value;
+
+  document
+    .querySelectorAll('.smart-quote-option')
+    .forEach((option) => option.classList.remove('is-selected'));
+
+  button.classList.add('is-selected');
+  smartQuoteError.textContent = '';
+}
+
+function renderOptionStep(stepData) {
+  const options = stepData.options
+    .map(([icon, label]) => {
+      const selected =
+        smartQuoteState[stepData.field] === label ? 'is-selected' : '';
+
+      return `
+        <button
+          class="smart-quote-option ${selected}"
+          type="button"
+          data-smart-field="${stepData.field}"
+          data-smart-value="${label}"
+        >
+          <span class="smart-quote-option-icon">${icon}</span>
+          <span>${label}</span>
+        </button>
+      `;
+    })
+    .join('');
+
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question">
+      <h3>${stepData.title}</h3>
+      <p>${stepData.description}</p>
+    </div>
+
+    <div class="smart-quote-options">
+      ${options}
+    </div>
+  `;
+
+  smartQuoteContent
+    .querySelectorAll('.smart-quote-option')
+    .forEach((button) => {
+      button.addEventListener('click', () => {
+        selectSmartQuoteOption(
+          button.dataset.smartField,
+          button.dataset.smartValue,
+          button
+        );
+      });
+    });
+}
+
+function renderProjectDetailsStep() {
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question">
+      <h3>Tell us more about your project</h3>
+      <p>Add your preferred deadline and any important details.</p>
+    </div>
+
+    <div class="smart-quote-fields">
+      <label class="smart-quote-field">
+        <span>Needed by</span>
+        <input
+          type="date"
+          id="smart-deadline"
+          value="${smartQuoteState.deadline}"
+        >
+      </label>
+
+      <label class="smart-quote-field full">
+        <span>Project details *</span>
+        <textarea
+          id="smart-details"
+          placeholder="Colors, sizes, design size, thread colors and anything else we should know."
+        >${smartQuoteState.details}</textarea>
+      </label>
+    </div>
+  `;
+}
+
+function renderContactStep() {
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question">
+      <h3>How can we contact you?</h3>
+      <p>Enter the information we should use for your quote.</p>
+    </div>
+
+    <div class="smart-quote-fields">
+      <label class="smart-quote-field">
+        <span>Your name *</span>
+        <input
+          type="text"
+          id="smart-name"
+          autocomplete="name"
+          value="${smartQuoteState.name}"
+        >
+      </label>
+
+      <label class="smart-quote-field">
+        <span>Phone number *</span>
+        <input
+          type="tel"
+          id="smart-phone"
+          autocomplete="tel"
+          value="${smartQuoteState.phone}"
+        >
+      </label>
+
+      <label class="smart-quote-field full">
+        <span>Email</span>
+        <input
+          type="email"
+          id="smart-email"
+          autocomplete="email"
+          value="${smartQuoteState.email}"
+        >
+      </label>
+    </div>
+  `;
+}
+
+function escapeSmartQuoteText(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function renderReviewStep() {
+  const reviewItems = [
+    ['Product', smartQuoteState.product],
+    ['Method', smartQuoteState.method],
+    ['Quantity', smartQuoteState.quantity],
+    ['Placement', smartQuoteState.placement],
+    ['Needed by', smartQuoteState.deadline || 'Not specified'],
+    ['Name', smartQuoteState.name],
+    ['Phone', smartQuoteState.phone],
+    ['Email', smartQuoteState.email || 'Not provided'],
+    ['Details', smartQuoteState.details]
+  ];
+
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question">
+      <h3>Review your quote request</h3>
+      <p>Confirm that the information below is correct.</p>
+    </div>
+
+    <div class="smart-quote-review">
+      ${reviewItems
+        .map(
+          ([label, value]) => `
+            <div class="smart-quote-review-row">
+              <strong>${label}</strong>
+              <span>${escapeSmartQuoteText(value)}</span>
+            </div>
+          `
+        )
+        .join('')}
+    </div>
+  `;
+}
+
+function saveCurrentSmartQuoteStep() {
+  if (smartQuoteState.step === 4) {
+    smartQuoteState.deadline =
+      document.getElementById('smart-deadline')?.value || '';
+
+    smartQuoteState.details =
+      document.getElementById('smart-details')?.value.trim() || '';
+  }
+
+  if (smartQuoteState.step === 5) {
+    smartQuoteState.name =
+      document.getElementById('smart-name')?.value.trim() || '';
+
+    smartQuoteState.phone =
+      document.getElementById('smart-phone')?.value.trim() || '';
+
+    smartQuoteState.email =
+      document.getElementById('smart-email')?.value.trim() || '';
+  }
+}
+
+function validateSmartQuoteStep() {
+  smartQuoteError.textContent = '';
+
+  if (smartQuoteState.step <= 3) {
+    const stepData = smartQuoteSteps[smartQuoteState.step];
+
+    if (!smartQuoteState[stepData.field]) {
+      smartQuoteError.textContent = 'Please select an option to continue.';
+      return false;
+    }
+  }
+
+  if (smartQuoteState.step === 4 && !smartQuoteState.details) {
+    smartQuoteError.textContent =
+      'Please tell us a little about your project.';
+    return false;
+  }
+
+  if (
+    smartQuoteState.step === 5 &&
+    (!smartQuoteState.name || !smartQuoteState.phone)
+  ) {
+    smartQuoteError.textContent =
+      'Please enter your name and phone number.';
+    return false;
+  }
+
+  return true;
+}
+
+function renderSmartQuoteStep() {
+  if (!smartQuoteContent) return;
+
+  const totalSteps = 7;
+  const visibleStep = smartQuoteState.step + 1;
+
+  smartQuoteStepLabel.textContent =
+    `Step ${visibleStep} of ${totalSteps}`;
+
+  smartQuoteProgressBar.style.width =
+    `${(visibleStep / totalSteps) * 100}%`;
+
+  smartQuoteBack.disabled = smartQuoteState.step === 0;
+
+  smartQuoteNext.textContent =
+    smartQuoteState.step === totalSteps - 1
+      ? 'Open WhatsApp'
+      : 'Next';
+
+  smartQuoteError.textContent = '';
+
+  if (smartQuoteState.step <= 3) {
+    renderOptionStep(smartQuoteSteps[smartQuoteState.step]);
+  } else if (smartQuoteState.step === 4) {
+    renderProjectDetailsStep();
+  } else if (smartQuoteState.step === 5) {
+    renderContactStep();
+  } else {
+    renderReviewStep();
+  }
+}
+
+function sendSmartQuoteToWhatsApp() {
+  const message = [
+    'Hello Imaginable Things! I would like to request a quote.',
+    '',
+    `Name: ${smartQuoteState.name}`,
+    `Phone: ${smartQuoteState.phone}`,
+    smartQuoteState.email
+      ? `Email: ${smartQuoteState.email}`
+      : '',
+    '',
+    `Product: ${smartQuoteState.product}`,
+    `Personalization method: ${smartQuoteState.method}`,
+    `Estimated quantity: ${smartQuoteState.quantity}`,
+    `Design placement: ${smartQuoteState.placement}`,
+    smartQuoteState.deadline
+      ? `Needed by: ${smartQuoteState.deadline}`
+      : '',
+    '',
+    'Project details:',
+    smartQuoteState.details
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const number =
+    siteSettings?.quote_form?.whatsapp_number || '18603369202';
+
+  const cleanNumber = String(number).replace(/\D/g, '');
+
+  const url =
+    `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+document
+  .querySelectorAll('a[href="#quote"]')
+  .forEach((quoteLink) => {
+    quoteLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      openSmartQuote();
+    });
+  });
+
+smartQuoteNext?.addEventListener('click', () => {
+  saveCurrentSmartQuoteStep();
+
+  if (!validateSmartQuoteStep()) return;
+
+  if (smartQuoteState.step === 6) {
+    sendSmartQuoteToWhatsApp();
+    return;
+  }
+
+  smartQuoteState.step += 1;
+  renderSmartQuoteStep();
 });
+
+smartQuoteBack?.addEventListener('click', () => {
+  saveCurrentSmartQuoteStep();
+
+  if (smartQuoteState.step === 0) return;
+
+  smartQuoteState.step -= 1;
+  renderSmartQuoteStep();
+});
+
+smartQuoteClose?.addEventListener('click', closeSmartQuote);
+
+document
+  .querySelectorAll('[data-close-smart-quote]')
+  .forEach((element) => {
+    element.addEventListener('click', closeSmartQuote);
+  });
+
+document.addEventListener('keydown', (event) => {
+  if (
+    event.key === 'Escape' &&
+    smartQuoteModal?.classList.contains('is-open')
+  ) {
+    closeSmartQuote();
+  }
+});
+}
 
 loadSiteSettings();
 

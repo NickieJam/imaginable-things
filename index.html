@@ -292,12 +292,12 @@
           id="project-modal-services"
         ></div>
   
-        <a
+        
+        >
+          Request Something<a
           class="button button-gradient full"
           id="project-modal-quote"
-          href="#quote"
-        >
-          Request Something Similar
+          href="#quote" Similar
         </a>
   
         <section
@@ -335,6 +335,74 @@
       </div>
     </article>
   </div>
+<!-- SMART QUOTE MODAL -->
+<div
+  class="smart-quote-modal"
+  id="smart-quote-modal"
+  aria-hidden="true"
+>
+  <div class="smart-quote-backdrop" data-close-smart-quote></div>
 
+  <div
+    class="smart-quote-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="smart-quote-title"
+  >
+    <button
+      class="smart-quote-close"
+      id="smart-quote-close"
+      type="button"
+      aria-label="Close quote assistant"
+    >
+      ×
+    </button>
+
+    <div class="smart-quote-header">
+      <p class="smart-quote-step-label" id="smart-quote-step-label">
+        Step 1 of 7
+      </p>
+
+      <h2 id="smart-quote-title">Get Your Custom Quote</h2>
+
+      <div class="smart-quote-progress">
+        <div
+          class="smart-quote-progress-bar"
+          id="smart-quote-progress-bar"
+        ></div>
+      </div>
+    </div>
+
+    <div
+      class="smart-quote-content"
+      id="smart-quote-content"
+      aria-live="polite"
+    ></div>
+
+    <p
+      class="smart-quote-error"
+      id="smart-quote-error"
+      role="alert"
+    ></p>
+
+    <div class="smart-quote-actions">
+      <button
+        class="button smart-quote-back"
+        id="smart-quote-back"
+        type="button"
+      >
+        Back
+      </button>
+
+      <button
+        class="button button-gradient"
+        id="smart-quote-next"
+        type="button"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
