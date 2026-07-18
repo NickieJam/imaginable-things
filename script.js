@@ -131,7 +131,26 @@ projectModal?.querySelector('.project-modal-arrow.previous')?.addEventListener('
 projectModal?.querySelector('.project-modal-arrow.next')?.addEventListener('click', () => {
   updateProjectModalImage(activeProjectImageIndex + 1);
 });
+let touchStartX = 0;
 
+projectModal?.addEventListener('touchstart', (event) => {
+  touchStartX = event.changedTouches[0].clientX;
+}, { passive: true });
+
+projectModal?.addEventListener('touchend', (event) => {
+  if (!activeProject) return;
+
+  const touchEndX = event.changedTouches[0].clientX;
+  const distance = touchEndX - touchStartX;
+
+  if (Math.abs(distance) < 50) return;
+
+  if (distance < 0) {
+    updateProjectModalImage(activeProjectImageIndex + 1);
+  } else {
+    updateProjectModalImage(activeProjectImageIndex - 1);
+  }
+}, { passive: true });
 projectModalQuote?.addEventListener('click', () => {
   const details = document.getElementById('quote-details');
   if (details && projectModalQuote.dataset.projectInterest) {
@@ -309,7 +328,7 @@ async function loadTestimonials() {
 
     grid.innerHTML = items.map((item) => `
       <article class="testimonial-card reveal visible">
-        <p>“${item.quote}”</p>
+        <p>“${escapeHtml(item.quote)}”</p>
         <div>
           <strong>${item.name}</strong>
           <span>${item.company || ''}</span>
