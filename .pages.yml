@@ -13,6 +13,60 @@ media:
     categories: [video]
 
 content:
+  - name: services
+    label: Services
+    type: file
+    path: data/services.json
+    fields:
+      - name: services
+        label: Services
+        type: object
+        list: true
+        fields:
+          - name: name
+            label: Service name
+            type: string
+          - name: slug
+            label: Service ID
+            type: string
+            description: Use lowercase letters and hyphens, for example custom-embroidery
+          - name: short_description
+            label: Short description
+            type: text
+          - name: description
+            label: Full description
+            type: text
+          - name: image
+            label: Service image
+            type: image
+            options:
+              media: gallery
+          - name: icon
+            label: Icon name
+            type: select
+            options:
+              values:
+                - name: needle
+                  label: Needle / Embroidery
+                - name: shirt
+                  label: Shirt / Apparel
+                - name: sparkles
+                  label: Sparkles / Sublimation
+                - name: gift
+                  label: Gift / Personalized Products
+          - name: products
+            label: Related products
+            type: string
+            list: true
+          - name: featured
+            label: Featured service
+            type: boolean
+          - name: visible
+            label: Show on website
+            type: boolean
+          - name: order
+            label: Display order
+            type: number
   - name: projects
     label: Portfolio Projects
     type: file
