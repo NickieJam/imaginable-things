@@ -58,7 +58,9 @@ const projectModalDescription = document.getElementById('project-modal-descripti
 const projectModalServices = document.getElementById('project-modal-services');
 const projectModalThumbnails = document.getElementById('project-modal-thumbnails');
 const projectModalQuote = document.getElementById('project-modal-quote');
-
+const projectModalCounter = document.getElementById('project-modal-counter');
+const relatedProjects = document.getElementById('related-projects');
+const relatedProjectsGrid = document.getElementById('related-projects-grid');
 function projectImages(project) {
   return [project.image, ...(Array.isArray(project.gallery) ? project.gallery : [])]
     .filter(Boolean)
@@ -71,7 +73,10 @@ function updateProjectModalImage(index) {
   if (!images.length) return;
 
   activeProjectImageIndex = (index + images.length) % images.length;
-  projectModalImage.src = images[activeProjectImageIndex];
+  projectModalImage.src = images[activeProjectImageIndex];if (projectModalCounter) {
+  projectModalCounter.textContent =
+    `${activeProjectImageIndex + 1} / ${images.length}`;
+}
   projectModalImage.alt = activeProject.title || 'Portfolio project';
 
   projectModalThumbnails.innerHTML = images.map((image, imageIndex) => `
@@ -89,7 +94,62 @@ function updateProjectModalImage(index) {
     arrow.hidden = !arrowsVisible;
   });
 }
+function renderRelatedProjects(project) {
+  if (!relatedProjects || !relatedProjectsGrid || !project) return;
 
+  const related = allProjects
+    .filter((item) =>
+      item.visible !== false &&
+      item !== project &&
+      item.category === project.category
+    )
+    .sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return (Number(a.order) || 999) - (Number(b.order) || 999);
+    })
+    .slice(0, 3);
+
+  if (!related.length) {
+    relatedProjects.hidden = true;
+    relatedProjectsGrid.innerHTML = '';
+    return;
+  }
+
+  relatedProjects.hidden = false;
+
+  relatedProjectsGrid.innerHTML = related.map((item) => `
+    <button
+      type="button"
+      class="related-project-card"
+      data-related-project="${allProjects.indexOf(item)}"
+      aria-label="View ${escapeHtml(item.title)}"
+    >
+      <img
+        src="${escapeHtml(item.image)}"
+        alt="${escapeHtml(item.title)}"
+        loading="lazy"
+        decoding="async"
+      >
+
+      <span>
+        <strong>${escapeHtml(item.title)}</strong>
+        <small>${escapeHtml(item.category)}</small>
+      </span>
+    </button>
+  `).join('');
+
+  relatedProjectsGrid
+    .querySelectorAll('[data-related-project]')
+    .forEach((button) => {
+      button.addEventListener('click', () => {
+        const relatedProject =
+          allProjects[Number(button.dataset.relatedProject)];
+
+        openProjectModal(relatedProject, button);
+      });
+    });
+}
 function openProjectModal(project) {
   if (!projectModal || !project) return;
   activeProject = project;
@@ -107,6 +167,7 @@ function openProjectModal(project) {
   projectModalQuote.dataset.projectInterest = quoteText;
 
   updateProjectModalImage(0);
+  renderRelatedProjects(project);
   projectModal.classList.add('open');
   projectModal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
