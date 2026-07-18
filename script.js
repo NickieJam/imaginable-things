@@ -269,21 +269,100 @@ function renderProjects(filter = 'all') {
   });
 }
 
+async function loadServices() {
+  const servicesGrid = document.getElementById('services-grid');
+
+  if (!servicesGrid) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `/data/services.json?v=${Date.now()}`,
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unable to load services: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.services)) {
+      throw new Error('services.json does not contain a services array');
+    }
+
+    const visibleServices = data.services
+      .filter((service) => service && service.visible !== false)
+      .sort((firstService, secondService) => {
+        const firstOrder = Number(firstService.order) || 0;
+        const secondOrder = Number(secondService.order) || 0;
+
+        return firstOrder - secondOrder;
+      });
+
+    if (visibleServices.length === 0) {
+      console.warn('No visible services were found. Keeping HTML fallback.');
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    visibleServices.forEach((service, index) => {
+      const card = document.createElement('article');
+      card.className = 'service-card reveal';
+
+      const number = document.createElement('em');
+      number.textContent = String(index + 1).padStart(2, '0');
+
+      const title = document.createElement('h3');
+      title.textContent = service.name || 'Custom Service';
+
+      const description = document.createElement('p');
+      description.textContent =
+        service.short_description ||
+        service.description ||
+        'Custom service created for your project.';
+
+      card.append(number, title, description);
+      fragment.appendChild(card);
+    });
+
+    servicesGrid.replaceChildren(fragment);
+
+    servicesGrid.querySelectorAll('.service-card').forEach((card) => {
+      card.classList.add('is-visible');
+    });
+  } catch (error) {
+    console.error('Services could not be loaded:', error);
+  }
+}
+
 async function loadProjects() {
   const gallery = document.getElementById('dynamic-gallery');
 
   try {
-    const response = await fetch(`/data/projects.json?v=${Date.now()}`, { cache: 'no-store' });
-    if (!response.ok) throw new Error('Unable to load projects');
+    const response = await fetch(
+      `/data/projects.json?v=${Date.now()}`,
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Unable to load projects');
+    }
+
     const data = await response.json();
     allProjects = Array.isArray(data.projects) ? data.projects : [];
     renderProjects();
   } catch (error) {
     console.error(error);
-    if (gallery) gallery.innerHTML = '<p class="gallery-loading">The gallery could not be loaded. Please refresh the page.</p>';
+
+    if (gallery) {
+      gallery.innerHTML =
+        '<p class="gallery-loading">The gallery could not be loaded. Please refresh the page.</p>';
+    }
   }
 }
-
 document.querySelectorAll('.filter').forEach((button) => {
   button.addEventListener('click', () => {
     document.querySelectorAll('.filter').forEach((item) => item.classList.remove('active'));
@@ -962,6 +1041,7 @@ document.addEventListener('keydown', (event) => {
     closeSmartQuote();
   }
 });
-
+loadServices();
 loadSiteSettings();
+
 
