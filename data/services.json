@@ -5,7 +5,6 @@
       "slug": "custom-embroidery",
       "short_description": "Professional embroidery for businesses, organizations, brands and personal projects.",
       "description": "Custom embroidery for shirts, polos, jackets, hoodies, hats, uniforms and more. We work with individual orders as well as larger quantities.",
-      "image": "",
       "icon": "needle",
       "products": [
         "Polos",
@@ -23,7 +22,6 @@
       "slug": "custom-apparel",
       "short_description": "Personalized shirts, hoodies and apparel created for your idea, event or business.",
       "description": "Custom apparel for businesses, churches, schools, events, clothing brands and personal occasions.",
-      "image": "",
       "icon": "shirt",
       "products": [
         "T-Shirts",
@@ -40,7 +38,6 @@
       "slug": "sublimation",
       "short_description": "Full-color personalization for mugs, tumblers, apparel and custom gifts.",
       "description": "Sublimation allows us to produce vibrant, permanent full-color designs on compatible products.",
-      "image": "",
       "icon": "sparkles",
       "products": [
         "Mugs",
@@ -57,7 +54,6 @@
       "slug": "personalized-products",
       "short_description": "Custom gifts, accessories and keepsakes made especially for you.",
       "description": "Personalized products for birthdays, celebrations, businesses, organizations and meaningful gifts.",
-      "image": "",
       "icon": "gift",
       "products": [
         "Keychains",
@@ -68,6 +64,12 @@
       "featured": false,
       "visible": true,
       "order": 4
+    },
+    {
+      "name": "Vinyl ",
+      "slug": "Banners",
+      "featured": false,
+      "visible": false
     }
   ]
 }
