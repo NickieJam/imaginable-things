@@ -1,0 +1,10 @@
+{
+  "testimonials": [
+    {
+      "name": "Your first customer",
+      "company": "Add a business or organization",
+      "quote": "Use the panel to replace this sample with a real customer testimonial.",
+      "visible": false
+    }
+  ]
+}
