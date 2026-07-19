@@ -1271,8 +1271,3 @@ body.smart-quote-open {
     transition: none;
   }
 }
-/* v4.1 mobile navigation and CMS service visibility */
-.mobile-quote-link{display:none}
-@media(max-width:800px){
-  .main-nav .mobile-quote-link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin-top:4px;padding:12px 18px;border-radius:14px;background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow),var(--blue));color:#fff;font-weight:900}
-}

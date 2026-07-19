@@ -310,7 +310,7 @@ async function loadServices() {
 
     visibleServices.forEach((service, index) => {
       const card = document.createElement('article');
-      card.className = 'service-card reveal';
+      card.className = 'service-card visible';
 
       const number = document.createElement('em');
       number.textContent = String(index + 1).padStart(2, '0');

@@ -71,14 +71,7 @@
       "featured": false,
       "visible": true,
       "short_description": "Custom vinyl lettering, decals and banners for businesses, events and personal projects.",
-      "description": "Durable custom vinyl graphics and banners made for storefronts, vehicles, events, promotions and celebrations.",
-      "icon": "banner",
-      "products": [
-        "Banners",
-        "Vinyl Lettering",
-        "Decals",
-        "Signs"
-      ],
+      "description": "Custom vinyl graphics and banners made for storefronts, events, vehicles, apparel and special occasions.",
       "order": 5
     }
   ]
