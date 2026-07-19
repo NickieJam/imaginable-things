@@ -1,0 +1,85 @@
+{
+  "services": [
+    {
+      "name": "Custom Embroidery",
+      "slug": "custom-embroidery",
+      "short_description": "Professional embroidery for businesses, organizations, brands and personal projects.",
+      "description": "Custom embroidery for shirts, polos, jackets, hoodies, hats, uniforms and more. We work with individual orders as well as larger quantities.",
+      "icon": "needle",
+      "products": [
+        "Polos",
+        "Hoodies",
+        "Hats",
+        "Jackets",
+        "Uniforms"
+      ],
+      "featured": true,
+      "visible": true,
+      "order": 1
+    },
+    {
+      "name": "Custom Apparel",
+      "slug": "custom-apparel",
+      "short_description": "Personalized shirts, hoodies and apparel created for your idea, event or business.",
+      "description": "Custom apparel for businesses, churches, schools, events, clothing brands and personal occasions.",
+      "icon": "shirt",
+      "products": [
+        "T-Shirts",
+        "Hoodies",
+        "Sweatshirts",
+        "Uniforms"
+      ],
+      "featured": true,
+      "visible": true,
+      "order": 2
+    },
+    {
+      "name": "Sublimation",
+      "slug": "sublimation",
+      "short_description": "Full-color personalization for mugs, tumblers, apparel and custom gifts.",
+      "description": "Sublimation allows us to produce vibrant, permanent full-color designs on compatible products.",
+      "icon": "sparkles",
+      "products": [
+        "Mugs",
+        "Tumblers",
+        "Shirts",
+        "Photo Gifts"
+      ],
+      "featured": true,
+      "visible": true,
+      "order": 3
+    },
+    {
+      "name": "Personalized Products",
+      "slug": "personalized-products",
+      "short_description": "Custom gifts, accessories and keepsakes made especially for you.",
+      "description": "Personalized products for birthdays, celebrations, businesses, organizations and meaningful gifts.",
+      "icon": "gift",
+      "products": [
+        "Keychains",
+        "Accessories",
+        "Keepsakes",
+        "Custom Gifts"
+      ],
+      "featured": false,
+      "visible": true,
+      "order": 4
+    },
+    {
+      "name": "Vinyl & Banners",
+      "slug": "vinyl-banners",
+      "featured": false,
+      "visible": true,
+      "short_description": "Custom vinyl lettering, signs and banners for businesses, events and special occasions.",
+      "description": "Personalized vinyl graphics and banners designed for storefronts, celebrations, promotions and organizations.",
+      "icon": "banner",
+      "products": [
+        "Banners",
+        "Vinyl Lettering",
+        "Signs",
+        "Event Displays"
+      ],
+      "order": 5
+    }
+  ]
+}

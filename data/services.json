@@ -66,10 +66,20 @@
       "order": 4
     },
     {
-      "name": "Vinyl ",
-      "slug": "Banners",
+      "name": "Vinyl & Banners",
+      "slug": "vinyl-banners",
       "featured": false,
-      "visible": true
+      "visible": true,
+      "short_description": "Custom vinyl lettering, signs and banners for businesses, events and special occasions.",
+      "description": "Personalized vinyl graphics and banners designed for storefronts, celebrations, promotions and organizations.",
+      "icon": "banner",
+      "products": [
+        "Banners",
+        "Vinyl Lettering",
+        "Signs",
+        "Event Displays"
+      ],
+      "order": 5
     }
   ]
 }

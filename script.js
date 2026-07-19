@@ -331,7 +331,7 @@ async function loadServices() {
     servicesGrid.replaceChildren(fragment);
 
     servicesGrid.querySelectorAll('.service-card').forEach((card) => {
-      card.classList.add('is-visible');
+      card.classList.add('visible');
     });
   } catch (error) {
     console.error('Services could not be loaded:', error);
