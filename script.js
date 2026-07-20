@@ -623,7 +623,9 @@ const smartQuoteState = {
   details: '',
   name: '',
   phone: '',
-  email: ''
+  email: '',
+  file: null,
+  filePreviewUrl: ''
 };
 
 const smartQuoteSteps = [
@@ -791,6 +793,150 @@ function renderProjectDetailsStep() {
   `;
 }
 
+
+const SMART_QUOTE_ACCEPTED_EXTENSIONS = [
+  'png', 'jpg', 'jpeg', 'webp', 'pdf', 'svg', 'ai', 'eps',
+  'dst', 'emb', 'pes', 'exp', 'jef', 'vp3', 'hus', 'xxx'
+];
+const SMART_QUOTE_MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+function getSmartQuoteFileExtension(fileName) {
+  return String(fileName || '').split('.').pop().toLowerCase();
+}
+
+function formatSmartQuoteFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return '0 KB';
+  const megabytes = bytes / (1024 * 1024);
+  return megabytes >= 1
+    ? `${megabytes.toFixed(megabytes >= 10 ? 0 : 1)} MB`
+    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
+function getSmartQuoteFileMessage(extension) {
+  if (extension === 'dst') return 'Ready-to-stitch embroidery file received.';
+  if (extension === 'emb') return 'Hatch Embroidery project received.';
+  if (['pes', 'exp', 'jef', 'vp3', 'hus', 'xxx'].includes(extension)) {
+    return 'Embroidery machine file received for review.';
+  }
+  if (['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(extension)) {
+    return 'Artwork received. This design may require embroidery digitizing.';
+  }
+  return 'Artwork received for review.';
+}
+
+function clearSmartQuoteFile() {
+  if (smartQuoteState.filePreviewUrl) {
+    URL.revokeObjectURL(smartQuoteState.filePreviewUrl);
+  }
+  smartQuoteState.file = null;
+  smartQuoteState.filePreviewUrl = '';
+  renderUploadStep();
+}
+
+function setSmartQuoteFile(file) {
+  smartQuoteError.textContent = '';
+  if (!file) return;
+
+  const extension = getSmartQuoteFileExtension(file.name);
+  if (!SMART_QUOTE_ACCEPTED_EXTENSIONS.includes(extension)) {
+    smartQuoteError.textContent =
+      'That file type is not accepted. Please upload artwork or an embroidery file.';
+    return;
+  }
+
+  if (file.size > SMART_QUOTE_MAX_FILE_SIZE) {
+    smartQuoteError.textContent = 'The file is larger than 10 MB.';
+    return;
+  }
+
+  if (smartQuoteState.filePreviewUrl) {
+    URL.revokeObjectURL(smartQuoteState.filePreviewUrl);
+  }
+
+  smartQuoteState.file = file;
+  smartQuoteState.filePreviewUrl = ['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(extension)
+    ? URL.createObjectURL(file)
+    : '';
+
+  renderUploadStep();
+}
+
+function renderUploadStep() {
+  const file = smartQuoteState.file;
+  const extension = file ? getSmartQuoteFileExtension(file.name) : '';
+  const preview = file && smartQuoteState.filePreviewUrl
+    ? `<img class="smart-quote-file-preview" src="${smartQuoteState.filePreviewUrl}" alt="Preview of ${escapeSmartQuoteText(file.name)}">`
+    : file
+      ? `<div class="smart-quote-file-icon" aria-hidden="true">${extension === 'pdf' ? 'PDF' : extension.toUpperCase()}</div>`
+      : '';
+
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question">
+      <h3>Upload your design or embroidery file</h3>
+      <p>This step is optional. You can also attach the file later in WhatsApp.</p>
+    </div>
+
+    ${file ? `
+      <div class="smart-quote-file-card">
+        ${preview}
+        <div class="smart-quote-file-info">
+          <strong>${escapeSmartQuoteText(file.name)}</strong>
+          <span>${extension.toUpperCase()} · ${formatSmartQuoteFileSize(file.size)}</span>
+          <p>${getSmartQuoteFileMessage(extension)}</p>
+        </div>
+        <div class="smart-quote-file-actions">
+          <label class="button smart-quote-file-replace">
+            Replace
+            <input id="smart-file-replace" type="file" hidden>
+          </label>
+          <button class="button smart-quote-file-remove" id="smart-file-remove" type="button">Remove</button>
+        </div>
+      </div>
+    ` : `
+      <label class="smart-quote-dropzone" id="smart-quote-dropzone">
+        <input id="smart-file-input" type="file" hidden>
+        <span class="smart-quote-upload-icon" aria-hidden="true">↑</span>
+        <strong>Drag and drop your file here</strong>
+        <span>or click to browse</span>
+        <small>Maximum 10 MB</small>
+      </label>
+    `}
+
+    <p class="smart-quote-file-formats">
+      Accepted: PNG, JPG, JPEG, WEBP, PDF, SVG, AI, EPS, DST, EMB, PES, EXP, JEF, VP3, HUS and XXX.
+    </p>
+  `;
+
+  const configureInput = (input) => {
+    if (!input) return;
+    input.setAttribute('accept', SMART_QUOTE_ACCEPTED_EXTENSIONS.map((ext) => `.${ext}`).join(','));
+    input.addEventListener('change', () => setSmartQuoteFile(input.files?.[0]));
+  };
+
+  configureInput(document.getElementById('smart-file-input'));
+  configureInput(document.getElementById('smart-file-replace'));
+  document.getElementById('smart-file-remove')?.addEventListener('click', clearSmartQuoteFile);
+
+  const dropzone = document.getElementById('smart-quote-dropzone');
+  if (dropzone) {
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.add('is-dragging');
+      });
+    });
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.remove('is-dragging');
+      });
+    });
+    dropzone.addEventListener('drop', (event) => {
+      setSmartQuoteFile(event.dataTransfer?.files?.[0]);
+    });
+  }
+}
+
 function renderContactStep() {
   smartQuoteContent.innerHTML = `
     <div class="smart-quote-question">
@@ -851,6 +997,9 @@ function renderReviewStep() {
     ['Name', smartQuoteState.name],
     ['Phone', smartQuoteState.phone],
     ['Email', smartQuoteState.email || 'Not provided'],
+    ['Design file', smartQuoteState.file
+      ? `${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`
+      : 'Not provided'],
     ['Details', smartQuoteState.details]
   ];
 
@@ -884,7 +1033,7 @@ function saveCurrentSmartQuoteStep() {
       document.getElementById('smart-details')?.value.trim() || '';
   }
 
-  if (smartQuoteState.step === 5) {
+  if (smartQuoteState.step === 6) {
     smartQuoteState.name =
       document.getElementById('smart-name')?.value.trim() || '';
 
@@ -915,7 +1064,7 @@ function validateSmartQuoteStep() {
   }
 
   if (
-    smartQuoteState.step === 5 &&
+    smartQuoteState.step === 6 &&
     (!smartQuoteState.name || !smartQuoteState.phone)
   ) {
     smartQuoteError.textContent =
@@ -929,7 +1078,7 @@ function validateSmartQuoteStep() {
 function renderSmartQuoteStep() {
   if (!smartQuoteContent) return;
 
-  const totalSteps = 7;
+  const totalSteps = 8;
   const visibleStep = smartQuoteState.step + 1;
 
   smartQuoteStepLabel.textContent =
@@ -952,6 +1101,8 @@ function renderSmartQuoteStep() {
   } else if (smartQuoteState.step === 4) {
     renderProjectDetailsStep();
   } else if (smartQuoteState.step === 5) {
+    renderUploadStep();
+  } else if (smartQuoteState.step === 6) {
     renderContactStep();
   } else {
     renderReviewStep();
@@ -974,6 +1125,12 @@ function sendSmartQuoteToWhatsApp() {
     `Design placement: ${smartQuoteState.placement}`,
     smartQuoteState.deadline
       ? `Needed by: ${smartQuoteState.deadline}`
+      : '',
+    smartQuoteState.file
+      ? `Selected file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`
+      : '',
+    smartQuoteState.file
+      ? 'Please attach this same file to the WhatsApp conversation.'
       : '',
     '',
     'Project details:',
@@ -1007,7 +1164,7 @@ smartQuoteNext?.addEventListener('click', () => {
 
   if (!validateSmartQuoteStep()) return;
 
-  if (smartQuoteState.step === 6) {
+  if (smartQuoteState.step === 7) {
     sendSmartQuoteToWhatsApp();
     return;
   }
