@@ -59,8 +59,56 @@ const projectModalServices = document.getElementById('project-modal-services');
 const projectModalThumbnails = document.getElementById('project-modal-thumbnails');
 const projectModalQuote = document.getElementById('project-modal-quote');
 const projectModalCounter = document.getElementById('project-modal-counter');
+const projectModalMeta = document.getElementById('project-modal-meta');
+const projectModalVideoWrap = document.getElementById('project-modal-video-wrap');
+const projectModalVideo = document.getElementById('project-modal-video');
 const relatedProjects = document.getElementById('related-projects');
 const relatedProjectsGrid = document.getElementById('related-projects-grid');
+const CATEGORY_LABELS = {
+  embroidery: 'Embroidery',
+  apparel: 'Custom Apparel',
+  hats: 'Hats',
+  dtf: 'DTF Printing',
+  sublimation: 'Sublimation',
+  drinkware: 'Drinkware',
+  accessories: 'Accessories & Gifts',
+  'banners-vinyl': 'Banners & Vinyl'
+};
+
+function categoryLabel(category) {
+  return CATEGORY_LABELS[category] || String(category || 'Project')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function renderProjectMeta(project) {
+  if (!projectModalMeta) return;
+  const items = [
+    project.item_type && ['Item', project.item_type],
+    project.technique && ['Technique', project.technique],
+    project.production_time && ['Production', project.production_time],
+    project.completed_date && ['Completed', project.completed_date]
+  ].filter(Boolean);
+
+  projectModalMeta.innerHTML = items.map(([label, value]) => `
+    <span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>
+  `).join('');
+  projectModalMeta.hidden = items.length === 0;
+}
+
+function renderProjectVideo(project) {
+  if (!projectModalVideoWrap || !projectModalVideo) return;
+  if (!project.video) {
+    projectModalVideo.pause();
+    projectModalVideo.removeAttribute('src');
+    projectModalVideo.load();
+    projectModalVideoWrap.hidden = true;
+    return;
+  }
+  projectModalVideo.src = project.video;
+  projectModalVideoWrap.hidden = false;
+}
+
 function projectImages(project) {
   return [project.image, ...(Array.isArray(project.gallery) ? project.gallery : [])]
     .filter(Boolean)
@@ -134,7 +182,7 @@ function renderRelatedProjects(project) {
 
       <span>
         <strong>${escapeHtml(item.title)}</strong>
-        <small>${escapeHtml(item.category)}</small>
+        <small>${escapeHtml(categoryLabel(item.category))}</small>
       </span>
     </button>
   `).join('');
@@ -156,7 +204,9 @@ function openProjectModal(project) {
   activeProjectImageIndex = 0;
 
   projectModalTitle.textContent = project.title || 'Custom Project';
-  projectModalCategory.textContent = project.category || 'Project';
+  projectModalCategory.textContent = categoryLabel(project.category);
+  renderProjectMeta(project);
+  renderProjectVideo(project);
   projectModalDescription.textContent = project.description || '';
 
   const services = Array.isArray(project.services) ? project.services.filter(Boolean) : [];
@@ -178,6 +228,7 @@ function closeProjectModal() {
   projectModal.classList.remove('open');
   projectModal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
+  if (projectModalVideo) projectModalVideo.pause();
   activeProject = null;
 }
 
@@ -233,6 +284,48 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+function renderPortfolioFilters() {
+  const filters = document.getElementById('portfolio-filters');
+  if (!filters) return;
+  const categories = [...new Set(allProjects
+    .filter((project) => project.visible !== false && project.category)
+    .map((project) => project.category))];
+  filters.innerHTML = ['all', ...categories].map((category, index) => `
+    <button class="filter ${index === 0 ? 'active' : ''}" data-filter="${escapeHtml(category)}">
+      ${category === 'all' ? 'All' : escapeHtml(categoryLabel(category))}
+    </button>
+  `).join('');
+  filters.querySelectorAll('.filter').forEach((button) => {
+    button.addEventListener('click', () => {
+      filters.querySelectorAll('.filter').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      renderProjects(button.dataset.filter);
+    });
+  });
+}
+
+function renderFeaturedProjects() {
+  const grid = document.getElementById('featured-projects-grid');
+  if (!grid) return;
+  const featured = allProjects
+    .filter((project) => project.visible !== false && project.featured)
+    .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999))
+    .slice(0, 5);
+  if (!featured.length) {
+    grid.innerHTML = '<p class="gallery-loading">Featured projects will appear here when selected in the admin panel.</p>';
+    return;
+  }
+  grid.innerHTML = featured.map((project, index) => `
+    <button class="project ${index === 0 ? 'project-large' : ''} reveal visible" data-featured-project="${allProjects.indexOf(project)}">
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy">
+      <span><b>${escapeHtml(project.title)}</b><small>${escapeHtml(categoryLabel(project.category))}</small></span>
+    </button>
+  `).join('');
+  grid.querySelectorAll('[data-featured-project]').forEach((button) => {
+    button.addEventListener('click', () => openProjectModal(allProjects[Number(button.dataset.featuredProject)]));
+  });
+}
+
 function renderProjects(filter = 'all') {
   const gallery = document.getElementById('dynamic-gallery');
   if (!gallery) return;
@@ -255,7 +348,8 @@ function renderProjects(filter = 'all') {
       <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy">
       <span class="gallery-caption">
         <strong>${escapeHtml(project.title)}</strong>
-        <small>${escapeHtml(project.category)}</small>
+        <small>${escapeHtml(categoryLabel(project.category))}${project.item_type ? ` · ${escapeHtml(project.item_type)}` : ''}</small>
+        <em>${projectImages(project).length} ${projectImages(project).length === 1 ? 'photo' : 'photos'}</em>
       </span>
       ${project.featured ? '<span class="featured-badge">Featured</span>' : ''}
     </button>
@@ -353,6 +447,8 @@ async function loadProjects() {
 
     const data = await response.json();
     allProjects = Array.isArray(data.projects) ? data.projects : [];
+    renderPortfolioFilters();
+    renderFeaturedProjects();
     renderProjects();
   } catch (error) {
     console.error(error);
@@ -363,18 +459,6 @@ async function loadProjects() {
     }
   }
 }
-document.querySelectorAll('.filter').forEach((button) => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('.filter').forEach((item) => item.classList.remove('active'));
-    button.classList.add('active');
-    renderProjects(button.dataset.filter);
-  });
-});
-
-document.querySelectorAll('.project[data-src]').forEach((item) => {
-  item.addEventListener('click', () => openLightbox(item.dataset.src, item.dataset.title));
-});
-
 document.getElementById('year').textContent = new Date().getFullYear();
 loadProjects();
 

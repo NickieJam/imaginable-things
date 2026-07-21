@@ -12,7 +12,13 @@
         "Custom Design"
       ],
       "visible": true,
-      "order": 1
+      "order": 1,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Business Logo Embroidery",
@@ -26,7 +32,13 @@
         "Custom Design"
       ],
       "visible": true,
-      "order": 2
+      "order": 2,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Motorcycle Embroidery",
@@ -37,7 +49,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 3
+      "order": 3,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Educator Embroidery",
@@ -48,7 +66,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 4
+      "order": 4,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Automotive Business Embroidery",
@@ -59,7 +83,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 5
+      "order": 5,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Custom Printed Shirt",
@@ -73,7 +103,13 @@
         "Custom Design"
       ],
       "visible": true,
-      "order": 6
+      "order": 6,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Children's Custom Shirt",
@@ -84,7 +120,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 7
+      "order": 7,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Children's Event Shirt",
@@ -95,7 +137,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 8
+      "order": 8,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Puerto Rico Mug",
@@ -106,7 +154,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 9
+      "order": 9,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Character Mug",
@@ -117,7 +171,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 10
+      "order": 10,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Barbershop Mug",
@@ -131,7 +191,13 @@
         "Custom Design"
       ],
       "visible": true,
-      "order": 11
+      "order": 11,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Personalized Mug",
@@ -142,7 +208,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 12
+      "order": 12,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Custom Keychain",
@@ -153,7 +225,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 13
+      "order": 13,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Photo Accessory",
@@ -164,7 +242,13 @@
       "gallery": [],
       "services": [],
       "visible": true,
-      "order": 14
+      "order": 14,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     }
   ]
 }

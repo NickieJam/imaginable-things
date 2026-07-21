@@ -104,6 +104,59 @@ content:
                   label: Accessories & Gifts
                 - name: banners-vinyl
                   label: Banners & Vinyl
+          - name: client
+            label: Client or organization
+            type: string
+            description: Optional. Leave blank if the customer name should remain private.
+          - name: item_type
+            label: Item type
+            type: select
+            options:
+              values:
+                - name: Shirt
+                  label: Shirt
+                - name: Hoodie
+                  label: Hoodie
+                - name: Jacket
+                  label: Jacket
+                - name: Hat
+                  label: Hat
+                - name: Uniform
+                  label: Uniform
+                - name: Tumbler
+                  label: Tumbler
+                - name: Mug
+                  label: Mug
+                - name: Banner
+                  label: Banner
+                - name: Accessory
+                  label: Accessory
+                - name: Other
+                  label: Other
+          - name: technique
+            label: Main technique
+            type: select
+            options:
+              values:
+                - name: Embroidery
+                  label: Embroidery
+                - name: DTF Printing
+                  label: DTF Printing
+                - name: Sublimation
+                  label: Sublimation
+                - name: Vinyl
+                  label: Vinyl
+                - name: Custom Design
+                  label: Custom Design
+                - name: Mixed Techniques
+                  label: Mixed Techniques
+          - name: production_time
+            label: Production time
+            type: string
+            description: Optional. Example: 3 business days
+          - name: completed_date
+            label: Completion date
+            type: date
           - name: image
             label: Cover photo
             type: image
@@ -121,6 +174,12 @@ content:
             description: Add close-ups, back views, sleeves, or other angles.
             options:
               media: gallery
+          - name: video
+            label: Project video
+            type: file
+            description: Optional short video showing the finished work or process.
+            options:
+              media: videos
           - name: services
             label: Services used
             type: string

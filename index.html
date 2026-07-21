@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Custom embroidery, apparel, hats, uniforms, drinkware and personalized products in Connecticut. No minimum orders." />
   <meta name="theme-color" content="#05060a" />
-  <meta name="version" content="5.0.1" />
+  <meta name="version" content="5.1.0" />
   <title>Imaginable Things | Custom Apparel & Embroidery</title>
   <link rel="icon" href="assets/images/logo.webp" />
-  <link rel="stylesheet" href="styles.css?v=4.2.0" />
+  <link rel="stylesheet" href="styles.css?v=5.1.0" />
 </head>
 <body>
   <header class="site-header">
@@ -51,22 +51,8 @@
         <h2>Quality you can <span>see.</span></h2>
         <p>A selection of real work created by Imaginable Things.</p>
       </div>
-      <div class="featured-grid">
-        <button class="project project-large reveal" data-src="assets/images/hero-jacket.webp" data-title="Custom Brand Apparel">
-          <img src="assets/images/hero-jacket.webp" alt="Custom embroidered jacket" loading="lazy"><span><b>Custom Brand Apparel</b><small>Embroidery</small></span>
-        </button>
-        <button class="project reveal" data-src="assets/images/hero-cap.webp" data-title="Embroidered Headwear">
-          <img src="assets/images/hero-cap.webp" alt="Custom embroidered cap" loading="lazy"><span><b>Embroidered Headwear</b><small>3D & flat embroidery</small></span>
-        </button>
-        <button class="project reveal" data-src="assets/images/embroider-anchor.webp" data-title="Business Branding">
-          <img src="assets/images/embroider-anchor.webp" alt="Business logo embroidery" loading="lazy"><span><b>Business Branding</b><small>Logo embroidery</small></span>
-        </button>
-        <button class="project reveal" data-src="assets/images/apparel-hoodie.webp" data-title="Custom Apparel">
-          <img src="assets/images/apparel-hoodie.webp" alt="Custom printed hoodie" loading="lazy"><span><b>Custom Apparel</b><small>Personalized hoodie</small></span>
-        </button>
-        <button class="project reveal" data-src="assets/images/drinkware-set.webp" data-title="Personalized Drinkware">
-          <img src="assets/images/drinkware-set.webp" alt="Personalized tumblers" loading="lazy"><span><b>Personalized Drinkware</b><small>Tumblers & gifts</small></span>
-        </button>
+      <div class="featured-grid" id="featured-projects-grid">
+        <p class="gallery-loading">Loading featured projects...</p>
       </div>
     </section>
 
@@ -129,8 +115,8 @@
 
     <section class="section gallery-section">
       <div class="section-heading reveal"><p class="eyebrow">Portfolio</p><h2>Made by <span>Imaginable Things.</span></h2></div>
-      <div class="filters" role="group" aria-label="Gallery filters">
-        <button class="filter active" data-filter="all">All</button><button class="filter" data-filter="embroidery">Embroidery</button><button class="filter" data-filter="apparel">Apparel</button><button class="filter" data-filter="drinkware">Drinkware</button><button class="filter" data-filter="accessories">Accessories</button>
+      <div class="filters" id="portfolio-filters" role="group" aria-label="Gallery filters">
+        <button class="filter active" data-filter="all">All</button>
       </div>
       <div class="gallery-grid" id="dynamic-gallery">
         <p class="gallery-loading">Loading projects...</p>
@@ -227,114 +213,37 @@
 
   <div class="project-modal" id="project-modal" aria-hidden="true">
     <div class="project-modal-backdrop" data-close-project></div>
-  
-    <article
-      class="project-modal-card"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="project-modal-title"
-      aria-describedby="project-modal-description"
-    >
-      <button
-        class="project-modal-close"
-        type="button"
-        aria-label="Close project"
-        data-close-project
-      >
-        ×
-      </button>
-  
-      <div class="project-modal-media">
-        <button
-          class="project-modal-arrow previous"
-          type="button"
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
-  
-        <div class="project-modal-image-wrapper">
-          <img id="project-modal-image" src="" alt="">
-  
-          <span
-            class="project-modal-counter"
-            id="project-modal-counter"
-            aria-live="polite"
-          >
-            1 / 1
-          </span>
-        </div>
-  
-        <button
-          class="project-modal-arrow next"
-          type="button"
-          aria-label="Next image"
-        >
-          ›
-        </button>
-  
-        <div
-          class="project-modal-thumbnails"
-          id="project-modal-thumbnails"
-          aria-label="Project images"
-        ></div>
-      </div>
-  
-      <div class="project-modal-content">
-        <p class="eyebrow" id="project-modal-category">Project</p>
-  
-        <h2 id="project-modal-title">Project title</h2>
-  
-        <p id="project-modal-description"></p>
-  
-        <div
-          class="project-modal-services"
-          id="project-modal-services"
-        ></div>
-  
-        
-        >
-          Request Something<a
-          class="button button-gradient full"
-          id="project-modal-quote"
-          href="#quote" Similar
-        </a>
-  
-        <section
-          class="related-projects"
-          id="related-projects"
-          aria-labelledby="related-projects-title"
-        >
-          <h3 id="related-projects-title">Related Projects</h3>
-  
-          <div
-            class="related-projects-grid"
-            id="related-projects-grid"
-          ></div>
-        </section>
-      </div>
-    </article>
-  </div> <div class="project-modal" id="project-modal" aria-hidden="true">
-    <div class="project-modal-backdrop" data-close-project></div>
-    <article class="project-modal-card" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+    <article class="project-modal-card" role="dialog" aria-modal="true" aria-labelledby="project-modal-title" aria-describedby="project-modal-description">
       <button class="project-modal-close" type="button" aria-label="Close project" data-close-project>×</button>
 
       <div class="project-modal-media">
         <button class="project-modal-arrow previous" type="button" aria-label="Previous image">‹</button>
-        <img id="project-modal-image" src="" alt="">
+        <div class="project-modal-image-wrapper">
+          <img id="project-modal-image" src="" alt="">
+          <span class="project-modal-counter" id="project-modal-counter" aria-live="polite">1 / 1</span>
+        </div>
         <button class="project-modal-arrow next" type="button" aria-label="Next image">›</button>
-        <div class="project-modal-thumbnails" id="project-modal-thumbnails"></div>
+        <div class="project-modal-thumbnails" id="project-modal-thumbnails" aria-label="Project images"></div>
       </div>
 
       <div class="project-modal-content">
         <p class="eyebrow" id="project-modal-category">Project</p>
         <h2 id="project-modal-title">Project title</h2>
+        <div class="project-meta" id="project-modal-meta"></div>
         <p id="project-modal-description"></p>
         <div class="project-modal-services" id="project-modal-services"></div>
+        <div class="project-video" id="project-modal-video-wrap" hidden>
+          <video id="project-modal-video" controls playsinline preload="metadata"></video>
+        </div>
         <a class="button button-gradient full" id="project-modal-quote" href="#quote">Request Something Similar</a>
+        <section class="related-projects" id="related-projects" aria-labelledby="related-projects-title" hidden>
+          <h3 id="related-projects-title">Related Projects</h3>
+          <div class="related-projects-grid" id="related-projects-grid"></div>
+        </section>
       </div>
     </article>
   </div>
+
 <!-- SMART QUOTE MODAL -->
 <div
   class="smart-quote-modal"
