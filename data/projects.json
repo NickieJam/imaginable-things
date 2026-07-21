@@ -138,10 +138,13 @@
       "order": 13
     },
     {
-      "title": "Photo Accessory",
+      "title": "Iphone and Android watch bracelet",
       "category": "accessories",
       "image": "/assets/images/accessory-zipper.webp",
       "description": "Custom photo accessory.",
+      "services": [
+        "Sublimation"
+      ],
       "featured": false,
       "visible": true,
       "order": 14
