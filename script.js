@@ -685,7 +685,7 @@ document.getElementById('quote-form')?.addEventListener('submit', (event) => {
   const url = `https://wa.me/${String(number).replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank', 'noopener,noreferrer');
 })/* ==================================================
-   SMART QUOTE WIZARD
+   SMART QUOTE WIZARD 2.0
 ================================================== */
 
 const smartQuoteModal = document.getElementById('smart-quote-modal');
@@ -701,13 +701,16 @@ const smartQuoteState = {
   step: 0,
   product: '',
   method: '',
-  quantity: '',
-  placement: '',
+  quantityRange: '',
+  exactQuantity: '',
+  placements: [],
+  garmentSource: '',
   deadline: '',
   details: '',
   name: '',
   phone: '',
   email: '',
+  contactPreference: 'WhatsApp',
   file: null,
   filePreviewUrl: ''
 };
@@ -718,77 +721,45 @@ const smartQuoteSteps = [
     description: 'Select the product that best matches your project.',
     field: 'product',
     options: [
-      ['👕', 'T-Shirt'],
-      ['🧥', 'Hoodie'],
-      ['🧢', 'Hat'],
-      ['👔', 'Polo'],
-      ['☕', 'Tumbler'],
-      ['📢', 'Banner'],
-      ['🎒', 'Bag'],
-      ['✨', 'Other']
+      ['👕', 'T-Shirt'], ['🧥', 'Hoodie'], ['🧢', 'Hat'], ['👔', 'Polo'],
+      ['🦺', 'Jacket / Vest'], ['🥤', 'Tumbler / Mug'], ['📢', 'Banner / Sign'],
+      ['🎒', 'Bag'], ['✨', 'Other']
     ]
   },
   {
     title: 'How would you like it personalized?',
-    description: 'Choose the decoration method you are interested in.',
+    description: 'Choose a method. Select “Not Sure” and we will recommend one.',
     field: 'method',
     options: [
-      ['🧵', 'Embroidery'],
-      ['🪡', '3D Puff Embroidery'],
-      ['🎨', 'Sublimation'],
-      ['👕', 'DTF'],
-      ['✂️', 'Vinyl'],
-      ['🖨️', 'Screen Printing'],
-      ['❓', 'Not Sure']
+      ['🧵', 'Embroidery'], ['🪡', '3D Puff Embroidery'], ['🎨', 'Sublimation'],
+      ['👕', 'DTF'], ['✂️', 'Vinyl'], ['🖨️', 'Screen Printing'], ['❓', 'Not Sure']
     ]
   },
   {
-    title: 'How many do you need?',
-    description: 'Choose the estimated quantity.',
-    field: 'quantity',
-    options: [
-      ['1', '1–5'],
-      ['6', '6–12'],
-      ['13', '13–24'],
-      ['25', '25–50'],
-      ['51', '51–100'],
-      ['+', '100+']
-    ]
-  },
-  {
-    title: 'Where should the design be placed?',
-    description: 'Select the main location for your design.',
-    field: 'placement',
-    options: [
-      ['↖', 'Left Chest'],
-      ['↗', 'Right Chest'],
-      ['⬆', 'Center Chest'],
-      ['🔙', 'Full Back'],
-      ['◀', 'Left Sleeve'],
-      ['▶', 'Right Sleeve'],
-      ['🧢', 'Front of Hat'],
-      ['✨', 'Other']
-    ]
+    title: 'How many pieces do you need?',
+    description: 'Choose a range, then enter the exact quantity when known.',
+    field: 'quantityRange',
+    options: [['1', '1–5'], ['6', '6–12'], ['13', '13–24'], ['25', '25–50'], ['51', '51–100'], ['+', '100+']]
   }
 ];
 
-function openSmartQuote() {
-  if (!smartQuoteModal) return;
+function escapeSmartQuoteText(value) {
+  return String(value || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+}
 
+function openSmartQuote(prefill = {}) {
+  if (!smartQuoteModal) return;
+  Object.assign(smartQuoteState, prefill);
   smartQuoteModal.classList.add('is-open');
   smartQuoteModal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('smart-quote-open');
-
   renderSmartQuoteStep();
-
-  window.setTimeout(() => {
-    smartQuoteClose?.focus();
-  }, 50);
+  window.setTimeout(() => smartQuoteClose?.focus(), 50);
 }
 
 function closeSmartQuote() {
   if (!smartQuoteModal) return;
-
   smartQuoteModal.classList.remove('is-open');
   smartQuoteModal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('smart-quote-open');
@@ -796,492 +767,102 @@ function closeSmartQuote() {
 
 function selectSmartQuoteOption(field, value, button) {
   smartQuoteState[field] = value;
-
-  document
-    .querySelectorAll('.smart-quote-option')
-    .forEach((option) => option.classList.remove('is-selected'));
-
+  document.querySelectorAll('.smart-quote-option').forEach((option) => option.classList.remove('is-selected'));
   button.classList.add('is-selected');
   smartQuoteError.textContent = '';
 }
 
 function renderOptionStep(stepData) {
-  const options = stepData.options
-    .map(([icon, label]) => {
-      const selected =
-        smartQuoteState[stepData.field] === label ? 'is-selected' : '';
+  const options = stepData.options.map(([icon, label]) => `
+    <button class="smart-quote-option ${smartQuoteState[stepData.field] === label ? 'is-selected' : ''}"
+      type="button" data-smart-field="${stepData.field}" data-smart-value="${label}">
+      <span class="smart-quote-option-icon">${icon}</span><span>${label}</span>
+    </button>`).join('');
 
-      return `
-        <button
-          class="smart-quote-option ${selected}"
-          type="button"
-          data-smart-field="${stepData.field}"
-          data-smart-value="${label}"
-        >
-          <span class="smart-quote-option-icon">${icon}</span>
-          <span>${label}</span>
-        </button>
-      `;
-    })
-    .join('');
+  const quantityInput = stepData.field === 'quantityRange' ? `
+    <label class="smart-quote-field smart-quote-inline-field">
+      <span>Exact quantity (optional)</span>
+      <input type="number" id="smart-exact-quantity" min="1" inputmode="numeric"
+        placeholder="Example: 24" value="${escapeSmartQuoteText(smartQuoteState.exactQuantity)}">
+    </label>` : '';
 
   smartQuoteContent.innerHTML = `
-    <div class="smart-quote-question">
-      <h3>${stepData.title}</h3>
-      <p>${stepData.description}</p>
-    </div>
+    <div class="smart-quote-question"><h3>${stepData.title}</h3><p>${stepData.description}</p></div>
+    <div class="smart-quote-options">${options}</div>${quantityInput}`;
 
-    <div class="smart-quote-options">
-      ${options}
-    </div>
-  `;
+  smartQuoteContent.querySelectorAll('.smart-quote-option').forEach((button) => {
+    button.addEventListener('click', () => selectSmartQuoteOption(button.dataset.smartField, button.dataset.smartValue, button));
+  });
+}
 
-  smartQuoteContent
-    .querySelectorAll('.smart-quote-option')
-    .forEach((button) => {
-      button.addEventListener('click', () => {
-        selectSmartQuoteOption(
-          button.dataset.smartField,
-          button.dataset.smartValue,
-          button
-        );
-      });
-    });
+function getPlacementOptions() {
+  if (smartQuoteState.product === 'Hat') return ['Front of Hat', 'Side of Hat', 'Back of Hat', 'Other'];
+  if (smartQuoteState.product === 'Tumbler / Mug') return ['One Side', 'Both Sides', 'Wraparound', 'Other'];
+  if (smartQuoteState.product === 'Banner / Sign') return ['Front', 'Double-Sided', 'Other'];
+  if (smartQuoteState.product === 'Bag') return ['Front Center', 'Upper Corner', 'Pocket', 'Other'];
+  return ['Left Chest', 'Right Chest', 'Center Chest', 'Full Front', 'Full Back', 'Left Sleeve', 'Right Sleeve', 'Other'];
+}
+
+function renderPlacementStep() {
+  const options = getPlacementOptions().map((label) => `
+    <button class="smart-quote-option smart-quote-multi-option ${smartQuoteState.placements.includes(label) ? 'is-selected' : ''}"
+      type="button" data-placement="${label}"><span class="smart-quote-option-icon">${smartQuoteState.placements.includes(label) ? '✓' : '+'}</span><span>${label}</span></button>`).join('');
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question"><h3>Where should the design go?</h3><p>Select every placement you need.</p></div>
+    <div class="smart-quote-options">${options}</div>`;
+  smartQuoteContent.querySelectorAll('[data-placement]').forEach((button) => button.addEventListener('click', () => {
+    const value = button.dataset.placement;
+    smartQuoteState.placements = smartQuoteState.placements.includes(value)
+      ? smartQuoteState.placements.filter((item) => item !== value)
+      : [...smartQuoteState.placements, value];
+    renderPlacementStep();
+  }));
+}
+
+function renderSupplyStep() {
+  const choices = ['I need Imaginable Things to supply the items', 'I will provide my own items', 'Not sure yet'];
+  smartQuoteContent.innerHTML = `
+    <div class="smart-quote-question"><h3>Who will supply the items?</h3><p>This helps us prepare a more accurate quote.</p></div>
+    <div class="smart-quote-options">${choices.map((label) => `<button type="button" class="smart-quote-option ${smartQuoteState.garmentSource === label ? 'is-selected' : ''}" data-supply="${label}"><span class="smart-quote-option-icon">${label.startsWith('I need') ? '📦' : label.startsWith('I will') ? '🛍️' : '❓'}</span><span>${label}</span></button>`).join('')}</div>`;
+  smartQuoteContent.querySelectorAll('[data-supply]').forEach((button) => button.addEventListener('click', () => selectSmartQuoteOption('garmentSource', button.dataset.supply, button)));
 }
 
 function renderProjectDetailsStep() {
   smartQuoteContent.innerHTML = `
-    <div class="smart-quote-question">
-      <h3>Tell us more about your project</h3>
-      <p>Add your preferred deadline and any important details.</p>
-    </div>
-
+    <div class="smart-quote-question"><h3>Tell us more about your project</h3><p>Add your deadline, sizes, colors and any special instructions.</p></div>
     <div class="smart-quote-fields">
-      <label class="smart-quote-field">
-        <span>Needed by</span>
-        <input
-          type="date"
-          id="smart-deadline"
-          value="${smartQuoteState.deadline}"
-        >
-      </label>
-
-      <label class="smart-quote-field full">
-        <span>Project details *</span>
-        <textarea
-          id="smart-details"
-          placeholder="Colors, sizes, design size, thread colors and anything else we should know."
-        >${smartQuoteState.details}</textarea>
-      </label>
-    </div>
-  `;
+      <label class="smart-quote-field"><span>Needed by</span><input type="date" id="smart-deadline" value="${escapeSmartQuoteText(smartQuoteState.deadline)}"></label>
+      <label class="smart-quote-field full"><span>Project details *</span><textarea id="smart-details" placeholder="Sizes, garment colors, design size, thread or ink colors, and anything else we should know.">${escapeSmartQuoteText(smartQuoteState.details)}</textarea></label>
+    </div>`;
 }
 
-
-const SMART_QUOTE_ACCEPTED_EXTENSIONS = [
-  'png', 'jpg', 'jpeg', 'webp', 'pdf', 'svg', 'ai', 'eps',
-  'dst', 'emb', 'pes', 'exp', 'jef', 'vp3', 'hus', 'xxx'
-];
+const SMART_QUOTE_ACCEPTED_EXTENSIONS = ['png','jpg','jpeg','webp','pdf','svg','ai','eps','dst','emb','pes','exp','jef','vp3','hus','xxx'];
 const SMART_QUOTE_MAX_FILE_SIZE = 10 * 1024 * 1024;
+function getSmartQuoteFileExtension(fileName) { return String(fileName || '').split('.').pop().toLowerCase(); }
+function formatSmartQuoteFileSize(bytes) { if (!Number.isFinite(bytes) || bytes <= 0) return '0 KB'; const mb=bytes/(1024*1024); return mb>=1?`${mb.toFixed(mb>=10?0:1)} MB`:`${Math.max(1,Math.round(bytes/1024))} KB`; }
+function getSmartQuoteFileMessage(ext) { if(ext==='dst')return'Ready-to-stitch embroidery file received.'; if(ext==='emb')return'Hatch Embroidery project received.'; if(['pes','exp','jef','vp3','hus','xxx'].includes(ext))return'Embroidery machine file received for review.'; if(['png','jpg','jpeg','webp','svg'].includes(ext))return'Artwork received. This design may require digitizing.'; return'Artwork received for review.'; }
+function clearSmartQuoteFile(){ if(smartQuoteState.filePreviewUrl)URL.revokeObjectURL(smartQuoteState.filePreviewUrl); smartQuoteState.file=null; smartQuoteState.filePreviewUrl=''; renderUploadStep(); }
+function setSmartQuoteFile(file){ smartQuoteError.textContent=''; if(!file)return; const ext=getSmartQuoteFileExtension(file.name); if(!SMART_QUOTE_ACCEPTED_EXTENSIONS.includes(ext)){smartQuoteError.textContent='That file type is not accepted. Please upload artwork or an embroidery file.';return;} if(file.size>SMART_QUOTE_MAX_FILE_SIZE){smartQuoteError.textContent='The file is larger than 10 MB.';return;} if(smartQuoteState.filePreviewUrl)URL.revokeObjectURL(smartQuoteState.filePreviewUrl); smartQuoteState.file=file; smartQuoteState.filePreviewUrl=['png','jpg','jpeg','webp','svg'].includes(ext)?URL.createObjectURL(file):''; renderUploadStep(); }
+function renderUploadStep(){ const file=smartQuoteState.file; const ext=file?getSmartQuoteFileExtension(file.name):''; const preview=file&&smartQuoteState.filePreviewUrl?`<img class="smart-quote-file-preview" src="${smartQuoteState.filePreviewUrl}" alt="Preview of ${escapeSmartQuoteText(file.name)}">`:file?`<div class="smart-quote-file-icon">${ext==='pdf'?'PDF':ext.toUpperCase()}</div>`:''; smartQuoteContent.innerHTML=`<div class="smart-quote-question"><h3>Upload your artwork</h3><p>Optional. Images, artwork and common embroidery formats are accepted.</p></div>${file?`<div class="smart-quote-file-card">${preview}<div class="smart-quote-file-info"><strong>${escapeSmartQuoteText(file.name)}</strong><span>${ext.toUpperCase()} · ${formatSmartQuoteFileSize(file.size)}</span><p>${getSmartQuoteFileMessage(ext)}</p></div><div class="smart-quote-file-actions"><label class="button smart-quote-file-replace">Replace<input id="smart-file-replace" type="file" hidden></label><button class="button smart-quote-file-remove" id="smart-file-remove" type="button">Remove</button></div></div>`:`<label class="smart-quote-dropzone" id="smart-quote-dropzone"><input id="smart-file-input" type="file" hidden><span class="smart-quote-upload-icon">↑</span><strong>Choose a file or take a photo</strong><span>On a phone, you may select Camera or Photo Library</span><small>Maximum 10 MB</small></label>`}<p class="smart-quote-file-formats">Accepted: PNG, JPG, WEBP, PDF, SVG, AI, EPS, DST, EMB, PES, EXP, JEF, VP3, HUS and XXX.</p>`; const config=(input)=>{if(!input)return;input.setAttribute('accept',SMART_QUOTE_ACCEPTED_EXTENSIONS.map(ext=>`.${ext}`).join(','));input.addEventListener('change',()=>setSmartQuoteFile(input.files?.[0]));}; config(document.getElementById('smart-file-input')); config(document.getElementById('smart-file-replace')); document.getElementById('smart-file-remove')?.addEventListener('click',clearSmartQuoteFile); const dz=document.getElementById('smart-quote-dropzone'); if(dz){['dragenter','dragover'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.add('is-dragging');}));['dragleave','drop'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.remove('is-dragging');}));dz.addEventListener('drop',e=>setSmartQuoteFile(e.dataTransfer?.files?.[0]));}}
 
-function getSmartQuoteFileExtension(fileName) {
-  return String(fileName || '').split('.').pop().toLowerCase();
-}
+function renderContactStep(){ smartQuoteContent.innerHTML=`<div class="smart-quote-question"><h3>How can we contact you?</h3><p>Enter the information we should use for your quote.</p></div><div class="smart-quote-fields"><label class="smart-quote-field"><span>Your name *</span><input type="text" id="smart-name" autocomplete="name" value="${escapeSmartQuoteText(smartQuoteState.name)}"></label><label class="smart-quote-field"><span>Phone number *</span><input type="tel" id="smart-phone" autocomplete="tel" value="${escapeSmartQuoteText(smartQuoteState.phone)}"></label><label class="smart-quote-field full"><span>Email</span><input type="email" id="smart-email" autocomplete="email" value="${escapeSmartQuoteText(smartQuoteState.email)}"></label><label class="smart-quote-field full"><span>Preferred contact</span><select id="smart-contact-preference"><option ${smartQuoteState.contactPreference==='WhatsApp'?'selected':''}>WhatsApp</option><option ${smartQuoteState.contactPreference==='Text message'?'selected':''}>Text message</option><option ${smartQuoteState.contactPreference==='Phone call'?'selected':''}>Phone call</option><option ${smartQuoteState.contactPreference==='Email'?'selected':''}>Email</option></select></label></div>`; }
 
-function formatSmartQuoteFileSize(bytes) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return '0 KB';
-  const megabytes = bytes / (1024 * 1024);
-  return megabytes >= 1
-    ? `${megabytes.toFixed(megabytes >= 10 ? 0 : 1)} MB`
-    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
+function renderReviewStep(){ const rows=[['Product',smartQuoteState.product],['Method',smartQuoteState.method],['Quantity',smartQuoteState.exactQuantity||smartQuoteState.quantityRange],['Placements',smartQuoteState.placements.join(', ')],['Items supplied by',smartQuoteState.garmentSource],['Needed by',smartQuoteState.deadline||'Not specified'],['Name',smartQuoteState.name],['Phone',smartQuoteState.phone],['Email',smartQuoteState.email||'Not provided'],['Preferred contact',smartQuoteState.contactPreference],['Design file',smartQuoteState.file?`${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`:'Not provided'],['Details',smartQuoteState.details]]; smartQuoteContent.innerHTML=`<div class="smart-quote-question"><h3>Review your quote request</h3><p>Confirm the details, then open WhatsApp to send them.</p></div><div class="smart-quote-review">${rows.map(([l,v])=>`<div class="smart-quote-review-row"><strong>${l}</strong><span>${escapeSmartQuoteText(v)}</span></div>`).join('')}</div>`; }
 
-function getSmartQuoteFileMessage(extension) {
-  if (extension === 'dst') return 'Ready-to-stitch embroidery file received.';
-  if (extension === 'emb') return 'Hatch Embroidery project received.';
-  if (['pes', 'exp', 'jef', 'vp3', 'hus', 'xxx'].includes(extension)) {
-    return 'Embroidery machine file received for review.';
-  }
-  if (['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(extension)) {
-    return 'Artwork received. This design may require embroidery digitizing.';
-  }
-  return 'Artwork received for review.';
-}
+function saveCurrentSmartQuoteStep(){ if(smartQuoteState.step===2)smartQuoteState.exactQuantity=document.getElementById('smart-exact-quantity')?.value.trim()||''; if(smartQuoteState.step===5){smartQuoteState.deadline=document.getElementById('smart-deadline')?.value||'';smartQuoteState.details=document.getElementById('smart-details')?.value.trim()||'';} if(smartQuoteState.step===7){smartQuoteState.name=document.getElementById('smart-name')?.value.trim()||'';smartQuoteState.phone=document.getElementById('smart-phone')?.value.trim()||'';smartQuoteState.email=document.getElementById('smart-email')?.value.trim()||'';smartQuoteState.contactPreference=document.getElementById('smart-contact-preference')?.value||'WhatsApp';}}
+function validateSmartQuoteStep(){ smartQuoteError.textContent=''; if(smartQuoteState.step<=2){const data=smartQuoteSteps[smartQuoteState.step];if(!smartQuoteState[data.field]){smartQuoteError.textContent='Please select an option to continue.';return false;}} if(smartQuoteState.step===3&&!smartQuoteState.placements.length){smartQuoteError.textContent='Please select at least one placement.';return false;} if(smartQuoteState.step===4&&!smartQuoteState.garmentSource){smartQuoteError.textContent='Please tell us who will supply the items.';return false;} if(smartQuoteState.step===5&&!smartQuoteState.details){smartQuoteError.textContent='Please tell us a little about your project.';return false;} if(smartQuoteState.step===7&&(!smartQuoteState.name||!smartQuoteState.phone)){smartQuoteError.textContent='Please enter your name and phone number.';return false;} return true; }
 
-function clearSmartQuoteFile() {
-  if (smartQuoteState.filePreviewUrl) {
-    URL.revokeObjectURL(smartQuoteState.filePreviewUrl);
-  }
-  smartQuoteState.file = null;
-  smartQuoteState.filePreviewUrl = '';
-  renderUploadStep();
-}
+function renderSmartQuoteStep(){ if(!smartQuoteContent)return; const total=9, visible=smartQuoteState.step+1; smartQuoteStepLabel.textContent=`Step ${visible} of ${total}`; smartQuoteProgressBar.style.width=`${visible/total*100}%`; smartQuoteBack.disabled=smartQuoteState.step===0; smartQuoteNext.textContent=smartQuoteState.step===total-1?'Open WhatsApp':'Next'; smartQuoteError.textContent=''; if(smartQuoteState.step<=2)renderOptionStep(smartQuoteSteps[smartQuoteState.step]); else if(smartQuoteState.step===3)renderPlacementStep(); else if(smartQuoteState.step===4)renderSupplyStep(); else if(smartQuoteState.step===5)renderProjectDetailsStep(); else if(smartQuoteState.step===6)renderUploadStep(); else if(smartQuoteState.step===7)renderContactStep(); else renderReviewStep(); }
 
-function setSmartQuoteFile(file) {
-  smartQuoteError.textContent = '';
-  if (!file) return;
+function sendSmartQuoteToWhatsApp(){ const message=['Hello Imaginable Things! I would like to request a quote.','',`Name: ${smartQuoteState.name}`,`Phone: ${smartQuoteState.phone}`,smartQuoteState.email?`Email: ${smartQuoteState.email}`:'',`Preferred contact: ${smartQuoteState.contactPreference}`,'',`Product: ${smartQuoteState.product}`,`Personalization method: ${smartQuoteState.method}`,`Quantity: ${smartQuoteState.exactQuantity||smartQuoteState.quantityRange}`,`Design placement(s): ${smartQuoteState.placements.join(', ')}`,`Items supplied by: ${smartQuoteState.garmentSource}`,smartQuoteState.deadline?`Needed by: ${smartQuoteState.deadline}`:'',smartQuoteState.file?`Selected file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`:'',smartQuoteState.file?'Please attach this same file to the WhatsApp conversation.':'','', 'Project details:',smartQuoteState.details].filter(Boolean).join('\n'); const number=siteSettings?.quote_form?.whatsapp_number||'18603369202'; window.open(`https://wa.me/${String(number).replace(/\D/g,'')}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer'); }
 
-  const extension = getSmartQuoteFileExtension(file.name);
-  if (!SMART_QUOTE_ACCEPTED_EXTENSIONS.includes(extension)) {
-    smartQuoteError.textContent =
-      'That file type is not accepted. Please upload artwork or an embroidery file.';
-    return;
-  }
+document.querySelectorAll('a[href="#quote"]').forEach((link)=>link.addEventListener('click',(event)=>{event.preventDefault(); const reference=link.dataset.projectInterest||''; if(reference){smartQuoteState.details=reference;} openSmartQuote();}));
+smartQuoteNext?.addEventListener('click',()=>{saveCurrentSmartQuoteStep();if(!validateSmartQuoteStep())return;if(smartQuoteState.step===8){sendSmartQuoteToWhatsApp();return;}smartQuoteState.step+=1;renderSmartQuoteStep();});
+smartQuoteBack?.addEventListener('click',()=>{saveCurrentSmartQuoteStep();if(smartQuoteState.step===0)return;smartQuoteState.step-=1;renderSmartQuoteStep();});
+smartQuoteClose?.addEventListener('click',closeSmartQuote);
+document.querySelectorAll('[data-close-smart-quote]').forEach((el)=>el.addEventListener('click',closeSmartQuote));
+document.addEventListener('keydown',(event)=>{if(event.key==='Escape'&&smartQuoteModal?.classList.contains('is-open'))closeSmartQuote();});
 
-  if (file.size > SMART_QUOTE_MAX_FILE_SIZE) {
-    smartQuoteError.textContent = 'The file is larger than 10 MB.';
-    return;
-  }
-
-  if (smartQuoteState.filePreviewUrl) {
-    URL.revokeObjectURL(smartQuoteState.filePreviewUrl);
-  }
-
-  smartQuoteState.file = file;
-  smartQuoteState.filePreviewUrl = ['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(extension)
-    ? URL.createObjectURL(file)
-    : '';
-
-  renderUploadStep();
-}
-
-function renderUploadStep() {
-  const file = smartQuoteState.file;
-  const extension = file ? getSmartQuoteFileExtension(file.name) : '';
-  const preview = file && smartQuoteState.filePreviewUrl
-    ? `<img class="smart-quote-file-preview" src="${smartQuoteState.filePreviewUrl}" alt="Preview of ${escapeSmartQuoteText(file.name)}">`
-    : file
-      ? `<div class="smart-quote-file-icon" aria-hidden="true">${extension === 'pdf' ? 'PDF' : extension.toUpperCase()}</div>`
-      : '';
-
-  smartQuoteContent.innerHTML = `
-    <div class="smart-quote-question">
-      <h3>Upload your design or embroidery file</h3>
-      <p>This step is optional. You can also attach the file later in WhatsApp.</p>
-    </div>
-
-    ${file ? `
-      <div class="smart-quote-file-card">
-        ${preview}
-        <div class="smart-quote-file-info">
-          <strong>${escapeSmartQuoteText(file.name)}</strong>
-          <span>${extension.toUpperCase()} · ${formatSmartQuoteFileSize(file.size)}</span>
-          <p>${getSmartQuoteFileMessage(extension)}</p>
-        </div>
-        <div class="smart-quote-file-actions">
-          <label class="button smart-quote-file-replace">
-            Replace
-            <input id="smart-file-replace" type="file" hidden>
-          </label>
-          <button class="button smart-quote-file-remove" id="smart-file-remove" type="button">Remove</button>
-        </div>
-      </div>
-    ` : `
-      <label class="smart-quote-dropzone" id="smart-quote-dropzone">
-        <input id="smart-file-input" type="file" hidden>
-        <span class="smart-quote-upload-icon" aria-hidden="true">↑</span>
-        <strong>Drag and drop your file here</strong>
-        <span>or click to browse</span>
-        <small>Maximum 10 MB</small>
-      </label>
-    `}
-
-    <p class="smart-quote-file-formats">
-      Accepted: PNG, JPG, JPEG, WEBP, PDF, SVG, AI, EPS, DST, EMB, PES, EXP, JEF, VP3, HUS and XXX.
-    </p>
-  `;
-
-  const configureInput = (input) => {
-    if (!input) return;
-    input.setAttribute('accept', SMART_QUOTE_ACCEPTED_EXTENSIONS.map((ext) => `.${ext}`).join(','));
-    input.addEventListener('change', () => setSmartQuoteFile(input.files?.[0]));
-  };
-
-  configureInput(document.getElementById('smart-file-input'));
-  configureInput(document.getElementById('smart-file-replace'));
-  document.getElementById('smart-file-remove')?.addEventListener('click', clearSmartQuoteFile);
-
-  const dropzone = document.getElementById('smart-quote-dropzone');
-  if (dropzone) {
-    ['dragenter', 'dragover'].forEach((eventName) => {
-      dropzone.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        dropzone.classList.add('is-dragging');
-      });
-    });
-    ['dragleave', 'drop'].forEach((eventName) => {
-      dropzone.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        dropzone.classList.remove('is-dragging');
-      });
-    });
-    dropzone.addEventListener('drop', (event) => {
-      setSmartQuoteFile(event.dataTransfer?.files?.[0]);
-    });
-  }
-}
-
-function renderContactStep() {
-  smartQuoteContent.innerHTML = `
-    <div class="smart-quote-question">
-      <h3>How can we contact you?</h3>
-      <p>Enter the information we should use for your quote.</p>
-    </div>
-
-    <div class="smart-quote-fields">
-      <label class="smart-quote-field">
-        <span>Your name *</span>
-        <input
-          type="text"
-          id="smart-name"
-          autocomplete="name"
-          value="${smartQuoteState.name}"
-        >
-      </label>
-
-      <label class="smart-quote-field">
-        <span>Phone number *</span>
-        <input
-          type="tel"
-          id="smart-phone"
-          autocomplete="tel"
-          value="${smartQuoteState.phone}"
-        >
-      </label>
-
-      <label class="smart-quote-field full">
-        <span>Email</span>
-        <input
-          type="email"
-          id="smart-email"
-          autocomplete="email"
-          value="${smartQuoteState.email}"
-        >
-      </label>
-    </div>
-  `;
-}
-
-function escapeSmartQuoteText(value) {
-  return String(value || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-function renderReviewStep() {
-  const reviewItems = [
-    ['Product', smartQuoteState.product],
-    ['Method', smartQuoteState.method],
-    ['Quantity', smartQuoteState.quantity],
-    ['Placement', smartQuoteState.placement],
-    ['Needed by', smartQuoteState.deadline || 'Not specified'],
-    ['Name', smartQuoteState.name],
-    ['Phone', smartQuoteState.phone],
-    ['Email', smartQuoteState.email || 'Not provided'],
-    ['Design file', smartQuoteState.file
-      ? `${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`
-      : 'Not provided'],
-    ['Details', smartQuoteState.details]
-  ];
-
-  smartQuoteContent.innerHTML = `
-    <div class="smart-quote-question">
-      <h3>Review your quote request</h3>
-      <p>Confirm that the information below is correct.</p>
-    </div>
-
-    <div class="smart-quote-review">
-      ${reviewItems
-        .map(
-          ([label, value]) => `
-            <div class="smart-quote-review-row">
-              <strong>${label}</strong>
-              <span>${escapeSmartQuoteText(value)}</span>
-            </div>
-          `
-        )
-        .join('')}
-    </div>
-  `;
-}
-
-function saveCurrentSmartQuoteStep() {
-  if (smartQuoteState.step === 4) {
-    smartQuoteState.deadline =
-      document.getElementById('smart-deadline')?.value || '';
-
-    smartQuoteState.details =
-      document.getElementById('smart-details')?.value.trim() || '';
-  }
-
-  if (smartQuoteState.step === 6) {
-    smartQuoteState.name =
-      document.getElementById('smart-name')?.value.trim() || '';
-
-    smartQuoteState.phone =
-      document.getElementById('smart-phone')?.value.trim() || '';
-
-    smartQuoteState.email =
-      document.getElementById('smart-email')?.value.trim() || '';
-  }
-}
-
-function validateSmartQuoteStep() {
-  smartQuoteError.textContent = '';
-
-  if (smartQuoteState.step <= 3) {
-    const stepData = smartQuoteSteps[smartQuoteState.step];
-
-    if (!smartQuoteState[stepData.field]) {
-      smartQuoteError.textContent = 'Please select an option to continue.';
-      return false;
-    }
-  }
-
-  if (smartQuoteState.step === 4 && !smartQuoteState.details) {
-    smartQuoteError.textContent =
-      'Please tell us a little about your project.';
-    return false;
-  }
-
-  if (
-    smartQuoteState.step === 6 &&
-    (!smartQuoteState.name || !smartQuoteState.phone)
-  ) {
-    smartQuoteError.textContent =
-      'Please enter your name and phone number.';
-    return false;
-  }
-
-  return true;
-}
-
-function renderSmartQuoteStep() {
-  if (!smartQuoteContent) return;
-
-  const totalSteps = 8;
-  const visibleStep = smartQuoteState.step + 1;
-
-  smartQuoteStepLabel.textContent =
-    `Step ${visibleStep} of ${totalSteps}`;
-
-  smartQuoteProgressBar.style.width =
-    `${(visibleStep / totalSteps) * 100}%`;
-
-  smartQuoteBack.disabled = smartQuoteState.step === 0;
-
-  smartQuoteNext.textContent =
-    smartQuoteState.step === totalSteps - 1
-      ? 'Open WhatsApp'
-      : 'Next';
-
-  smartQuoteError.textContent = '';
-
-  if (smartQuoteState.step <= 3) {
-    renderOptionStep(smartQuoteSteps[smartQuoteState.step]);
-  } else if (smartQuoteState.step === 4) {
-    renderProjectDetailsStep();
-  } else if (smartQuoteState.step === 5) {
-    renderUploadStep();
-  } else if (smartQuoteState.step === 6) {
-    renderContactStep();
-  } else {
-    renderReviewStep();
-  }
-}
-
-function sendSmartQuoteToWhatsApp() {
-  const message = [
-    'Hello Imaginable Things! I would like to request a quote.',
-    '',
-    `Name: ${smartQuoteState.name}`,
-    `Phone: ${smartQuoteState.phone}`,
-    smartQuoteState.email
-      ? `Email: ${smartQuoteState.email}`
-      : '',
-    '',
-    `Product: ${smartQuoteState.product}`,
-    `Personalization method: ${smartQuoteState.method}`,
-    `Estimated quantity: ${smartQuoteState.quantity}`,
-    `Design placement: ${smartQuoteState.placement}`,
-    smartQuoteState.deadline
-      ? `Needed by: ${smartQuoteState.deadline}`
-      : '',
-    smartQuoteState.file
-      ? `Selected file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`
-      : '',
-    smartQuoteState.file
-      ? 'Please attach this same file to the WhatsApp conversation.'
-      : '',
-    '',
-    'Project details:',
-    smartQuoteState.details
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  const number =
-    siteSettings?.quote_form?.whatsapp_number || '18603369202';
-
-  const cleanNumber = String(number).replace(/\D/g, '');
-
-  const url =
-    `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
-
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-document
-  .querySelectorAll('a[href="#quote"]')
-  .forEach((quoteLink) => {
-    quoteLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      openSmartQuote();
-    });
-  });
-
-smartQuoteNext?.addEventListener('click', () => {
-  saveCurrentSmartQuoteStep();
-
-  if (!validateSmartQuoteStep()) return;
-
-  if (smartQuoteState.step === 7) {
-    sendSmartQuoteToWhatsApp();
-    return;
-  }
-
-  smartQuoteState.step += 1;
-  renderSmartQuoteStep();
-});
-
-smartQuoteBack?.addEventListener('click', () => {
-  saveCurrentSmartQuoteStep();
-
-  if (smartQuoteState.step === 0) return;
-
-  smartQuoteState.step -= 1;
-  renderSmartQuoteStep();
-});
-
-smartQuoteClose?.addEventListener('click', closeSmartQuote);
-
-document
-  .querySelectorAll('[data-close-smart-quote]')
-  .forEach((element) => {
-    element.addEventListener('click', closeSmartQuote);
-  });
-
-document.addEventListener('keydown', (event) => {
-  if (
-    event.key === 'Escape' &&
-    smartQuoteModal?.classList.contains('is-open')
-  ) {
-    closeSmartQuote();
-  }
-});
 loadServices();
 loadSiteSettings();
 

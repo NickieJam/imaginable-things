@@ -1419,3 +1419,14 @@ body.smart-quote-open {
 @media (max-width: 620px) {
   .project-meta { grid-template-columns: 1fr; }
 }
+
+/* Version 5.2 — Smart Quote 2.0 */
+.smart-quote-inline-field { display:block; max-width:420px; margin:1.2rem auto 0; }
+.smart-quote-inline-field input { width:100%; }
+.smart-quote-multi-option .smart-quote-option-icon { font-weight:800; }
+.smart-quote-field select { width:100%; min-height:52px; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:#111; color:#fff; padding:0 14px; font:inherit; }
+@media (max-width:640px){
+  .smart-quote-options { grid-template-columns:1fr 1fr; }
+  .smart-quote-option { min-height:92px; padding:14px 10px; }
+  .smart-quote-option span:last-child { font-size:.88rem; }
+}
