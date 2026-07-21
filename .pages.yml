@@ -1,6 +1,6 @@
 media:
   - name: gallery
-    label: Gallery Images
+    label: Portfolio Photos
     input: assets/uploads
     output: /assets/uploads
     rename: safe
@@ -62,13 +62,14 @@ content:
             label: Featured service
             type: boolean
           - name: visible
-            label: Show on website
+            label: Published on website
             type: boolean
+            default: true
           - name: order
-            label: Display order
+            label: Display position
             type: number
   - name: projects
-    label: Portfolio Projects
+    label: Portfolio Manager
     type: file
     path: data/projects.json
     fields:
@@ -78,8 +79,10 @@ content:
         list: true
         fields:
           - name: title
-            label: Project title
+            label: Project name
             type: string
+            required: true
+            description: "Example: Custom Harley-Davidson Jacket"
           - name: category
             label: Category
             type: select
@@ -88,37 +91,49 @@ content:
                 - name: embroidery
                   label: Embroidery
                 - name: apparel
-                  label: Apparel
+                  label: Custom Apparel
+                - name: hats
+                  label: Hats
+                - name: dtf
+                  label: DTF Printing
+                - name: sublimation
+                  label: Sublimation
                 - name: drinkware
                   label: Drinkware
                 - name: accessories
-                  label: Accessories
+                  label: Accessories & Gifts
+                - name: banners-vinyl
+                  label: Banners & Vinyl
           - name: image
-            label: Main image
+            label: Cover photo
             type: image
+            required: true
+            description: This is the first photo customers will see.
             options:
               media: gallery
           - name: description
             label: Project description
             type: text
           - name: gallery
-            label: Additional project images
+            label: Gallery photos
             type: image
             list: true
+            description: Add close-ups, back views, sleeves, or other angles.
             options:
               media: gallery
           - name: services
-            label: Services or techniques
+            label: Services used
             type: string
             list: true
           - name: featured
-            label: Featured project
+            label: Feature on website
             type: boolean
           - name: visible
-            label: Show on website
+            label: Published on website
             type: boolean
+            default: true
           - name: order
-            label: Display order
+            label: Display position
             type: number
 
 
@@ -236,8 +251,9 @@ content:
             label: Testimonial
             type: text
           - name: visible
-            label: Show on website
+            label: Published on website
             type: boolean
+            default: true
 
 
   - name: site
