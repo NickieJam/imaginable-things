@@ -22,11 +22,12 @@
 
   async function loadDashboard() {
     try {
-      const [projectData, serviceData, testimonialData, siteData] = await Promise.all([
+      const [projectData, serviceData, testimonialData, siteData, jobData] = await Promise.all([
         readJson("../data/projects.json"),
         readJson("../data/services.json"),
         readJson("../data/testimonials.json"),
-        readJson("../data/site.json")
+        readJson("../data/site.json"),
+        readJson("../data/jobs.json")
       ]);
 
       const projects = activeItems(projectData.projects);
@@ -34,7 +35,9 @@
       const testimonials = activeItems(testimonialData.testimonials);
       const faqs = activeItems(siteData.faqs);
       const business = siteData.business || {};
+      const jobs = activeItems(jobData.jobs).filter((job) => !["delivered", "cancelled"].includes(job.status));
 
+      text("activeJobCount", jobs.length);
       text("projectCount", projects.length);
       text("featuredCount", projects.filter((project) => project.featured === true).length);
       text("serviceCount", services.length);
@@ -52,7 +55,7 @@
     } catch (error) {
       console.error("Dashboard error:", error);
       document.getElementById("stats")?.classList.remove("loading");
-      ["projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
+      ["activeJobCount", "projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
       setHealth("whatsapp", false, "Could not read site settings");
       setHealth("email", false, "Could not read site settings");
       setHealth("logo", false, "Could not read site settings");

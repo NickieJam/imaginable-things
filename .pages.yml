@@ -196,6 +196,114 @@ content:
             type: number
 
 
+  - name: jobs
+    label: Job Tracker
+    type: file
+    path: data/jobs.json
+    fields:
+      - name: jobs
+        label: Jobs
+        type: object
+        list: true
+        fields:
+          - name: job_number
+            label: Job number
+            type: string
+            required: true
+            description: "Example: IT-2026-001"
+          - name: client
+            label: Client name
+            type: string
+            required: true
+          - name: company
+            label: Company or organization
+            type: string
+          - name: product
+            label: Product
+            type: string
+            required: true
+            description: "Example: Richardson 112 hats"
+          - name: quantity
+            label: Quantity
+            type: number
+          - name: technique
+            label: Technique
+            type: select
+            options:
+              values:
+                - name: Embroidery
+                  label: Embroidery
+                - name: DTF Printing
+                  label: DTF Printing
+                - name: Sublimation
+                  label: Sublimation
+                - name: Vinyl
+                  label: Vinyl
+                - name: Custom Design
+                  label: Custom Design
+                - name: Mixed Techniques
+                  label: Mixed Techniques
+          - name: status
+            label: Job status
+            type: select
+            required: true
+            options:
+              values:
+                - name: quote
+                  label: Quote / New request
+                - name: approved
+                  label: Approved
+                - name: waiting-materials
+                  label: Waiting for materials
+                - name: production
+                  label: In production
+                - name: quality-check
+                  label: Quality check
+                - name: ready
+                  label: Ready for pickup or delivery
+                - name: delivered
+                  label: Delivered
+                - name: cancelled
+                  label: Cancelled
+          - name: priority
+            label: Priority
+            type: select
+            options:
+              values:
+                - name: low
+                  label: Low
+                - name: normal
+                  label: Normal
+                - name: high
+                  label: High
+                - name: urgent
+                  label: Urgent
+          - name: due_date
+            label: Due date
+            type: date
+          - name: contact
+            label: Phone or email
+            type: string
+          - name: notes
+            label: Internal notes
+            type: text
+          - name: deposit_paid
+            label: Deposit paid
+            type: boolean
+          - name: total
+            label: Job total
+            type: number
+          - name: balance_due
+            label: Balance due
+            type: number
+          - name: visible
+            label: Active in Job Tracker
+            type: boolean
+            default: true
+          - name: created_date
+            label: Created date
+            type: date
+
   - name: homepage
     label: Homepage Content
     type: file
