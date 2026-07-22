@@ -22,12 +22,13 @@
 
   async function loadDashboard() {
     try {
-      const [projectData, serviceData, testimonialData, siteData, jobData] = await Promise.all([
+      const [projectData, serviceData, testimonialData, siteData, jobData, leadData] = await Promise.all([
         readJson("../data/projects.json"),
         readJson("../data/services.json"),
         readJson("../data/testimonials.json"),
         readJson("../data/site.json"),
-        readJson("../data/jobs.json")
+        readJson("../data/jobs.json"),
+        readJson("../data/leads.json")
       ]);
 
       const projects = activeItems(projectData.projects);
@@ -36,7 +37,9 @@
       const faqs = activeItems(siteData.faqs);
       const business = siteData.business || {};
       const jobs = activeItems(jobData.jobs).filter((job) => !["delivered", "cancelled"].includes(job.status));
+      const leads = activeItems(leadData.leads).filter((lead) => !["won", "lost"].includes(lead.status));
 
+      text("activeLeadCount", leads.length);
       text("activeJobCount", jobs.length);
       text("projectCount", projects.length);
       text("featuredCount", projects.filter((project) => project.featured === true).length);
@@ -55,7 +58,7 @@
     } catch (error) {
       console.error("Dashboard error:", error);
       document.getElementById("stats")?.classList.remove("loading");
-      ["activeJobCount", "projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
+      ["activeLeadCount", "activeJobCount", "projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
       setHealth("whatsapp", false, "Could not read site settings");
       setHealth("email", false, "Could not read site settings");
       setHealth("logo", false, "Could not read site settings");

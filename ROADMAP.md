@@ -8,21 +8,22 @@
 - 6.2 Content Manager
 - 6.3 Imaginable OS Dashboard
 - 6.4 Job Tracker Foundation
+- 6.5 Lead Inbox Foundation
 
 ## Next recommended sprint
 
-### 6.5 Job Tracker Workflow
+### 6.6 Lead-to-Job Workflow
 
-- Faster status editing workflow
-- Overdue and due-soon alerts
-- Completed-job archive
-- Client history foundation
-- Optional WhatsApp status message templates
+- Conversion checklist from won lead to job
+- Follow-up alerts for overdue leads
+- Quote-request capture strategy
+- Customer record foundation
+- WhatsApp and email response templates
 
 ## Future modules
 
 - Customers
-- Quote inbox
+- Automatic quote inbox
 - Production calendar
 - Analytics
 - Marketing and SEO

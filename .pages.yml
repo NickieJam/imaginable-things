@@ -196,6 +196,129 @@ content:
             type: number
 
 
+  - name: leads
+    label: Lead Inbox
+    type: file
+    path: data/leads.json
+    fields:
+      - name: leads
+        label: Leads
+        type: object
+        list: true
+        fields:
+          - name: lead_number
+            label: Lead number
+            type: string
+            required: true
+            description: "Example: LEAD-2026-001"
+          - name: name
+            label: Customer name
+            type: string
+            required: true
+          - name: company
+            label: Company or organization
+            type: string
+          - name: phone
+            label: Phone
+            type: string
+          - name: email
+            label: Email
+            type: string
+          - name: preferred_contact
+            label: Preferred contact
+            type: select
+            options:
+              values:
+                - name: whatsapp
+                  label: WhatsApp
+                - name: phone
+                  label: Phone call
+                - name: text
+                  label: Text message
+                - name: email
+                  label: Email
+          - name: service
+            label: Service requested
+            type: select
+            options:
+              values:
+                - name: Embroidery
+                  label: Embroidery
+                - name: DTF Printing
+                  label: DTF Printing
+                - name: Sublimation
+                  label: Sublimation
+                - name: Vinyl
+                  label: Vinyl
+                - name: Custom Apparel
+                  label: Custom Apparel
+                - name: Personalized Gifts
+                  label: Personalized Gifts
+                - name: Other
+                  label: Other
+          - name: product
+            label: Product or item
+            type: string
+          - name: quantity
+            label: Estimated quantity
+            type: number
+          - name: status
+            label: Lead status
+            type: select
+            required: true
+            options:
+              values:
+                - name: new
+                  label: New
+                - name: contacted
+                  label: Contacted
+                - name: waiting
+                  label: Waiting for customer
+                - name: quoted
+                  label: Quote sent
+                - name: won
+                  label: Won / Ready to convert
+                - name: lost
+                  label: Lost / Not moving forward
+          - name: source
+            label: Lead source
+            type: select
+            options:
+              values:
+                - name: website
+                  label: Website
+                - name: whatsapp
+                  label: WhatsApp
+                - name: instagram
+                  label: Instagram
+                - name: facebook
+                  label: Facebook
+                - name: referral
+                  label: Referral
+                - name: repeat-customer
+                  label: Repeat customer
+                - name: other
+                  label: Other
+          - name: requested_date
+            label: Date received
+            type: date
+          - name: needed_by
+            label: Customer needs it by
+            type: date
+          - name: estimated_value
+            label: Estimated value
+            type: number
+          - name: notes
+            label: Internal notes
+            type: text
+          - name: next_follow_up
+            label: Next follow-up date
+            type: date
+          - name: visible
+            label: Active in Lead Inbox
+            type: boolean
+            default: true
+
   - name: jobs
     label: Job Tracker
     type: file
