@@ -261,6 +261,105 @@ content:
           - name: paragraph_3
             label: Paragraph 3
             type: text
+      - name: featured_section
+        label: Featured Projects Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title
+            label: Main title
+            type: string
+          - name: description
+            label: Description
+            type: text
+      - name: services_section
+        label: Services Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Title line 1
+            type: string
+          - name: title_line_2
+            label: Highlighted title line
+            type: string
+      - name: portfolio_section
+        label: Portfolio Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Title line 1
+            type: string
+          - name: title_line_2
+            label: Highlighted title line
+            type: string
+      - name: testimonials_section
+        label: Testimonials Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Title line 1
+            type: string
+          - name: title_line_2
+            label: Highlighted title line
+            type: string
+      - name: process
+        label: How It Works Section
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Title line 1
+            type: string
+          - name: title_line_2
+            label: Highlighted title line
+            type: string
+          - name: steps
+            label: Steps
+            type: object
+            list: true
+            fields:
+              - name: number
+                label: Step number
+                type: string
+              - name: title
+                label: Step title
+                type: string
+              - name: description
+                label: Step description
+                type: text
+      - name: faq_section
+        label: FAQ Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
+          - name: title_line_1
+            label: Title line 1
+            type: string
+          - name: title_line_2
+            label: Highlighted title line
+            type: string
+      - name: quote_section
+        label: Quote Section Heading
+        type: object
+        fields:
+          - name: eyebrow
+            label: Small headline
+            type: string
       - name: contact
         label: Contact Section
         type: object
@@ -309,6 +408,19 @@ content:
           - name: quote
             label: Testimonial
             type: text
+          - name: photo
+            label: Customer photo or logo
+            type: image
+            description: Optional.
+            options:
+              media: gallery
+          - name: rating
+            label: Star rating
+            type: number
+            default: 5
+          - name: order
+            label: Display position
+            type: number
           - name: visible
             label: Published on website
             type: boolean
@@ -419,6 +531,13 @@ content:
           - name: answer
             label: Answer
             type: text
+          - name: visible
+            label: Published on website
+            type: boolean
+            default: true
+          - name: order
+            label: Display position
+            type: number
 
 settings:
   content:

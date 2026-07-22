@@ -5,30 +5,40 @@
       "category": "embroidery",
       "image": "/assets/images/embroider-chargers.webp",
       "description": "Custom school logo embroidery.",
-      "gallery": [
-        "/assets/uploads/img9572.jpeg",
-        "/assets/uploads/img9571.jpeg"
-      ],
+      "featured": true,
+      "gallery": [],
       "services": [
         "Embroidery",
         "Custom Design"
       ],
-      "featured": true,
       "visible": true,
-      "order": 1
+      "order": 1,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Business Logo Embroidery",
       "category": "embroidery",
       "image": "/assets/images/embroider-matt.webp",
       "description": "Professional business logo stitched with precision.",
+      "featured": true,
+      "gallery": [],
       "services": [
         "Embroidery",
         "Custom Design"
       ],
-      "featured": true,
       "visible": true,
-      "order": 2
+      "order": 2,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Motorcycle Embroidery",
@@ -36,8 +46,16 @@
       "image": "/assets/images/embroider-harley.webp",
       "description": "Detailed custom motorcycle embroidery.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 3
+      "order": 3,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Educator Embroidery",
@@ -45,8 +63,16 @@
       "image": "/assets/images/embroider-school.webp",
       "description": "Personalized educator apparel.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 4
+      "order": 4,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Automotive Business Embroidery",
@@ -54,21 +80,36 @@
       "image": "/assets/images/embroider-auto.webp",
       "description": "Branded apparel for an automotive business.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 5
+      "order": 5,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Custom Printed Shirt",
       "category": "apparel",
       "image": "/assets/images/apparel-shirt.webp",
       "description": "Personalized shirt design.",
+      "featured": true,
+      "gallery": [],
       "services": [
         "Apparel",
         "Custom Design"
       ],
-      "featured": true,
       "visible": true,
-      "order": 6
+      "order": 6,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Children's Custom Shirt",
@@ -76,8 +117,16 @@
       "image": "/assets/images/apparel-kids1.webp",
       "description": "Custom apparel for kids.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 7
+      "order": 7,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Children's Event Shirt",
@@ -85,8 +134,16 @@
       "image": "/assets/images/apparel-kids2.webp",
       "description": "Personalized children's event shirt.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 8
+      "order": 8,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Puerto Rico Mug",
@@ -94,8 +151,16 @@
       "image": "/assets/images/drinkware-puerto-rico.webp",
       "description": "Full-color personalized mug.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 9
+      "order": 9,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Character Mug",
@@ -103,21 +168,36 @@
       "image": "/assets/images/drinkware-stitch.webp",
       "description": "Custom character drinkware.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 10
+      "order": 10,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Barbershop Mug",
       "category": "drinkware",
       "image": "/assets/images/drinkware-barber.webp",
       "description": "Branded drinkware for a barbershop.",
+      "featured": true,
+      "gallery": [],
       "services": [
         "Drinkware",
         "Custom Design"
       ],
-      "featured": true,
       "visible": true,
-      "order": 11
+      "order": 11,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Personalized Mug",
@@ -125,8 +205,16 @@
       "image": "/assets/images/drinkware-personal.webp",
       "description": "Personalized gift mug.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 12
+      "order": 12,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
       "title": "Custom Keychain",
@@ -134,20 +222,33 @@
       "image": "/assets/images/accessory-keychain.webp",
       "description": "Personalized accessory and keepsake.",
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 13
+      "order": 13,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     },
     {
-      "title": "Iphone and Android watch bracelet",
+      "title": "Photo Accessory",
       "category": "accessories",
       "image": "/assets/images/accessory-zipper.webp",
       "description": "Custom photo accessory.",
-      "services": [
-        "Sublimation"
-      ],
       "featured": false,
+      "gallery": [],
+      "services": [],
       "visible": true,
-      "order": 14
+      "order": 14,
+      "client": "",
+      "item_type": "",
+      "technique": "",
+      "production_time": "",
+      "completed_date": "",
+      "video": ""
     }
   ]
 }

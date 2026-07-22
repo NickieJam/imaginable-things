@@ -1430,3 +1430,9 @@ body.smart-quote-open {
   .smart-quote-option { min-height:92px; padding:14px 10px; }
   .smart-quote-option span:last-child { font-size:.88rem; }
 }
+
+/* Version 6.2 — mobile content manager */
+.testimonial-rating{font-size:1rem;letter-spacing:.15em;margin-bottom:1rem}
+.testimonial-person{display:flex;align-items:center;gap:.85rem;margin-top:1.25rem}
+.testimonial-person>div{display:flex;flex-direction:column;gap:.15rem}
+.testimonial-photo{width:48px;height:48px;object-fit:cover;border-radius:50%;flex:0 0 48px}

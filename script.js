@@ -507,6 +507,37 @@ async function loadHomepageContent() {
     setText('about-p2', data.about?.paragraph_2);
     setText('about-p3', data.about?.paragraph_3);
 
+    setText('featured-eyebrow', data.featured_section?.eyebrow);
+    setText('featured-title', data.featured_section?.title);
+    setText('featured-description', data.featured_section?.description);
+    setText('services-eyebrow', data.services_section?.eyebrow);
+    setText('services-title-1', data.services_section?.title_line_1);
+    setText('services-title-2', data.services_section?.title_line_2);
+    setText('portfolio-eyebrow', data.portfolio_section?.eyebrow);
+    setText('portfolio-title-1', data.portfolio_section?.title_line_1);
+    setText('portfolio-title-2', data.portfolio_section?.title_line_2);
+    setText('testimonials-eyebrow', data.testimonials_section?.eyebrow);
+    setText('testimonials-title-1', data.testimonials_section?.title_line_1);
+    setText('testimonials-title-2', data.testimonials_section?.title_line_2);
+    setText('process-eyebrow', data.process?.eyebrow);
+    setText('process-title-1', data.process?.title_line_1);
+    setText('process-title-2', data.process?.title_line_2);
+    setText('faq-eyebrow', data.faq_section?.eyebrow);
+    setText('faq-title-1', data.faq_section?.title_line_1);
+    setText('faq-title-2', data.faq_section?.title_line_2);
+    setText('quote-eyebrow', data.quote_section?.eyebrow);
+
+    const processGrid = document.getElementById('process-grid');
+    if (processGrid && Array.isArray(data.process?.steps)) {
+      processGrid.innerHTML = data.process.steps.map((step, index) => `
+        <article class="reveal visible">
+          <b>${escapeHtml(step.number || String(index + 1))}</b>
+          <h3>${escapeHtml(step.title || '')}</h3>
+          <p>${escapeHtml(step.description || '')}</p>
+        </article>
+      `).join('');
+    }
+
     setText('contact-eyebrow', data.contact?.eyebrow);
     setText('contact-title', data.contact?.title);
     setText('contact-description', data.contact?.description);
@@ -543,22 +574,32 @@ async function loadTestimonials() {
     const response = await fetch(`/data/testimonials.json?v=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error('Unable to load testimonials');
     const data = await response.json();
-    const items = (data.testimonials || []).filter((item) => item.visible);
+    const items = (data.testimonials || [])
+      .filter((item) => item.visible)
+      .sort((a, b) => (a.order || 999) - (b.order || 999));
 
     if (!items.length) {
       grid.innerHTML = '<p class="gallery-loading">Testimonials will appear here when you publish them from the panel.</p>';
       return;
     }
 
-    grid.innerHTML = items.map((item) => `
-      <article class="testimonial-card reveal visible">
-        <p>“${escapeHtml(item.quote)}”</p>
-        <div>
-          <strong>${item.name}</strong>
-          <span>${item.company || ''}</span>
-        </div>
-      </article>
-    `).join('');
+    grid.innerHTML = items.map((item) => {
+      const rating = Math.max(1, Math.min(5, Number(item.rating) || 5));
+      const photo = item.photo ? `<img class="testimonial-photo" src="${escapeHtml(item.photo)}" alt="${escapeHtml(item.name || 'Customer')}">` : '';
+      return `
+        <article class="testimonial-card reveal visible">
+          <div class="testimonial-rating" aria-label="${rating} out of 5 stars">${'★'.repeat(rating)}</div>
+          <p>“${escapeHtml(item.quote)}”</p>
+          <div class="testimonial-person">
+            ${photo}
+            <div>
+              <strong>${escapeHtml(item.name || '')}</strong>
+              <span>${escapeHtml(item.company || '')}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
   } catch (error) {
     console.error(error);
     grid.innerHTML = '<p class="gallery-loading">Testimonials are temporarily unavailable.</p>';
@@ -582,6 +623,10 @@ function escapeHtml(value = '') {
 function renderFaqs(faqs = []) {
   const list = document.getElementById('faq-list');
   if (!list) return;
+
+  faqs = faqs
+    .filter((item) => item.visible !== false)
+    .sort((a, b) => (a.order || 999) - (b.order || 999));
 
   if (!faqs.length) {
     list.innerHTML = '<p class="gallery-loading">No frequently asked questions have been published yet.</p>';

@@ -1,5 +1,5 @@
 {
-  "announcement": "No minimum orders \u2022 Personal service \u2022 Made in Connecticut",
+  "announcement": "No minimum orders • Personal service • Made in Connecticut",
   "hero": {
     "eyebrow": "You Name It. We Make It.",
     "title_line_1": "Bring Your",
@@ -28,5 +28,60 @@
     "email": "imaginablethingss@gmail.com",
     "location": "Connecticut",
     "note": "No minimum orders"
+  },
+  "featured_section": {
+    "eyebrow": "Featured Projects",
+    "title": "Quality you can see.",
+    "description": "A selection of real work created by Imaginable Things."
+  },
+  "services_section": {
+    "eyebrow": "What We Create",
+    "title_line_1": "One idea.",
+    "title_line_2": "Many possibilities."
+  },
+  "portfolio_section": {
+    "eyebrow": "Portfolio",
+    "title_line_1": "Made by",
+    "title_line_2": "Imaginable Things."
+  },
+  "testimonials_section": {
+    "eyebrow": "Client Stories",
+    "title_line_1": "Words from the people",
+    "title_line_2": "we create for."
+  },
+  "process": {
+    "eyebrow": "How It Works",
+    "title_line_1": "Simple from idea",
+    "title_line_2": "to finished piece.",
+    "steps": [
+      {
+        "number": "1",
+        "title": "Tell Us Your Idea",
+        "description": "Send your logo, design or inspiration."
+      },
+      {
+        "number": "2",
+        "title": "Approve the Details",
+        "description": "We confirm product, placement and quantity."
+      },
+      {
+        "number": "3",
+        "title": "We Create It",
+        "description": "Your order is made with attention to detail."
+      },
+      {
+        "number": "4",
+        "title": "Enjoy the Result",
+        "description": "Receive a custom piece made for you."
+      }
+    ]
+  },
+  "faq_section": {
+    "eyebrow": "Questions",
+    "title_line_1": "Helpful answers",
+    "title_line_2": "before we begin."
+  },
+  "quote_section": {
+    "eyebrow": "Request a Quote"
   }
 }
