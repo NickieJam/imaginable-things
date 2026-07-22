@@ -610,6 +610,55 @@ function renderFaqs(faqs = []) {
   });
 }
 
+function applyBusinessSettings(business = {}) {
+  const brandName = business.brand_name || 'Imaginable Things';
+  const legalName = business.legal_name || brandName;
+  const tagline = business.tagline || 'You Name It. We Make It.';
+  const logo = business.logo || '/assets/images/logo.webp';
+  const phoneDisplay = business.phone_display || '860-336-9202';
+  const phoneNumber = String(business.phone_number || business.whatsapp_number || '18603369202').replace(/\D/g, '');
+  const whatsappNumber = String(business.whatsapp_number || business.phone_number || '18603369202').replace(/\D/g, '');
+
+  document.title = business.seo_title || `${brandName} | Custom Apparel & Embroidery`;
+  const metaDescription = document.getElementById('meta-description');
+  if (metaDescription && business.seo_description) metaDescription.content = business.seo_description;
+
+  const favicon = document.getElementById('site-favicon');
+  if (favicon) favicon.href = logo;
+
+  ['header-logo', 'about-logo', 'footer-logo'].forEach((id) => {
+    const image = document.getElementById(id);
+    if (image) {
+      image.src = logo;
+      image.alt = `${brandName} logo`;
+    }
+  });
+
+  const headerBrand = document.getElementById('header-brand-name');
+  if (headerBrand) headerBrand.innerHTML = escapeHtml(brandName.toUpperCase()).replace(' ', '<br>');
+  setText('footer-brand-name', brandName.toUpperCase());
+  setText('footer-tagline', tagline);
+  setText('footer-legal-name', legalName);
+
+  const textButton = document.getElementById('contact-text');
+  if (textButton) {
+    textButton.textContent = `Text ${phoneDisplay}`;
+    textButton.href = `sms:+${phoneNumber}`;
+  }
+
+  const whatsapp = document.getElementById('contact-whatsapp');
+  if (whatsapp) whatsapp.href = `https://wa.me/${whatsappNumber}`;
+
+  const email = document.getElementById('contact-email');
+  if (email && business.email) {
+    email.textContent = business.email;
+    email.href = `mailto:${business.email}`;
+  }
+
+  const noteParts = [business.location, business.business_hours, business.contact_note].filter(Boolean);
+  setText('contact-note', noteParts.join(' • '));
+}
+
 function renderSocials(socials = {}) {
   const container = document.getElementById('social-links');
   if (!container) return;
@@ -643,6 +692,7 @@ async function loadSiteSettings() {
     const response = await fetch(`/data/site.json?v=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error('Unable to load site settings');
     siteSettings = await response.json();
+    applyBusinessSettings(siteSettings.business || {});
     renderFaqs(siteSettings.faqs || []);
     renderSocials(siteSettings.socials || {});
     prepareQuoteForm(siteSettings.quote_form || {});
@@ -681,7 +731,7 @@ document.getElementById('quote-form')?.addEventListener('submit', (event) => {
     details
   ].filter(Boolean).join('\n');
 
-  const number = siteSettings?.quote_form?.whatsapp_number || '18603369202';
+  const number = siteSettings?.business?.whatsapp_number || siteSettings?.quote_form?.whatsapp_number || '18603369202';
   const url = `https://wa.me/${String(number).replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank', 'noopener,noreferrer');
 })/* ==================================================
@@ -854,7 +904,7 @@ function validateSmartQuoteStep(){ smartQuoteError.textContent=''; if(smartQuote
 
 function renderSmartQuoteStep(){ if(!smartQuoteContent)return; const total=9, visible=smartQuoteState.step+1; smartQuoteStepLabel.textContent=`Step ${visible} of ${total}`; smartQuoteProgressBar.style.width=`${visible/total*100}%`; smartQuoteBack.disabled=smartQuoteState.step===0; smartQuoteNext.textContent=smartQuoteState.step===total-1?'Open WhatsApp':'Next'; smartQuoteError.textContent=''; if(smartQuoteState.step<=2)renderOptionStep(smartQuoteSteps[smartQuoteState.step]); else if(smartQuoteState.step===3)renderPlacementStep(); else if(smartQuoteState.step===4)renderSupplyStep(); else if(smartQuoteState.step===5)renderProjectDetailsStep(); else if(smartQuoteState.step===6)renderUploadStep(); else if(smartQuoteState.step===7)renderContactStep(); else renderReviewStep(); }
 
-function sendSmartQuoteToWhatsApp(){ const message=['Hello Imaginable Things! I would like to request a quote.','',`Name: ${smartQuoteState.name}`,`Phone: ${smartQuoteState.phone}`,smartQuoteState.email?`Email: ${smartQuoteState.email}`:'',`Preferred contact: ${smartQuoteState.contactPreference}`,'',`Product: ${smartQuoteState.product}`,`Personalization method: ${smartQuoteState.method}`,`Quantity: ${smartQuoteState.exactQuantity||smartQuoteState.quantityRange}`,`Design placement(s): ${smartQuoteState.placements.join(', ')}`,`Items supplied by: ${smartQuoteState.garmentSource}`,smartQuoteState.deadline?`Needed by: ${smartQuoteState.deadline}`:'',smartQuoteState.file?`Selected file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`:'',smartQuoteState.file?'Please attach this same file to the WhatsApp conversation.':'','', 'Project details:',smartQuoteState.details].filter(Boolean).join('\n'); const number=siteSettings?.quote_form?.whatsapp_number||'18603369202'; window.open(`https://wa.me/${String(number).replace(/\D/g,'')}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer'); }
+function sendSmartQuoteToWhatsApp(){ const message=['Hello Imaginable Things! I would like to request a quote.','',`Name: ${smartQuoteState.name}`,`Phone: ${smartQuoteState.phone}`,smartQuoteState.email?`Email: ${smartQuoteState.email}`:'',`Preferred contact: ${smartQuoteState.contactPreference}`,'',`Product: ${smartQuoteState.product}`,`Personalization method: ${smartQuoteState.method}`,`Quantity: ${smartQuoteState.exactQuantity||smartQuoteState.quantityRange}`,`Design placement(s): ${smartQuoteState.placements.join(', ')}`,`Items supplied by: ${smartQuoteState.garmentSource}`,smartQuoteState.deadline?`Needed by: ${smartQuoteState.deadline}`:'',smartQuoteState.file?`Selected file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`:'',smartQuoteState.file?'Please attach this same file to the WhatsApp conversation.':'','', 'Project details:',smartQuoteState.details].filter(Boolean).join('\n'); const number=siteSettings?.business?.whatsapp_number||siteSettings?.quote_form?.whatsapp_number||'18603369202'; window.open(`https://wa.me/${String(number).replace(/\D/g,'')}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer'); }
 
 document.querySelectorAll('a[href="#quote"]').forEach((link)=>link.addEventListener('click',(event)=>{event.preventDefault(); const reference=link.dataset.projectInterest||''; if(reference){smartQuoteState.details=reference;} openSmartQuote();}));
 smartQuoteNext?.addEventListener('click',()=>{saveCurrentSmartQuoteStep();if(!validateSmartQuoteStep())return;if(smartQuoteState.step===8){sendSmartQuoteToWhatsApp();return;}smartQuoteState.step+=1;renderSmartQuoteStep();});

@@ -153,7 +153,7 @@ content:
           - name: production_time
             label: Production time
             type: string
-            description: Optional. Example: 3 business days
+            description: "Optional. Example: 3 business days"
           - name: completed_date
             label: Completion date
             type: date
@@ -316,10 +316,65 @@ content:
 
 
   - name: site
-    label: FAQs, Social Links & Quote Form
+    label: Business Settings, FAQs & Quote
     type: file
     path: data/site.json
     fields:
+      - name: business
+        label: Business Settings
+        type: object
+        fields:
+          - name: brand_name
+            label: Brand name
+            type: string
+            required: true
+          - name: legal_name
+            label: Legal business name
+            type: string
+          - name: tagline
+            label: Tagline
+            type: string
+          - name: logo
+            label: Business logo
+            type: image
+            options:
+              media: gallery
+          - name: phone_display
+            label: Phone number as displayed
+            type: string
+            description: "Example: 860-336-9202"
+          - name: phone_number
+            label: Phone number with country code
+            type: string
+            description: "Numbers only are best. Example: 18603369202"
+          - name: whatsapp_number
+            label: WhatsApp number with country code
+            type: string
+          - name: email
+            label: Business email
+            type: string
+          - name: location
+            label: Service area or location
+            type: string
+          - name: address
+            label: Public address
+            type: string
+            description: Optional. Leave blank if customers should not see a street address.
+          - name: business_hours
+            label: Business hours
+            type: string
+          - name: contact_note
+            label: Short contact note
+            type: string
+          - name: website
+            label: Official website
+            type: string
+          - name: seo_title
+            label: Browser and Google title
+            type: string
+          - name: seo_description
+            label: Browser and Google description
+            type: text
       - name: socials
         label: Social Media
         type: object

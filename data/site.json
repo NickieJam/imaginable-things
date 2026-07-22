@@ -37,5 +37,22 @@
       "question": "Do you work with businesses and organizations?",
       "answer": "Yes. We serve churches, schools, contractors, restaurants, barbershops, clothing brands, events and individuals."
     }
-  ]
+  ],
+  "business": {
+    "brand_name": "Imaginable Things",
+    "legal_name": "Imaginable Things, LLC",
+    "tagline": "You Name It. We Make It.",
+    "logo": "/assets/images/logo.webp",
+    "phone_display": "860-336-9202",
+    "phone_number": "18603369202",
+    "whatsapp_number": "18603369202",
+    "email": "imaginablethingss@gmail.com",
+    "location": "Connecticut",
+    "address": "",
+    "business_hours": "By appointment",
+    "contact_note": "No minimum orders",
+    "website": "https://www.imaginablethingsllc.com",
+    "seo_title": "Imaginable Things | Custom Apparel & Embroidery",
+    "seo_description": "Custom embroidery, apparel, hats, uniforms, drinkware and personalized products in Connecticut. No minimum orders."
+  }
 }
