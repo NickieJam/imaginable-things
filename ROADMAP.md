@@ -1,9 +1,27 @@
-# Imaginable Things Website Roadmap
+# Imaginable Things Platform Roadmap
 
-- v5.0 — Admin access and Pages CMS restoration
-- v5.1 — Portfolio Pro
-- v5.2 — Smart Quote Wizard 2.0
-- v6.1 — Centralized Business Settings
-- v6.2 — Complete Homepage Content Manager
-- v6.3 — Media and navigation controls
-- v6.4 — SEO Manager and search-engine setup
+## Completed
+
+- 5.1 — Portfolio Pro
+- 5.2 — Smart Quote Wizard 2.0
+- 6.1 — Business Settings
+- 6.2 — Content Manager
+- 6.3 — Imaginable OS Dashboard
+
+## Next recommended sprint
+
+### 6.4 — Job Tracker Foundation
+
+- Create and edit jobs from Pages CMS
+- Customer, product, quantity and technique
+- Due date and internal notes
+- Status workflow from approval through delivery
+- Mobile-friendly jobs view inside `/admin`
+
+## Later modules
+
+- Customer records
+- Quote request inbox
+- Production calendar
+- Marketing and SEO tools
+- Analytics and conversion tracking
