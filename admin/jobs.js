@@ -1,37 +1,16 @@
 (() => {
-  const labels = {
-    all: "All active", quote: "Quote", approved: "Approved",
-    "waiting-materials": "Waiting materials", production: "In production",
-    "quality-check": "Quality check", ready: "Ready", delivered: "Delivered", cancelled: "Cancelled"
-  };
-  let jobs = [];
-  const money = (value) => value === undefined || value === null || value === "" ? "—" : new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(Number(value));
-  const date = (value) => value ? new Date(`${value}T12:00:00`).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" }) : "Not set";
-  const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
-  function render(filter="all") {
-    document.querySelectorAll(".filter").forEach((b) => b.classList.toggle("active", b.dataset.filter === filter));
-    const active = jobs.filter((j) => j.visible !== false && !["delivered","cancelled"].includes(j.status));
-    const list = filter === "all" ? active : active.filter((j) => j.status === filter);
-    const root = document.getElementById("jobs");
-    if (!list.length) { root.innerHTML = '<div class="empty">No jobs in this stage.</div>'; return; }
-    root.innerHTML = list.sort((a,b) => String(a.due_date||"9999").localeCompare(String(b.due_date||"9999"))).map((j) => `
-      <article class="card">
-        <div class="card-head"><div><span class="jobno">${esc(j.job_number || "Job")}</span><h3>${esc(j.client)}</h3><span class="company">${esc(j.company || j.product || "")}</span></div><span class="badge">${esc(labels[j.status] || j.status || "New")}</span></div>
-        <div class="meta"><div><span>Product</span><strong>${esc(j.product || "—")}</strong></div><div><span>Quantity</span><strong>${esc(j.quantity || "—")}</strong></div><div><span>Technique</span><strong>${esc(j.technique || "—")}</strong></div><div><span>Due date</span><strong>${date(j.due_date)}</strong></div><div><span>Priority</span><strong>${esc(j.priority || "normal")}</strong></div><div><span>Balance due</span><strong>${money(j.balance_due)}</strong></div></div>
-        ${j.notes ? `<p class="notes">${esc(j.notes)}</p>` : ""}
-        <div class="actions"><a class="button" href="https://app.pagescms.org" rel="noopener">Manage job</a></div>
-      </article>`).join("");
-  }
-  async function load() {
-    try {
-      const response = await fetch("../data/jobs.json", { cache:"no-store" });
-      if (!response.ok) throw new Error("Could not load jobs");
-      jobs = (await response.json()).jobs || [];
-      const statuses = ["all", ...new Set(jobs.filter((j)=>j.visible!==false && !["delivered","cancelled"].includes(j.status)).map((j)=>j.status).filter(Boolean))];
-      document.getElementById("filters").innerHTML = statuses.map((status) => `<button class="filter${status === "all" ? " active" : ""}" data-filter="${esc(status)}">${esc(labels[status] || status)}</button>`).join("");
-      document.getElementById("filters").addEventListener("click", (event) => { const button=event.target.closest("button[data-filter]"); if(button) render(button.dataset.filter); });
-      render();
-    } catch (error) { document.getElementById("jobs").innerHTML = '<div class="empty">Could not load Job Tracker data.</div>'; console.error(error); }
-  }
+  const labels={all:"All active",quote:"Quote",approved:"Approved","waiting-materials":"Waiting materials",production:"In production","quality-check":"Quality check",ready:"Ready",delivered:"Delivered",cancelled:"Cancelled"};
+  let jobs=[];
+  const money=(v)=>v===undefined||v===null||v===""?"—":new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(v));
+  const date=(v)=>v?new Date(`${v}T12:00:00`).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"Not set";
+  const esc=(v)=>String(v??"").replace(/[&<>'"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+  const asText=(draft)=>Object.entries(draft).map(([k,v])=>`${k}: ${v??""}`).join("\n");
+  async function copy(text,button){try{await navigator.clipboard.writeText(text);const old=button.textContent;button.textContent="Copied";setTimeout(()=>button.textContent=old,1500);}catch{window.prompt("Copy this information:",text);}}
+  function pendingDraft(){try{return JSON.parse(localStorage.getItem("imaginable_pending_job")||"null");}catch{return null;}}
+  function renderDraft(){const draft=pendingDraft();const root=document.getElementById("draftPanel");if(!root)return;if(!draft){root.hidden=true;return;}root.hidden=false;root.innerHTML=`<strong>Job draft ready from ${esc(draft.source_lead_number||"Lead Inbox")}</strong><p>${esc(draft.client)} · ${esc(draft.product)} · Qty ${esc(draft.quantity||"—")}</p><div class="actions"><button class="button" id="copyDraft" type="button">Copy job fields</button><a class="button secondary" href="https://app.pagescms.org" rel="noopener">Open Job Tracker CMS</a><button class="button secondary" id="clearDraft" type="button">Clear</button></div>`;document.getElementById("copyDraft").onclick=(e)=>copy(asText(draft),e.currentTarget);document.getElementById("clearDraft").onclick=()=>{localStorage.removeItem("imaginable_pending_job");renderDraft();};}
+  function prepareCustomer(j){const draft={customer_id:`CUST-${new Date().getFullYear()}-${String(Date.now()).slice(-5)}`,name:j.client||"",company:j.company||"",phone:String(j.contact||"").includes("@")?"":j.contact||"",email:String(j.contact||"").includes("@")?j.contact||"":"",first_job_number:j.job_number||"",latest_job_number:j.job_number||"",favorite_product:j.product||"",preferred_technique:j.technique||"",total_orders:1,last_order_date:new Date().toISOString().slice(0,10),notes:j.notes||"",visible:true};localStorage.setItem("imaginable_pending_customer",JSON.stringify(draft));window.location.href="customers.html?draft=1";}
+  function render(filter="all"){
+    document.querySelectorAll(".filter").forEach((b)=>b.classList.toggle("active",b.dataset.filter===filter));const active=jobs.filter((j)=>j.visible!==false&&!['delivered','cancelled'].includes(j.status));const list=filter==="all"?active:active.filter((j)=>j.status===filter);const root=document.getElementById("jobs");if(!list.length){root.innerHTML='<div class="empty">No jobs in this stage.</div>';return;}root.innerHTML=list.sort((a,b)=>String(a.due_date||"9999").localeCompare(String(b.due_date||"9999"))).map((j)=>{const i=jobs.indexOf(j);return `<article class="card"><div class="card-head"><div><span class="jobno">${esc(j.job_number||"Job")}</span><h3>${esc(j.client)}</h3><span class="company">${esc(j.company||j.product||"")}</span></div><span class="badge">${esc(labels[j.status]||j.status||"New")}</span></div><div class="meta"><div><span>Product</span><strong>${esc(j.product||"—")}</strong></div><div><span>Quantity</span><strong>${esc(j.quantity||"—")}</strong></div><div><span>Technique</span><strong>${esc(j.technique||"—")}</strong></div><div><span>Due date</span><strong>${date(j.due_date)}</strong></div><div><span>Priority</span><strong>${esc(j.priority||"normal")}</strong></div><div><span>Balance due</span><strong>${money(j.balance_due)}</strong></div></div>${j.notes?`<p class="notes">${esc(j.notes)}</p>`:""}<div class="actions"><button class="button" data-deliver="${i}" type="button">Prepare Customer</button><a class="button secondary" href="https://app.pagescms.org" rel="noopener">Manage job</a></div></article>`;}).join("");root.querySelectorAll("[data-deliver]").forEach((b)=>b.onclick=()=>prepareCustomer(jobs[Number(b.dataset.deliver)]));}
+  async function load(){renderDraft();try{const response=await fetch("../data/jobs.json",{cache:"no-store"});if(!response.ok)throw new Error("Could not load jobs");jobs=(await response.json()).jobs||[];const statuses=["all",...new Set(jobs.filter((j)=>j.visible!==false&&!['delivered','cancelled'].includes(j.status)).map((j)=>j.status).filter(Boolean))];document.getElementById("filters").innerHTML=statuses.map((status)=>`<button class="filter${status==="all"?" active":""}" data-filter="${esc(status)}">${esc(labels[status]||status)}</button>`).join("");document.getElementById("filters").addEventListener("click",(event)=>{const button=event.target.closest("button[data-filter]");if(button)render(button.dataset.filter);});render();}catch(error){document.getElementById("jobs").innerHTML='<div class="empty">Could not load Job Tracker data.</div>';console.error(error);}}
   load();
 })();

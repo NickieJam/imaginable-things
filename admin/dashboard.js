@@ -22,13 +22,14 @@
 
   async function loadDashboard() {
     try {
-      const [projectData, serviceData, testimonialData, siteData, jobData, leadData] = await Promise.all([
+      const [projectData, serviceData, testimonialData, siteData, jobData, leadData, customerData] = await Promise.all([
         readJson("../data/projects.json"),
         readJson("../data/services.json"),
         readJson("../data/testimonials.json"),
         readJson("../data/site.json"),
         readJson("../data/jobs.json"),
-        readJson("../data/leads.json")
+        readJson("../data/leads.json"),
+        readJson("../data/customers.json")
       ]);
 
       const projects = activeItems(projectData.projects);
@@ -37,10 +38,12 @@
       const faqs = activeItems(siteData.faqs);
       const business = siteData.business || {};
       const jobs = activeItems(jobData.jobs).filter((job) => !["delivered", "cancelled"].includes(job.status));
-      const leads = activeItems(leadData.leads).filter((lead) => !["won", "lost"].includes(lead.status));
+      const leads = activeItems(leadData.leads).filter((lead) => !lead.converted_to_job && !["lost"].includes(lead.status));
+      const customers = activeItems(customerData.customers);
 
       text("activeLeadCount", leads.length);
       text("activeJobCount", jobs.length);
+      text("customerCount", customers.length);
       text("projectCount", projects.length);
       text("featuredCount", projects.filter((project) => project.featured === true).length);
       text("serviceCount", services.length);
@@ -58,7 +61,7 @@
     } catch (error) {
       console.error("Dashboard error:", error);
       document.getElementById("stats")?.classList.remove("loading");
-      ["activeLeadCount", "activeJobCount", "projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
+      ["activeLeadCount", "activeJobCount", "customerCount", "projectCount", "featuredCount", "serviceCount", "testimonialCount"].forEach((id) => text(id, "—"));
       setHealth("whatsapp", false, "Could not read site settings");
       setHealth("email", false, "Could not read site settings");
       setHealth("logo", false, "Could not read site settings");

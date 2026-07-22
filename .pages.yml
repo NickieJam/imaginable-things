@@ -314,6 +314,14 @@ content:
           - name: next_follow_up
             label: Next follow-up date
             type: date
+          - name: converted_to_job
+            label: Converted to job
+            type: boolean
+            default: false
+          - name: linked_job_number
+            label: Linked job number
+            type: string
+            description: "Add the Job Tracker number after conversion."
           - name: visible
             label: Active in Lead Inbox
             type: boolean
@@ -426,6 +434,71 @@ content:
           - name: created_date
             label: Created date
             type: date
+          - name: source_lead_number
+            label: Source lead number
+            type: string
+          - name: customer_recorded
+            label: Customer added to Customer Hub
+            type: boolean
+            default: false
+
+  - name: customers
+    label: Customer Hub
+    type: file
+    path: data/customers.json
+    fields:
+      - name: customers
+        label: Customers
+        type: object
+        list: true
+        fields:
+          - name: customer_id
+            label: Customer ID
+            type: string
+            required: true
+            description: "Example: CUST-2026-001"
+          - name: name
+            label: Customer name
+            type: string
+            required: true
+          - name: company
+            label: Company or organization
+            type: string
+          - name: phone
+            label: Phone
+            type: string
+          - name: email
+            label: Email
+            type: string
+          - name: address
+            label: Address
+            type: text
+          - name: first_job_number
+            label: First job number
+            type: string
+          - name: latest_job_number
+            label: Latest job number
+            type: string
+          - name: favorite_product
+            label: Favorite product
+            type: string
+          - name: preferred_technique
+            label: Preferred technique
+            type: string
+          - name: total_orders
+            label: Total orders
+            type: number
+            default: 1
+          - name: last_order_date
+            label: Last order date
+            type: date
+          - name: notes
+            label: Customer notes
+            type: text
+          - name: visible
+            label: Active customer
+            type: boolean
+            default: true
 
   - name: homepage
     label: Homepage Content
