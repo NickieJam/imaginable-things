@@ -159,6 +159,17 @@
       "featured": false,
       "visible": true,
       "order": 14
+    },
+    {
+      "title": "Harley Davidson",
+      "category": "apparel",
+      "item_type": "Tumbler",
+      "technique": "Sublimation",
+      "production_time": "1 day",
+      "completed_date": "2026-07-25",
+      "image": "/assets/uploads/img8699.jpeg",
+      "featured": false,
+      "visible": true
     }
   ]
 }
