@@ -1,10 +1,22 @@
-import { issueSignedToken, presignUrl } from '@vercel/blob';
+import { get } from '@vercel/blob';
+import { Readable } from 'node:stream';
+import path from 'node:path';
 
 function validQuotePath(pathname) {
   return typeof pathname === 'string'
     && pathname.startsWith('quote-uploads/')
     && !pathname.includes('..')
     && pathname.length < 500;
+}
+
+function originalFilename(pathname) {
+  const base = path.posix.basename(pathname || 'design-file');
+  // Uploaded files are stored as: <uuid>-<safe-original-name>
+  return base.replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}-/i, '') || 'design-file';
+}
+
+function safeHeaderFilename(name) {
+  return String(name || 'design-file').replace(/[\r\n"\\]/g, '_');
 }
 
 export default async function handler(req, res) {
@@ -21,22 +33,36 @@ export default async function handler(req, res) {
   }
 
   try {
-    const validUntil = Date.now() + 5 * 60 * 1000;
-    const token = await issueSignedToken({
-      pathname,
-      operations: ['get'],
-      validUntil,
-    });
-    const { presignedUrl } = await presignUrl(token, {
-      pathname,
-      operation: 'get',
-      validUntil,
+    const result = await get(pathname, {
+      access: 'private',
       useCache: false,
     });
-    res.setHeader('Location', presignedUrl);
-    return res.status(302).end();
+
+    if (!result || !result.stream || !result.blob) {
+      return res.status(404).send('Design file not found.');
+    }
+
+    const filename = originalFilename(pathname);
+    const safeFilename = safeHeaderFilename(filename);
+    const encodedFilename = encodeURIComponent(filename);
+
+    res.statusCode = 200;
+    res.setHeader('Content-Type', result.blob.contentType || 'application/octet-stream');
+    if (Number.isFinite(result.blob.size)) {
+      res.setHeader('Content-Length', String(result.blob.size));
+    }
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodedFilename}`,
+    );
+
+    Readable.fromWeb(result.stream).pipe(res);
   } catch (error) {
     console.error('Quote file download error:', error);
+    const status = error?.status || error?.statusCode;
+    if (status === 404) {
+      return res.status(404).send('Design file not found.');
+    }
     return res.status(500).send('This design file is temporarily unavailable.');
   }
 }
