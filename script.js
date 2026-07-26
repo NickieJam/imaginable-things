@@ -994,7 +994,9 @@ async function sendSmartQuoteToWhatsApp(){
 
   try{
     const uploaded=await uploadSmartQuoteFile();
-    const downloadLink=uploaded?new URL(uploaded.downloadUrl,window.location.origin).href:'';
+    const downloadLink=uploaded
+      ? `https://www.imaginablethingsllc.com/download-design.html?path=${encodeURIComponent(uploaded.pathname)}&name=${encodeURIComponent(smartQuoteState.file?.name||'Customer design')}`
+      : '';
     const message=['Hello Imaginable Things! I would like to request a quote.','',`Name: ${smartQuoteState.name}`,`Phone: ${smartQuoteState.phone}`,smartQuoteState.email?`Email: ${smartQuoteState.email}`:'',`Preferred contact: ${smartQuoteState.contactPreference}`,'',`Product: ${smartQuoteState.product}`,`Personalization method: ${smartQuoteState.method}`,`Quantity: ${smartQuoteState.exactQuantity||smartQuoteState.quantityRange}`,`Design placement(s): ${smartQuoteState.placements.join(', ')}`,`Items supplied by: ${smartQuoteState.garmentSource}`,smartQuoteState.deadline?`Needed by: ${smartQuoteState.deadline}`:'',smartQuoteState.file?`Design file: ${smartQuoteState.file.name} (${formatSmartQuoteFileSize(smartQuoteState.file.size)})`:'',downloadLink?`Download original design: ${downloadLink}`:'','', 'Project details:',smartQuoteState.details].filter(Boolean).join('\n');
     const number=siteSettings?.business?.whatsapp_number||siteSettings?.quote_form?.whatsapp_number||'18603369202';
     const whatsappUrl=`https://wa.me/${String(number).replace(/\D/g,'')}?text=${encodeURIComponent(message)}`;
