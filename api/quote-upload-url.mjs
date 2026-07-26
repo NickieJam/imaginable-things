@@ -69,6 +69,10 @@ export default async function handler(req, res) {
       pathname,
       operation: 'put',
       validUntil,
+      // We already generate a UUID in the pathname, so an extra Blob suffix
+      // is unnecessary. The client still reads the final upload response as
+      // the source of truth in case Vercel changes the stored pathname.
+      addRandomSuffix: false,
     });
 
     return res.status(200).json({

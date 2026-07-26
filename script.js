@@ -968,10 +968,21 @@ async function uploadSmartQuoteFile(){
   const uploadResponse=await fetch(signData.presignedUrl,{method:'PUT',headers:uploadHeaders,body:file});
   if(!uploadResponse.ok){throw new Error('The design could not be uploaded. Please try again.');}
 
-  smartQuoteState.uploadedPath=signData.pathname;
+  // Vercel Blob may return a final pathname that differs from the requested
+  // pathname (for example when a random suffix is added). Always trust the
+  // upload response so the download link points to the exact stored object.
+  let uploadData={};
+  try{uploadData=await uploadResponse.json();}catch{}
+  let actualPath=uploadData?.pathname||'';
+  if(!actualPath&&uploadData?.url){
+    try{actualPath=new URL(uploadData.url).pathname.replace(/^\//,'');}catch{}
+  }
+  if(!actualPath)actualPath=signData.pathname;
+
+  smartQuoteState.uploadedPath=actualPath;
   smartQuoteState.uploadedFileName=file.name;
   smartQuoteState.uploadedFileSize=file.size;
-  return {pathname:signData.pathname,downloadUrl:signData.downloadUrl||`/api/quote-file?path=${encodeURIComponent(signData.pathname)}`};
+  return {pathname:actualPath,downloadUrl:`/api/quote-file?path=${encodeURIComponent(actualPath)}`};
 }
 
 async function sendSmartQuoteToWhatsApp(){
