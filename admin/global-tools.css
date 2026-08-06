@@ -1,0 +1,16 @@
+.os-global-tools{position:fixed;right:22px;bottom:22px;z-index:120;display:flex;gap:10px;align-items:center;font-family:Inter,system-ui,sans-serif}
+.os-tool-btn{border:1px solid #2a2e3c;background:#171a24;color:#fff;border-radius:999px;padding:12px 15px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.os-tool-btn.primary{background:linear-gradient(120deg,#ff7a18,#ff3d81);border-color:transparent}
+.os-search-panel,.os-quick-panel{position:fixed;inset:0;z-index:150;background:rgba(5,6,10,.72);backdrop-filter:blur(8px);display:none;padding:20px}
+.os-search-panel.open,.os-quick-panel.open{display:grid;place-items:start center}
+.os-modal{width:min(760px,96vw);max-height:88vh;overflow:auto;margin-top:5vh;background:#11131b;color:#f8f8fb;border:1px solid #2a2e3c;border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.45);padding:18px}
+.os-modal-head{display:flex;gap:10px;align-items:center}
+.os-modal-head input{flex:1;border:1px solid #2a2e3c;background:#08090f;color:#fff;border-radius:13px;padding:13px 14px;font-size:1rem}
+.os-close{border:1px solid #2a2e3c;background:#171a24;color:#fff;border-radius:11px;padding:10px 12px;cursor:pointer}
+.os-results{display:grid;gap:10px;margin-top:14px}
+.os-result{text-decoration:none;color:#fff;border:1px solid #2a2e3c;border-radius:14px;padding:13px;background:#171a24;display:block}
+.os-result small{color:#aeb3c2;display:block;margin-bottom:4px}.os-result strong{display:block}.os-result span{display:block;color:#aeb3c2;font-size:.85rem;margin-top:4px}
+.os-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.os-quick{display:block;text-decoration:none;color:#fff;border:1px solid #2a2e3c;border-radius:14px;padding:16px;background:#171a24;font-weight:800}
+.os-helper{color:#aeb3c2;font-size:.85rem;margin:8px 0 0}
+@media(max-width:640px){.os-global-tools{right:12px;bottom:12px}.os-tool-btn{padding:11px 13px}.os-quick-grid{grid-template-columns:1fr}.os-search-panel,.os-quick-panel{padding:10px}.os-modal{margin-top:2vh}}
