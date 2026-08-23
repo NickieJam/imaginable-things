@@ -1,3 +1,22 @@
 {
-  "jobs": []
+  "jobs": [
+    {
+      "job_number": " IT-2026-001",
+      "client": "Nicklus Ortiz",
+      "product": "Polo",
+      "quantity": 2,
+      "technique": "Embroidery",
+      "status": "approved",
+      "priority": "normal",
+      "due_date": "2026-08-29",
+      "notes": "Converted from lead 2026-08-001",
+      "deposit_paid": false,
+      "total": 50,
+      "balance_due": 50,
+      "visible": true,
+      "created_date": "2026-08-22",
+      "source_lead_number": "2026-08-001",
+      "customer_recorded": false
+    }
+  ]
 }
