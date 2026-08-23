@@ -1,0 +1,5 @@
+.v72c-modal{position:fixed;inset:0;z-index:220;background:rgba(4,5,9,.76);backdrop-filter:blur(8px);display:none;padding:16px;place-items:center}
+.v72c-modal.open{display:grid}.v72c-card{width:min(520px,96vw);background:#11131b;border:1px solid #2a2e3c;border-radius:20px;padding:19px;color:#f8f8fb;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.v72c-card h2{margin:0 0 5px}.v72c-card p{margin:0 0 15px;color:#aeb3c2}.v72c-field{display:grid;gap:6px;margin:12px 0}.v72c-field label{font-size:.78rem;color:#aeb3c2;font-weight:750}.v72c-field input,.v72c-field select{width:100%;border:1px solid #2a2e3c;background:#08090f;color:#fff;border-radius:12px;padding:12px;font:inherit}
+.v72c-actions{display:flex;gap:9px;margin-top:16px}.v72c-actions button{flex:1;border:1px solid #2a2e3c;border-radius:12px;padding:12px;font-weight:850;cursor:pointer;background:#171a24;color:#fff}.v72c-actions .save{background:linear-gradient(120deg,#ff7a18,#ff3d81);border-color:transparent}
+.v72c-message{min-height:20px;margin-top:10px!important;font-size:.82rem}.v72c-message.ok{color:#56d58b}.v72c-message.error{color:#ff8383}
