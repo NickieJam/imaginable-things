@@ -8,12 +8,12 @@
       "service": "Embroidery",
       "product": "Polo",
       "quantity": 2,
-      "status": "new",
+      "status": "contacted",
       "source": "referral",
       "requested_date": "2026-08-06",
       "needed_by": "2026-08-14",
       "estimated_value": 50,
-      "next_follow_up": "2026-08-06",
+      "next_follow_up": "2026-08-26",
       "converted_to_job": false,
       "visible": true
     }
