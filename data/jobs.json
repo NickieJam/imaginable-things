@@ -10,22 +10,23 @@
       "priority": "normal",
       "due_date": "2026-08-29",
       "notes": "Converted from lead 2026-08-001",
-      "balance_due": 25,
+      "balance_due": 0,
       "visible": true,
       "created_date": "2026-08-22",
       "source_lead_number": "2026-08-001",
       "customer_recorded": false,
       "order_total": 50,
       "deposit_required": 25,
-      "payment_status": "partially-paid",
-      "amount_paid": 25,
+      "payment_status": "paid",
+      "amount_paid": 50,
       "square_payment_ids": [
-        "9KGi7NjxginIyQuVUV8SuZBbJpNZY"
+        "9KGi7NjxginIyQuVUV8SuZBbJpNZY",
+        "bbVhTTRamY9MiV0r5kMTXVqscmcZY"
       ],
-      "last_square_payment_id": "9KGi7NjxginIyQuVUV8SuZBbJpNZY",
+      "last_square_payment_id": "bbVhTTRamY9MiV0r5kMTXVqscmcZY",
       "last_square_payment_amount": 25,
-      "last_square_payment_type": "deposit",
-      "last_square_payment_at": "2026-08-24T23:04:48.916Z"
+      "last_square_payment_type": "balance",
+      "last_square_payment_at": "2026-08-24T23:08:16.045Z"
     }
   ]
 }
