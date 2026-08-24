@@ -23,7 +23,7 @@
       if (!job) return;
 
       const total = Number(job.order_total ?? job.total ?? 0);
-      const paid = Number(job.deposit_paid ?? 0);
+      const paid = Number(job.amount_paid ?? 0);
       const balance = Number(job.balance_due ?? Math.max(0, total - paid));
       const status = String(job.payment_status || (paid >= total && total > 0 ? 'paid' : 'unpaid'));
 

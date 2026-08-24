@@ -10,8 +10,6 @@
       "priority": "normal",
       "due_date": "2026-08-29",
       "notes": "Converted from lead 2026-08-001",
-      "deposit_paid": 0,
-      "total": 50,
       "balance_due": 50,
       "visible": true,
       "created_date": "2026-08-22",
@@ -19,7 +17,8 @@
       "customer_recorded": false,
       "order_total": 50,
       "deposit_required": 25,
-      "payment_status": "deposit-due"
+      "payment_status": "deposit-due",
+      "amount_paid": 0
     }
   ]
 }

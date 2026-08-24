@@ -418,15 +418,33 @@ content:
           - name: notes
             label: Internal notes
             type: text
-          - name: deposit_paid
-            label: Deposit paid
-            type: boolean
-          - name: total
-            label: Job total
+          - name: amount_paid
+            label: Amount paid
+            type: number
+          - name: order_total
+            label: Order total
+            type: number
+          - name: deposit_required
+            label: Deposit required
             type: number
           - name: balance_due
             label: Balance due
             type: number
+          - name: payment_status
+            label: Payment status
+            type: select
+            options:
+              values:
+                - value: unpaid
+                  label: Unpaid
+                - value: deposit-due
+                  label: Deposit due
+                - value: partially-paid
+                  label: Partially paid
+                - value: paid
+                  label: Paid in full
+                - value: refunded
+                  label: Refunded
           - name: visible
             label: Active in Job Tracker
             type: boolean
@@ -852,3 +870,4 @@ settings:
       update: "content: update {label}"
       delete: "content: remove {label}"
       uploadMedia: "media: upload {filename}"
+
