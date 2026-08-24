@@ -1,0 +1,13 @@
+.v73b-payment{margin-top:14px;padding:12px;border:1px solid var(--line,#2a2e3c);border-radius:13px;background:rgba(255,255,255,.035)}
+.v73b-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.v73b-title{font-size:.72rem;color:var(--muted,#aeb3c2);text-transform:uppercase;letter-spacing:.08em;font-weight:850}
+.v73b-badge{padding:6px 9px;border-radius:999px;font-size:.7rem;font-weight:850}
+.v73b-badge.unpaid,.v73b-badge.deposit-due{background:rgba(255,122,24,.14);color:#ffb06f}
+.v73b-badge.partially-paid{background:rgba(255,196,61,.14);color:#ffd26e}
+.v73b-badge.paid{background:rgba(86,213,139,.14);color:#7ce6a8}
+.v73b-badge.refunded{background:rgba(180,140,255,.14);color:#c4a9ff}
+.v73b-money{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.v73b-money div{padding:9px;border-radius:10px;background:rgba(255,255,255,.025)}
+.v73b-money span{display:block;color:var(--muted,#aeb3c2);font-size:.66rem}
+.v73b-money strong{display:block;margin-top:3px;font-size:.84rem}
+@media(max-width:520px){.v73b-money{grid-template-columns:1fr}}
