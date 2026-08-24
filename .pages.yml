@@ -445,6 +445,27 @@ content:
                   label: Paid in full
                 - value: refunded
                   label: Refunded
+          - name: square_payment_ids
+            label: Square payment IDs
+            type: string
+            list: true
+            hidden: true
+          - name: last_square_payment_id
+            label: Last Square payment ID
+            type: string
+            hidden: true
+          - name: last_square_payment_amount
+            label: Last Square payment amount
+            type: number
+            hidden: true
+          - name: last_square_payment_type
+            label: Last Square payment type
+            type: string
+            hidden: true
+          - name: last_square_payment_at
+            label: Last Square payment date
+            type: string
+            hidden: true
           - name: visible
             label: Active in Job Tracker
             type: boolean
