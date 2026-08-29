@@ -170,6 +170,17 @@
       "image": "/assets/uploads/img8699.jpeg",
       "featured": false,
       "visible": true
+    },
+    {
+      "title": "School Logos",
+      "category": "embroidery",
+      "item_type": "Uniform",
+      "technique": "Embroidery",
+      "production_time": "3 business days",
+      "completed_date": "2026-08-11",
+      "image": "/assets/uploads/videos/img9720.jpg",
+      "featured": false,
+      "visible": true
     }
   ]
 }
