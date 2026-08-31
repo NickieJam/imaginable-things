@@ -78,9 +78,9 @@
       "due_date": "2026-09-02",
       "amount_paid": 0,
       "order_total": 135,
-      "deposit_required": 0,
+      "deposit_required": 2,
       "balance_due": 135,
-      "payment_status": "unpaid",
+      "payment_status": "deposit-due",
       "visible": true,
       "created_date": "2026-08-24",
       "customer_recorded": false
