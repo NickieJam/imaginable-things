@@ -67,14 +67,14 @@
       }
 
       box.innerHTML = `
-        <div style="font-weight:850;margin-bottom:5px">Square Sandbox Payment Link</div>
+        <div style="font-weight:850;margin-bottom:5px">${data.environment === "production" ? "Square LIVE Payment Link" : "Square Sandbox Payment Link"}</div>
         <div style="font-size:.85rem;opacity:.8;margin-bottom:9px">
           ${type === "deposit" ? "Deposit" : "Balance"} · ${money(data.amount)}
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <a href="${data.url}" target="_blank" rel="noopener"
              style="display:inline-block;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:850;background:linear-gradient(120deg,#ff7a18,#ff3d81);color:white">
-            Open Test Checkout
+            ${data.environment === "production" ? "Open Checkout" : "Open Test Checkout"}
           </a>
           <button id="v73CopySquareLink" type="button"
              style="padding:9px 12px;border-radius:10px;border:1px solid #2a2e3c;background:transparent;color:white;font-weight:800;cursor:pointer">
@@ -90,7 +90,7 @@
       });
 
       if (msg) {
-        msg.textContent = "Square test payment link created.";
+        msg.textContent = data.environment === "production" ? "Square LIVE payment link created. This link can charge real money." : "Square test payment link created.";
         msg.className = "v73-msg ok";
       }
     } catch (e) {
