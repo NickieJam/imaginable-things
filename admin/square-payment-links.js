@@ -8,7 +8,7 @@
 
   function getJobNumber() {
     const text = document.querySelector("#v73Label")?.textContent || "";
-    const match = text.match(/[A-Z]+-\d{4}-\d+/i);
+    const match = text.match(/\b[A-Z]{2,}(?:-\d+){2,}\b/i);
     return match ? match[0] : "";
   }
 

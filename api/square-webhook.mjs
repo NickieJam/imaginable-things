@@ -83,7 +83,7 @@ async function saveJobsFile(encoded, sha, data, jobNumber) {
 
 function paymentReference(note) {
   const match = String(note || "").match(
-    /\b(Deposit|Balance) for ([A-Z]+-\d{4}-\d+)\b/i
+    /\b(Deposit|Balance) for ([A-Z]{2,}(?:-\d+){2,})\b/i
   );
   if (!match) return null;
   return {
@@ -301,3 +301,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
