@@ -50,7 +50,7 @@
       "due_date": "2026-09-02",
       "amount_paid": 0,
       "order_total": 135,
-      "deposit_required": 0,
+      "deposit_required": 1,
       "balance_due": 135,
       "payment_status": "deposit-due",
       "visible": true,
