@@ -56,6 +56,8 @@ export default async function handler(req, res) {
 
     const jobNumber = String(body.job_number || "").trim();
     const paymentType = body.payment_type === "balance" ? "balance" : "deposit";
+    const previewOnly = body.preview_only === true;
+    const liveConfirmed = body.live_confirmed === true;
 
     if (!jobNumber) {
       return send(res, 400, { ok: false, error: "Missing job number." });
@@ -63,7 +65,9 @@ export default async function handler(req, res) {
 
     const accessToken = process.env.SQUARE_ACCESS_TOKEN;
     const locationId = process.env.SQUARE_LOCATION_ID;
-    const environment = String(process.env.SQUARE_ENVIRONMENT || "sandbox").toLowerCase();
+    const environment = String(
+      process.env.SQUARE_ENVIRONMENT || "sandbox"
+    ).toLowerCase();
 
     if (!accessToken || !locationId) {
       return send(res, 500, {
@@ -100,6 +104,24 @@ export default async function handler(req, res) {
       });
     }
 
+    if (previewOnly) {
+      return send(res, 200, {
+        ok: true,
+        preview: true,
+        environment,
+        job_number: jobNumber,
+        payment_type: paymentType,
+        amount
+      });
+    }
+
+    if (environment === "production" && !liveConfirmed) {
+      return send(res, 409, {
+        ok: false,
+        error: "LIVE confirmation required before creating a real payment link."
+      });
+    }
+
     const cents = Math.round(amount * 100);
     const base =
       environment === "production"
@@ -107,27 +129,31 @@ export default async function handler(req, res) {
         : "https://connect.squareupsandbox.com";
 
     const label = paymentType === "deposit" ? "Deposit" : "Balance";
-    const squareResponse = await fetch(`${base}/v2/online-checkout/payment-links`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-        "Square-Version": SQUARE_VERSION
-      },
-      body: JSON.stringify({
-        idempotency_key: crypto.randomUUID(),
-        description: `${label} payment for ${jobNumber}`,
-        payment_note: `${label} for ${jobNumber} - ${job.client || "Customer"}`,
-        quick_pay: {
-          name: `Imaginable Things - ${label} ${jobNumber}`,
-          price_money: {
-            amount: cents,
-            currency: "USD"
-          },
-          location_id: locationId
-        }
-      })
-    });
+
+    const squareResponse = await fetch(
+      `${base}/v2/online-checkout/payment-links`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          "Square-Version": SQUARE_VERSION
+        },
+        body: JSON.stringify({
+          idempotency_key: crypto.randomUUID(),
+          description: `${label} payment for ${jobNumber}`,
+          payment_note: `${label} for ${jobNumber} - ${job.client || "Customer"}`,
+          quick_pay: {
+            name: `Imaginable Things - ${label} ${jobNumber}`,
+            price_money: {
+              amount: cents,
+              currency: "USD"
+            },
+            location_id: locationId
+          }
+        })
+      }
+    );
 
     const squareData = await squareResponse.json();
 
@@ -137,6 +163,7 @@ export default async function handler(req, res) {
         squareData?.errors?.[0]?.detail ||
         squareData?.errors?.[0]?.code ||
         "Square could not create the payment link.";
+
       return send(res, squareResponse.status || 500, {
         ok: false,
         error: detail
