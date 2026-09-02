@@ -60,9 +60,10 @@
       "square_payment_link_url": "https://square.link/u/epIQXR6I",
       "square_payment_link_type": "balance",
       "square_payment_link_amount": 134,
-      "square_payment_link_status": "active",
+      "square_payment_link_status": "deactivated",
       "square_payment_link_environment": "production",
-      "square_payment_link_created_at": "2026-09-02T00:19:52Z"
+      "square_payment_link_created_at": "2026-09-02T00:19:52Z",
+      "square_payment_link_deactivated_at": "2026-09-02T00:21:41.634Z"
     }
   ]
 }
