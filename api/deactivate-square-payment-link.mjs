@@ -1,5 +1,3 @@
-import crypto from "node:crypto";
-
 const OWNER = "NickieJam";
 const REPO = "imaginable-things";
 const BRANCH = "main";
@@ -60,29 +58,28 @@ async function saveJobsFile(encoded, sha, data, message) {
   return { conflict: false };
 }
 
-async function savePaymentLink(jobNumber, metadata) {
+async function markDeactivated(jobNumber, paymentLinkId) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     const { file, data, encoded } = await getJobsFile();
     const job = findJob(data, jobNumber);
-    if (!job) throw new Error("Job not found while saving payment link.");
+    if (!job) throw new Error("Job not found while updating payment link.");
 
-    job.square_payment_link_id = metadata.id;
-    job.square_payment_link_url = metadata.url;
-    job.square_payment_link_type = metadata.type;
-    job.square_payment_link_amount = metadata.amount;
-    job.square_payment_link_status = "active";
-    job.square_payment_link_environment = metadata.environment;
-    job.square_payment_link_created_at = metadata.created_at;
+    if (String(job.square_payment_link_id || "") !== String(paymentLinkId)) {
+      throw new Error("Saved payment link changed before deactivation.");
+    }
+
+    job.square_payment_link_status = "deactivated";
+    job.square_payment_link_deactivated_at = new Date().toISOString();
 
     const result = await saveJobsFile(
       encoded,
       file.sha,
       data,
-      `content: save Square payment link ${jobNumber}`
+      `content: deactivate Square payment link ${jobNumber}`
     );
     if (!result.conflict) return;
   }
-  throw new Error("Could not save Square payment link after GitHub retries.");
+  throw new Error("Could not update payment link after GitHub retries.");
 }
 
 export default async function handler(req, res) {
@@ -98,23 +95,18 @@ export default async function handler(req, res) {
 
     const body =
       typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
-
     const jobNumber = String(body.job_number || "").trim();
-    const paymentType = body.payment_type === "balance" ? "balance" : "deposit";
-    const previewOnly = body.preview_only === true;
-    const liveConfirmed = body.live_confirmed === true;
 
     if (!jobNumber) {
       return send(res, 400, { ok: false, error: "Missing job number." });
     }
 
     const accessToken = process.env.SQUARE_ACCESS_TOKEN;
-    const locationId = process.env.SQUARE_LOCATION_ID;
     const environment = String(
       process.env.SQUARE_ENVIRONMENT || "sandbox"
     ).toLowerCase();
 
-    if (!accessToken || !locationId) {
+    if (!accessToken) {
       return send(res, 500, {
         ok: false,
         error: "Square environment variables are not configured."
@@ -127,134 +119,79 @@ export default async function handler(req, res) {
       return send(res, 404, { ok: false, error: "Job not found." });
     }
 
-    const orderTotal = Math.max(0, Number(job.order_total) || 0);
-    const depositRequired = Math.max(0, Number(job.deposit_required) || 0);
-    const amountPaid = Math.max(0, Number(job.amount_paid) || 0);
-    const balanceDue = Math.max(
-      0,
-      Number(job.balance_due ?? (orderTotal - amountPaid)) || 0
-    );
+    const paymentLinkId = String(job.square_payment_link_id || "");
+    const status = String(job.square_payment_link_status || "");
 
-    const amount =
-      paymentType === "deposit"
-        ? Math.max(0, Math.min(balanceDue, depositRequired - amountPaid))
-        : balanceDue;
-
-    if (amount <= 0) {
+    if (!paymentLinkId) {
       return send(res, 400, {
         ok: false,
-        error:
-          paymentType === "deposit"
-            ? "There is no deposit amount due for this job."
-            : "There is no balance due for this job."
+        error: "This job does not have a saved Square payment link."
       });
     }
 
-    if (previewOnly) {
+    if (status === "deactivated") {
       return send(res, 200, {
         ok: true,
-        preview: true,
-        environment,
+        already_deactivated: true,
         job_number: jobNumber,
-        payment_type: paymentType,
-        amount
+        payment_link_id: paymentLinkId
       });
     }
 
-    if (environment === "production" && !liveConfirmed) {
+    if (
+      job.square_payment_link_environment &&
+      String(job.square_payment_link_environment) !== environment
+    ) {
       return send(res, 409, {
         ok: false,
-        error: "LIVE confirmation required before creating a real payment link."
+        error: "Saved payment link belongs to a different Square environment."
       });
     }
 
-    const cents = Math.round(amount * 100);
     const base =
       environment === "production"
         ? "https://connect.squareup.com"
         : "https://connect.squareupsandbox.com";
 
-    const label = paymentType === "deposit" ? "Deposit" : "Balance";
-
     const squareResponse = await fetch(
-      `${base}/v2/online-checkout/payment-links`,
+      `${base}/v2/online-checkout/payment-links/${encodeURIComponent(paymentLinkId)}`,
       {
-        method: "POST",
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
           "Square-Version": SQUARE_VERSION
-        },
-        body: JSON.stringify({
-          idempotency_key: crypto.randomUUID(),
-          description: `${label} payment for ${jobNumber}`,
-          payment_note: `${label} for ${jobNumber} - ${job.client || "Customer"}`,
-          quick_pay: {
-            name: `Imaginable Things - ${label} ${jobNumber}`,
-            price_money: {
-              amount: cents,
-              currency: "USD"
-            },
-            location_id: locationId
-          }
-        })
+        }
       }
     );
 
-    const squareData = await squareResponse.json();
+    const squareData = await squareResponse.json().catch(() => ({}));
 
-    if (!squareResponse.ok || !squareData.payment_link?.url) {
-      console.error("Square CreatePaymentLink error:", squareData);
+    if (!squareResponse.ok) {
+      console.error("Square DeletePaymentLink error:", squareData);
       const detail =
         squareData?.errors?.[0]?.detail ||
         squareData?.errors?.[0]?.code ||
-        "Square could not create the payment link.";
-
+        "Square could not deactivate the payment link.";
       return send(res, squareResponse.status || 500, {
         ok: false,
         error: detail
       });
     }
 
-    const link = squareData.payment_link;
-    const createdAt = String(link.created_at || new Date().toISOString());
-    let trackingSaved = true;
-    let trackingWarning = "";
-
-    try {
-      await savePaymentLink(jobNumber, {
-        id: link.id,
-        url: link.url,
-        type: paymentType,
-        amount: Number(amount.toFixed(2)),
-        environment,
-        created_at: createdAt
-      });
-    } catch (error) {
-      trackingSaved = false;
-      trackingWarning =
-        "Payment link was created in Square, but Imaginable OS could not save its tracking record. Do not create another link; copy this one and review GitHub/Vercel.";
-      console.error("Square link tracking save error:", error);
-    }
+    await markDeactivated(jobNumber, paymentLinkId);
 
     return send(res, 200, {
       ok: true,
-      environment,
       job_number: jobNumber,
-      payment_type: paymentType,
-      amount,
-      url: link.url,
-      payment_link_id: link.id,
-      order_id: link.order_id,
-      created_at: createdAt,
-      tracking_saved: trackingSaved,
-      tracking_warning: trackingWarning
+      payment_link_id: paymentLinkId,
+      cancelled_order_id: squareData.cancelled_order_id || ""
     });
   } catch (error) {
     console.error(error);
     return send(res, 500, {
       ok: false,
-      error: "Could not create the Square payment link."
+      error: "Could not deactivate the Square payment link."
     });
   }
 }

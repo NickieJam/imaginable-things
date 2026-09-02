@@ -466,6 +466,70 @@ content:
             label: Last Square payment date
             type: string
             hidden: true
+          - name: square_payment_link_id
+
+            label: Square payment link ID
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_url
+
+            label: Square payment link URL
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_type
+
+            label: Square payment link type
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_amount
+
+            label: Square payment link amount
+
+            type: number
+
+            hidden: true
+
+          - name: square_payment_link_status
+
+            label: Square payment link status
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_environment
+
+            label: Square payment link environment
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_created_at
+
+            label: Square payment link created
+
+            type: string
+
+            hidden: true
+
+          - name: square_payment_link_deactivated_at
+
+            label: Square payment link deactivated
+
+            type: string
+
+            hidden: true
+
           - name: visible
             label: Active in Job Tracker
             type: boolean
