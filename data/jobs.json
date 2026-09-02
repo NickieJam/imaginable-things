@@ -53,9 +53,6 @@
       "deposit_required": 1,
       "balance_due": 134,
       "payment_status": "partially-paid",
-      "visible": true,
-      "created_date": "2026-08-24",
-      "customer_recorded": false,
       "square_payment_link_id": "GQVYP3KR76Q6GOGN",
       "square_payment_link_url": "https://square.link/u/epIQXR6I",
       "square_payment_link_type": "balance",
@@ -63,7 +60,29 @@
       "square_payment_link_status": "deactivated",
       "square_payment_link_environment": "production",
       "square_payment_link_created_at": "2026-09-02T00:19:52Z",
-      "square_payment_link_deactivated_at": "2026-09-02T00:21:41.634Z"
+      "square_payment_link_deactivated_at": "2026-09-02T00:21:41.634Z",
+      "visible": true,
+      "created_date": "2026-08-24",
+      "customer_recorded": false
+    },
+    {
+      "job_number": "IT-09-2026-102",
+      "client": "Brenda Eastconn",
+      "product": "Vinyl Banner 4'x4'",
+      "quantity": 1,
+      "technique": "Mixed Techniques",
+      "status": "waiting-materials",
+      "priority": "high",
+      "due_date": "2026-09-18",
+      "contact": "860-605-6515",
+      "amount_paid": 130,
+      "order_total": 130,
+      "deposit_required": 0,
+      "balance_due": 0,
+      "payment_status": "paid",
+      "visible": true,
+      "created_date": "2026-09-02",
+      "customer_recorded": false
     }
   ]
 }
