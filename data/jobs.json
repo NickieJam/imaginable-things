@@ -55,7 +55,14 @@
       "payment_status": "partially-paid",
       "visible": true,
       "created_date": "2026-08-24",
-      "customer_recorded": false
+      "customer_recorded": false,
+      "square_payment_link_id": "GQVYP3KR76Q6GOGN",
+      "square_payment_link_url": "https://square.link/u/epIQXR6I",
+      "square_payment_link_type": "balance",
+      "square_payment_link_amount": 134,
+      "square_payment_link_status": "active",
+      "square_payment_link_environment": "production",
+      "square_payment_link_created_at": "2026-09-02T00:19:52Z"
     }
   ]
 }
