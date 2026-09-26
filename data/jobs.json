@@ -100,7 +100,25 @@
       "payment_status": "deposit-due",
       "visible": true,
       "created_date": "2026-09-26",
-      "customer_recorded": false
+      "customer_recorded": false,
+      "approval": {
+        "record_id": "APR-0d88891e-d2f7-4467-a351-d8f8cd00f168",
+        "status": "pending",
+        "recipient_name": "Annellys Ortiz",
+        "proof_version": "1",
+        "proof_url": "https://www.imaginablethingsllc.com/assets/images/logo.webp",
+        "summary": "TEST ONLY - Final Proof Approval test. Do not produce.",
+        "policy_version": "2026-09-26",
+        "policy_url": "/custom-order-policy.html",
+        "proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f",
+        "token_hash": "2674eac2a13c962f451b5366f9d4cd52c59592d8db3e0e439fe8003ae14e0967",
+        "created_at": "2026-09-26T22:41:43.336Z",
+        "approved_at": null,
+        "approval_method": null,
+        "approval_name_hash": null,
+        "approval_name_salt": null,
+        "affirmation_version": null
+      }
     }
   ]
 }
