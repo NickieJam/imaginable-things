@@ -1,0 +1,33 @@
+/* Imaginable OS 7.4-C — Production Clearance Gate */
+.production-gate{
+  margin:12px 0 2px;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:rgba(255,255,255,.03);
+  font-size:.78rem;
+  line-height:1.45;
+}
+.production-gate strong{display:block;margin-bottom:3px}
+.production-gate small{color:var(--muted)}
+.production-gate.blocked{
+  border-color:rgba(255,111,125,.4);
+  background:rgba(255,111,125,.07);
+}
+.production-gate.blocked strong{color:#ffb5bd}
+.production-gate.cleared{
+  border-color:rgba(86,213,139,.4);
+  background:rgba(86,213,139,.07);
+}
+.production-gate.cleared strong{color:#83e5aa}
+.production-gate.violation{
+  border-color:rgba(255,73,92,.7);
+  background:rgba(255,73,92,.12);
+  box-shadow:0 0 0 1px rgba(255,73,92,.08) inset;
+}
+.production-gate.violation strong{color:#ff9aa5}
+.button.production-start[disabled]{
+  opacity:.5;
+  cursor:not-allowed;
+  filter:saturate(.5);
+}

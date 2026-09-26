@@ -142,8 +142,6 @@ function requestOrigin(req) {
   return `${proto}://${host}`;
 }
 
-import { head } from "@vercel/blob";
-
 export default async function handler(req, res) {
   if (req.method !== "POST") return send(res, 405, { error:"Method not allowed." });
 
@@ -154,114 +152,53 @@ export default async function handler(req, res) {
     if (String(body.pin || "") !== adminPin) return send(res, 401, { error:"Invalid Admin PIN." });
 
     const jobNumber = normalize(body.job_number);
-    const recipientName = normalize(body.recipient_name);
-    const proofVersion = normalize(body.proof_version);
-    const proofPathname = normalize(body.proof_pathname);
-    const proofFilename = normalize(body.proof_filename);
-    const proofContentType = normalize(body.proof_content_type);
-    const legacyProofUrl = normalize(body.proof_url);
-    const summary = normalize(body.summary);
-
-    if (!jobNumber || !recipientName || !proofVersion || !summary) {
-      return send(res, 400, { error:"Job, recipient, proof version and proof notes are required." });
-    }
-    if (!proofPathname && !legacyProofUrl) {
-      return send(res, 400, { error:"A final proof file is required." });
-    }
-    if (legacyProofUrl && !/^https?:\/\//i.test(legacyProofUrl) && !legacyProofUrl.startsWith("/")) {
-      return send(res, 400, { error:"Legacy proof URL must begin with https:// or /." });
-    }
-
-    let proofEtag = "";
-    let verifiedContentType = proofContentType;
-
-    if (proofPathname) {
-      const metadata = await head(proofPathname, { access:"private" });
-      if (!metadata) return send(res, 400, { error:"The uploaded proof could not be verified." });
-      proofEtag = normalize(metadata.etag);
-      verifiedContentType = normalize(metadata.contentType || proofContentType);
-      if (!proofFilename) return send(res, 400, { error:"The proof filename is missing." });
-    }
+    if (!jobNumber) return send(res, 400, { error:"Job number is required." });
 
     const { json, sha } = await readJobs();
     const job = json.jobs.find((item) => normalize(item.job_number) === jobNumber);
     if (!job) return send(res, 404, { error:`Job ${jobNumber} was not found.` });
 
-    if (job.approval && !body.replace_current) {
-      return send(res, 409, { error:"This job already has an approval request. Confirm replacement to create a new one." });
+    const approval = job.approval;
+    const approved =
+      approval &&
+      approval.status === "approved" &&
+      approval.record_id &&
+      approval.approved_at &&
+      secureEqualHex(approvalHashForJob(job), approval.approved_proof_hash || approval.proof_hash);
+
+    if (!approved) {
+      return send(res, 409, {
+        error:"Production is blocked. The customer must approve the current final proof first."
+      });
     }
 
-    if (job.approval) {
-      const history = Array.isArray(job.approval_history) ? job.approval_history : [];
-      history.push({ ...job.approval, archived_at:new Date().toISOString() });
-      job.approval_history = history.slice(-20);
-    }
-
-    const recordId = `APR-${crypto.randomUUID()}`;
-    const secret = crypto.randomBytes(32).toString("base64url");
-    const policyVersion = "2026-09-26";
-    const createdAt = new Date().toISOString();
-
-    const approval = {
-      record_id:recordId,
-      status:"pending",
-      recipient_name:recipientName,
-      proof_version:proofVersion,
-      proof_url:proofPathname ? "" : legacyProofUrl,
-      proof_pathname:proofPathname || "",
-      proof_filename:proofFilename || "",
-      proof_content_type:verifiedContentType || "",
-      proof_etag:proofEtag || "",
-      summary,
-      policy_version:policyVersion,
-      policy_url:"/custom-order-policy.html",
-      token_hash:tokenHash(secret),
-      created_at:createdAt,
-      approved_at:null,
-      approval_method:null,
-      approval_name_hash:null,
-      approval_name_salt:null,
-      affirmation_version:null
-    };
-
-    approval.proof_hash = approvalProofHash({
-      job_number:jobNumber,
-      recipient_name:approval.recipient_name,
-      proof_version:approval.proof_version,
-      proof_url:approval.proof_url,
-      proof_pathname:approval.proof_pathname,
-      proof_filename:approval.proof_filename,
-      proof_content_type:approval.proof_content_type,
-      proof_etag:approval.proof_etag,
-      summary:approval.summary,
-      policy_version:approval.policy_version
-    });
-
-    job.approval = approval;
+    const now = new Date().toISOString();
+    job.status = "production";
+    job.production_started_at = now;
+    job.production_started_from_approval = approval.record_id;
     job.production_clearance = {
-      status:"blocked",
-      reason:"customer-approval-required",
-      approval_record_id:recordId,
-      updated_at:createdAt
+      status:"cleared",
+      reason:"customer-proof-approved",
+      approval_record_id:approval.record_id,
+      proof_version:approval.proof_version,
+      cleared_at:job.production_clearance?.cleared_at || approval.approved_at,
+      production_started_at:now,
+      updated_at:now
     };
 
-    await writeJobs(json, sha, `content: create proof approval ${jobNumber}`);
-
-    const token = `${recordId}.${secret}`;
-    const approvalUrl = `${requestOrigin(req)}/approval.html?token=${encodeURIComponent(token)}`;
+    await writeJobs(json, sha, `content: start production ${jobNumber}`);
 
     return send(res, 200, {
       ok:true,
       job_number:jobNumber,
-      record_id:recordId,
-      approval_url:approvalUrl,
-      status:"pending",
-      proof_filename:approval.proof_filename || "Proof"
+      status:"production",
+      approval_record_id:approval.record_id,
+      production_started_at:now
     });
   } catch (error) {
-    console.error("create-job-approval", error);
+    console.error("start-production", error);
     return send(res, error.statusCode === 409 ? 409 : 500, {
-      error:error?.message || "Approval link could not be created."
+      error:error?.message || "Could not start production."
     });
   }
 }

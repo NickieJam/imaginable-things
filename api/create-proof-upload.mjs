@@ -142,7 +142,24 @@ function requestOrigin(req) {
   return `${proto}://${host}`;
 }
 
-import { head } from "@vercel/blob";
+import { issueSignedToken, presignUrl } from "@vercel/blob";
+
+const ALLOWED_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "application/pdf"
+]);
+const MAX_BYTES = 25 * 1024 * 1024;
+
+function safePart(value, fallback="file") {
+  const cleaned = String(value || "")
+    .normalize("NFKD")
+    .replace(/[^\w.-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return cleaned.slice(0, 90) || fallback;
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return send(res, 405, { error:"Method not allowed." });
@@ -154,114 +171,59 @@ export default async function handler(req, res) {
     if (String(body.pin || "") !== adminPin) return send(res, 401, { error:"Invalid Admin PIN." });
 
     const jobNumber = normalize(body.job_number);
-    const recipientName = normalize(body.recipient_name);
-    const proofVersion = normalize(body.proof_version);
-    const proofPathname = normalize(body.proof_pathname);
-    const proofFilename = normalize(body.proof_filename);
-    const proofContentType = normalize(body.proof_content_type);
-    const legacyProofUrl = normalize(body.proof_url);
-    const summary = normalize(body.summary);
+    const filename = normalize(body.filename);
+    const contentType = normalize(body.content_type).toLowerCase();
+    const size = Number(body.size || 0);
 
-    if (!jobNumber || !recipientName || !proofVersion || !summary) {
-      return send(res, 400, { error:"Job, recipient, proof version and proof notes are required." });
+    if (!jobNumber || !filename || !contentType || !Number.isFinite(size) || size <= 0) {
+      return send(res, 400, { error:"Job, filename, file type and size are required." });
     }
-    if (!proofPathname && !legacyProofUrl) {
-      return send(res, 400, { error:"A final proof file is required." });
+    if (!ALLOWED_TYPES.has(contentType)) {
+      return send(res, 400, { error:"Use PNG, JPG/JPEG, WebP or PDF for the final proof." });
     }
-    if (legacyProofUrl && !/^https?:\/\//i.test(legacyProofUrl) && !legacyProofUrl.startsWith("/")) {
-      return send(res, 400, { error:"Legacy proof URL must begin with https:// or /." });
+    if (size > MAX_BYTES) {
+      return send(res, 400, { error:"Proof files must be 25 MB or smaller." });
     }
 
-    let proofEtag = "";
-    let verifiedContentType = proofContentType;
-
-    if (proofPathname) {
-      const metadata = await head(proofPathname, { access:"private" });
-      if (!metadata) return send(res, 400, { error:"The uploaded proof could not be verified." });
-      proofEtag = normalize(metadata.etag);
-      verifiedContentType = normalize(metadata.contentType || proofContentType);
-      if (!proofFilename) return send(res, 400, { error:"The proof filename is missing." });
-    }
-
-    const { json, sha } = await readJobs();
+    const { json } = await readJobs();
     const job = json.jobs.find((item) => normalize(item.job_number) === jobNumber);
     if (!job) return send(res, 404, { error:`Job ${jobNumber} was not found.` });
 
-    if (job.approval && !body.replace_current) {
-      return send(res, 409, { error:"This job already has an approval request. Confirm replacement to create a new one." });
-    }
+    const pathname =
+      `approval-proofs/${safePart(jobNumber, "job")}/${Date.now()}-${crypto.randomUUID()}-${safePart(filename)}`;
 
-    if (job.approval) {
-      const history = Array.isArray(job.approval_history) ? job.approval_history : [];
-      history.push({ ...job.approval, archived_at:new Date().toISOString() });
-      job.approval_history = history.slice(-20);
-    }
-
-    const recordId = `APR-${crypto.randomUUID()}`;
-    const secret = crypto.randomBytes(32).toString("base64url");
-    const policyVersion = "2026-09-26";
-    const createdAt = new Date().toISOString();
-
-    const approval = {
-      record_id:recordId,
-      status:"pending",
-      recipient_name:recipientName,
-      proof_version:proofVersion,
-      proof_url:proofPathname ? "" : legacyProofUrl,
-      proof_pathname:proofPathname || "",
-      proof_filename:proofFilename || "",
-      proof_content_type:verifiedContentType || "",
-      proof_etag:proofEtag || "",
-      summary,
-      policy_version:policyVersion,
-      policy_url:"/custom-order-policy.html",
-      token_hash:tokenHash(secret),
-      created_at:createdAt,
-      approved_at:null,
-      approval_method:null,
-      approval_name_hash:null,
-      approval_name_salt:null,
-      affirmation_version:null
-    };
-
-    approval.proof_hash = approvalProofHash({
-      job_number:jobNumber,
-      recipient_name:approval.recipient_name,
-      proof_version:approval.proof_version,
-      proof_url:approval.proof_url,
-      proof_pathname:approval.proof_pathname,
-      proof_filename:approval.proof_filename,
-      proof_content_type:approval.proof_content_type,
-      proof_etag:approval.proof_etag,
-      summary:approval.summary,
-      policy_version:approval.policy_version
+    const validUntil = Date.now() + 10 * 60 * 1000;
+    const signedToken = await issueSignedToken({
+      pathname,
+      operations:["put"],
+      allowedContentTypes:[contentType],
+      maximumSizeInBytes:MAX_BYTES,
+      validUntil
     });
 
-    job.approval = approval;
-    job.production_clearance = {
-      status:"blocked",
-      reason:"customer-approval-required",
-      approval_record_id:recordId,
-      updated_at:createdAt
-    };
-
-    await writeJobs(json, sha, `content: create proof approval ${jobNumber}`);
-
-    const token = `${recordId}.${secret}`;
-    const approvalUrl = `${requestOrigin(req)}/approval.html?token=${encodeURIComponent(token)}`;
+    const { presignedUrl } = await presignUrl(signedToken, {
+      operation:"put",
+      pathname,
+      access:"private",
+      allowedContentTypes:[contentType],
+      maximumSizeInBytes:MAX_BYTES,
+      addRandomSuffix:false,
+      allowOverwrite:false,
+      validUntil
+    });
 
     return send(res, 200, {
       ok:true,
-      job_number:jobNumber,
-      record_id:recordId,
-      approval_url:approvalUrl,
-      status:"pending",
-      proof_filename:approval.proof_filename || "Proof"
+      pathname,
+      filename,
+      content_type:contentType,
+      upload_url:presignedUrl,
+      valid_until:new Date(validUntil).toISOString()
     });
   } catch (error) {
-    console.error("create-job-approval", error);
-    return send(res, error.statusCode === 409 ? 409 : 500, {
-      error:error?.message || "Approval link could not be created."
+    console.error("create-proof-upload", error);
+    return send(res, 500, {
+      error:error?.message || "Could not prepare the secure proof upload."
     });
   }
 }

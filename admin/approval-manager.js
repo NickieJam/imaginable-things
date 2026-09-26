@@ -1,5 +1,8 @@
 (() => {
   const STORAGE_PREFIX = "imaginable_approval_link_";
+  const ALLOWED_TYPES = new Set(["image/png","image/jpeg","image/webp","application/pdf"]);
+  const MAX_BYTES = 25 * 1024 * 1024;
+
   let jobs = [];
   let activeJob = null;
   let observerTimer = null;
@@ -11,6 +14,7 @@
 
   function ensureModal() {
     if (document.getElementById("approvalManagerModal")) return;
+
     document.body.insertAdjacentHTML("beforeend", `
       <div class="approval-modal" id="approvalManagerModal" hidden>
         <div class="approval-modal-backdrop" data-approval-close></div>
@@ -19,29 +23,45 @@
             <div><p>CUSTOMER APPROVAL</p><h2 id="approvalManagerTitle">Final Proof Approval</h2></div>
             <button class="approval-close" type="button" data-approval-close aria-label="Close">×</button>
           </div>
+
           <div class="approval-manager-status" id="approvalManagerStatus"></div>
+
           <div class="approval-fields">
-            <label><span>Approval recipient *</span><input id="approvalRecipient" type="text"></label>
-            <label><span>Proof version *</span><input id="approvalVersion" type="text" placeholder="Example: 1 or 3"></label>
+            <label>
+              <span>Approval recipient *</span>
+              <input id="approvalRecipient" type="text">
+            </label>
+            <label>
+              <span>Proof version *</span>
+              <input id="approvalVersion" type="text" placeholder="Example: 1 or 3">
+            </label>
           </div>
+
           <label class="approval-full-field">
-            <span>Proof image or PDF URL *</span>
-            <input id="approvalProofUrl" type="url" placeholder="https://...">
-            <p class="approval-help">Use the direct URL for the final proof the customer should review.</p>
+            <span>Final proof file *</span>
+            <input id="approvalProofFile" type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,image/png,image/jpeg,image/webp,application/pdf">
+            <p class="approval-help" id="approvalProofHelp">
+              Choose the final PNG, JPG, WebP or PDF. Maximum 25 MB.
+            </p>
           </label>
+
           <label class="approval-full-field">
             <span>Customer-facing proof / order notes *</span>
             <textarea id="approvalSummary" placeholder="Example: 12 black polos, left chest embroidery, white thread, approved logo placement..."></textarea>
           </label>
+
           <label class="approval-full-field">
             <span>Admin PIN *</span>
             <input id="approvalPin" type="password" inputmode="numeric" autocomplete="off">
           </label>
+
           <div id="approvalManagerError" class="approval-manager-error" hidden></div>
+
           <div id="approvalLinkBox" class="approval-link-box" hidden>
             <strong>Secure customer link</strong>
             <code id="approvalLinkText"></code>
           </div>
+
           <div class="approval-actions">
             <button class="button" id="approvalCreate" type="button">Create Approval Link</button>
             <button class="button secondary" id="approvalCopy" type="button" hidden>Copy Link</button>
@@ -95,6 +115,7 @@
     const text = document.getElementById("approvalLinkText");
     const copy = document.getElementById("approvalCopy");
     const open = document.getElementById("approvalOpen");
+
     if (link) {
       box.hidden = false;
       text.textContent = link;
@@ -108,6 +129,17 @@
     }
   }
 
+  function existingProofLabel(a) {
+    if (!a) return "Choose the final PNG, JPG, WebP or PDF. Maximum 25 MB.";
+    if (a.proof_filename) {
+      return `Current proof: ${a.proof_filename}. Choose a new file only if you want to replace/revise the proof.`;
+    }
+    if (a.proof_url) {
+      return "This older approval uses a URL-based proof. Choose a file to move it into secure proof storage.";
+    }
+    return "Choose the final PNG, JPG, WebP or PDF. Maximum 25 MB.";
+  }
+
   function openModal(jobNumber) {
     activeJob = jobs.find((j) => norm(j.job_number) === norm(jobNumber));
     if (!activeJob) return;
@@ -118,7 +150,8 @@
     document.getElementById("approvalManagerStatus").innerHTML = statusText(activeJob);
     document.getElementById("approvalRecipient").value = a?.recipient_name || activeJob.client || "";
     document.getElementById("approvalVersion").value = a?.proof_version || "1";
-    document.getElementById("approvalProofUrl").value = a?.proof_url || "";
+    document.getElementById("approvalProofFile").value = "";
+    document.getElementById("approvalProofHelp").textContent = existingProofLabel(a);
     document.getElementById("approvalSummary").value = a?.summary || [
       activeJob.product ? `Product: ${activeJob.product}` : "",
       activeJob.quantity ? `Quantity: ${activeJob.quantity}` : "",
@@ -129,38 +162,99 @@
     document.getElementById("approvalManagerError").hidden = true;
 
     const button = document.getElementById("approvalCreate");
-    button.textContent = a ? (a.status === "approved" ? "Create Revised Proof Link" : "Replace Approval Link") : "Create Approval Link";
+    button.textContent = a
+      ? (a.status === "approved" ? "Create Revised Proof Link" : "Replace Approval Link")
+      : "Create Approval Link";
+
     showLink(a?.status === "pending" ? localLinkFor(activeJob) : "");
     document.getElementById("approvalManagerModal").hidden = false;
   }
 
+  function contentTypeFor(file) {
+    if (file.type) return file.type.toLowerCase();
+    const ext = String(file.name || "").split(".").pop().toLowerCase();
+    return ({
+      png:"image/png", jpg:"image/jpeg", jpeg:"image/jpeg", webp:"image/webp", pdf:"application/pdf"
+    })[ext] || "";
+  }
+
+  async function uploadProof(file, pin, jobNumber, button) {
+    const contentType = contentTypeFor(file);
+
+    if (!ALLOWED_TYPES.has(contentType)) {
+      throw new Error("Use PNG, JPG/JPEG, WebP or PDF for the final proof.");
+    }
+    if (file.size > MAX_BYTES) {
+      throw new Error("Proof files must be 25 MB or smaller.");
+    }
+
+    button.textContent = "Preparing secure upload…";
+
+    const prepare = await fetch("/api/create-proof-upload", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        pin,
+        job_number:jobNumber,
+        filename:file.name,
+        content_type:contentType,
+        size:file.size
+      })
+    });
+
+    const prepared = await prepare.json().catch(() => ({}));
+    if (!prepare.ok) throw new Error(prepared.error || "Could not prepare proof upload.");
+
+    button.textContent = "Uploading proof…";
+
+    const upload = await fetch(prepared.upload_url, {
+      method:"PUT",
+      headers:{ "Content-Type":contentType },
+      body:file
+    });
+
+    if (!upload.ok) {
+      const detail = await upload.text().catch(() => "");
+      throw new Error(detail || "The proof file could not be uploaded.");
+    }
+
+    return {
+      proof_pathname:prepared.pathname,
+      proof_filename:file.name,
+      proof_content_type:contentType
+    };
+  }
+
   async function createLink() {
     if (!activeJob) return;
+
     const errorBox = document.getElementById("approvalManagerError");
     errorBox.hidden = true;
 
     const recipient_name = document.getElementById("approvalRecipient").value.trim();
     const proof_version = document.getElementById("approvalVersion").value.trim();
-    const proof_url = document.getElementById("approvalProofUrl").value.trim();
     const summary = document.getElementById("approvalSummary").value.trim();
     const pin = document.getElementById("approvalPin").value.trim();
+    const file = document.getElementById("approvalProofFile").files?.[0] || null;
 
-    if (!recipient_name || !proof_version || !proof_url || !summary || !pin) {
-      errorBox.textContent = "Recipient, proof version, proof URL, notes and Admin PIN are required.";
-      errorBox.hidden = false;
-      return;
-    }
-
-    if (!/^https?:\/\//i.test(proof_url) && !proof_url.startsWith("/")) {
-      errorBox.textContent = "The proof URL must begin with https:// or /";
+    if (!recipient_name || !proof_version || !summary || !pin) {
+      errorBox.textContent = "Recipient, proof version, notes and Admin PIN are required.";
       errorBox.hidden = false;
       return;
     }
 
     const existing = approvalFor(activeJob);
+    const hasReusableProof = Boolean(existing?.proof_pathname || existing?.proof_url);
+
+    if (!file && !hasReusableProof) {
+      errorBox.textContent = "Choose the final proof file before creating the approval link.";
+      errorBox.hidden = false;
+      return;
+    }
+
     const warning = existing
       ? (existing.status === "approved"
-          ? "This job already has a customer-approved proof. Creating a revised proof will preserve the previous record in approval history and create a new approval request. Continue?"
+          ? "This job already has a customer-approved proof. Creating a revised proof request will preserve the previous approval in history and BLOCK production until the new proof is approved. Continue?"
           : "This will replace the current pending approval link. The old customer link will stop working. Continue?")
       : "";
 
@@ -168,9 +262,24 @@
 
     const button = document.getElementById("approvalCreate");
     button.disabled = true;
-    button.textContent = "Creating…";
 
     try {
+      let proofPayload = {};
+
+      if (file) {
+        proofPayload = await uploadProof(file, pin, norm(activeJob.job_number), button);
+      } else if (existing?.proof_pathname) {
+        proofPayload = {
+          proof_pathname:existing.proof_pathname,
+          proof_filename:existing.proof_filename || "proof",
+          proof_content_type:existing.proof_content_type || ""
+        };
+      } else {
+        proofPayload = { proof_url:existing?.proof_url || "" };
+      }
+
+      button.textContent = "Creating approval…";
+
       const response = await fetch("/api/create-job-approval", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
@@ -179,11 +288,12 @@
           job_number:norm(activeJob.job_number),
           recipient_name,
           proof_version,
-          proof_url,
           summary,
-          replace_current:Boolean(existing)
+          replace_current:Boolean(existing),
+          ...proofPayload
         })
       });
+
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Approval link could not be created.");
 
@@ -193,15 +303,20 @@
       await loadJobs();
       activeJob = jobs.find((j) => norm(j.job_number) === norm(data.job_number));
       document.getElementById("approvalManagerStatus").innerHTML = statusText(activeJob);
-      button.textContent = "Replace Approval Link";
+      document.getElementById("approvalProofFile").value = "";
+      document.getElementById("approvalProofHelp").textContent = existingProofLabel(approvalFor(activeJob));
       document.getElementById("approvalPin").value = "";
+      button.textContent = "Replace Approval Link";
       enhanceCards();
+      window.dispatchEvent(new CustomEvent("imaginable:jobs-changed"));
     } catch (error) {
       errorBox.textContent = error.message;
       errorBox.hidden = false;
     } finally {
       button.disabled = false;
-      if (button.textContent === "Creating…") button.textContent = "Create Approval Link";
+      if (button.textContent.includes("…")) {
+        button.textContent = existing ? "Replace Approval Link" : "Create Approval Link";
+      }
     }
   }
 
@@ -209,6 +324,7 @@
     const link = document.getElementById("approvalLinkText").textContent.trim();
     if (!link) return;
     const button = document.getElementById("approvalCopy");
+
     try {
       await navigator.clipboard.writeText(link);
       const old = button.textContent;
@@ -235,11 +351,12 @@
     document.querySelectorAll("#jobs .card").forEach((card) => {
       const jobNo = norm(card.querySelector(".jobno")?.textContent);
       if (!jobNo) return;
+
       const job = jobs.find((j) => norm(j.job_number) === jobNo);
       if (!job) return;
 
-      let chip = card.querySelector(".approval-chip");
-      if (chip) chip.remove();
+      card.querySelector(".approval-chip")?.remove();
+
       const headLeft = card.querySelector(".card-head > div");
       if (headLeft) headLeft.insertAdjacentHTML("beforeend", chipFor(job));
 
@@ -271,6 +388,11 @@
     ensureModal();
     await loadJobs();
     enhanceCards();
+
+    window.addEventListener("imaginable:jobs-changed", async () => {
+      await loadJobs();
+      enhanceCards();
+    });
 
     const jobsRoot = document.getElementById("jobs");
     if (jobsRoot) {

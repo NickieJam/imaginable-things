@@ -88,16 +88,52 @@ function parseApprovalToken(token) {
   return { recordId, secret };
 }
 
-function approvalProofHash({ job_number, recipient_name, proof_version, proof_url, summary, policy_version }) {
+function approvalProofHash({
+  job_number, recipient_name, proof_version, proof_url, proof_pathname,
+  proof_filename, proof_content_type, proof_etag, summary, policy_version
+}) {
+  // Preserve the exact 7.4-B fingerprint for legacy URL-based approvals.
+  if (!normalize(proof_pathname)) {
+    const legacy = [
+      normalize(job_number),
+      normalize(recipient_name),
+      normalize(proof_version),
+      normalize(proof_url),
+      normalize(summary),
+      normalize(policy_version)
+    ].join("\n---\n");
+    return crypto.createHash("sha256").update(legacy).digest("hex");
+  }
+
   const canonical = [
+    "IMAGINABLE_APPROVAL_PROOF_V2",
     normalize(job_number),
     normalize(recipient_name),
     normalize(proof_version),
-    normalize(proof_url),
+    normalize(proof_pathname),
+    normalize(proof_filename),
+    normalize(proof_content_type),
+    normalize(proof_etag),
     normalize(summary),
     normalize(policy_version)
   ].join("\n---\n");
   return crypto.createHash("sha256").update(canonical).digest("hex");
+}
+
+function approvalHashForJob(job) {
+  const a = job?.approval || {};
+  return approvalProofHash({
+    job_number:normalize(job?.job_number),
+    recipient_name:a.recipient_name,
+    proof_version:a.proof_version,
+    proof_url:a.proof_url,
+    proof_pathname:a.proof_pathname,
+    proof_filename:a.proof_filename,
+    proof_content_type:a.proof_content_type,
+    proof_etag:a.proof_etag,
+    summary:a.summary,
+    policy_version:a.policy_version
+  });
 }
 
 function requestOrigin(req) {
@@ -105,6 +141,8 @@ function requestOrigin(req) {
   const host = String(req.headers["x-forwarded-host"] || req.headers.host || "www.imaginablethingsllc.com").split(",")[0].trim();
   return `${proto}://${host}`;
 }
+
+import { issueSignedToken, presignUrl } from "@vercel/blob";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return send(res, 405, { error:"Method not allowed." });
@@ -124,16 +162,28 @@ export default async function handler(req, res) {
     }
 
     const a = job.approval;
-    const expectedProofHash = approvalProofHash({
-      job_number:normalize(job.job_number),
-      recipient_name:a.recipient_name,
-      proof_version:a.proof_version,
-      proof_url:a.proof_url,
-      summary:a.summary,
-      policy_version:a.policy_version
-    });
+    const expectedProofHash = approvalHashForJob(job);
     if (!secureEqualHex(expectedProofHash, a.proof_hash)) {
-      return send(res, 409, { error:"The approval details changed after this request was created. Please ask Imaginable Things for a new proof link." });
+      return send(res, 409, {
+        error:"The approval details changed after this request was created. Please ask Imaginable Things for a new proof link."
+      });
+    }
+
+    let proofUrl = a.proof_url || "";
+    if (a.proof_pathname) {
+      const validUntil = Date.now() + 60 * 60 * 1000;
+      const signedToken = await issueSignedToken({
+        pathname:a.proof_pathname,
+        operations:["get"],
+        validUntil
+      });
+      const signed = await presignUrl(signedToken, {
+        operation:"get",
+        pathname:a.proof_pathname,
+        access:"private",
+        validUntil
+      });
+      proofUrl = signed.presignedUrl;
     }
 
     return send(res, 200, {
@@ -144,14 +194,16 @@ export default async function handler(req, res) {
       technique:job.technique || "",
       due_date:job.due_date || "",
       proof_version:a.proof_version,
-      proof_url:a.proof_url,
+      proof_url:proofUrl,
+      proof_filename:a.proof_filename || "",
       summary:a.summary,
       policy_url:a.policy_url,
       policy_version:a.policy_version,
       record_id:a.record_id,
       status:a.status,
       created_at:a.created_at,
-      approved_at:a.approved_at
+      approved_at:a.approved_at,
+      production_clearance:job.production_clearance || null
     });
   } catch (error) {
     console.error("get-job-approval", error);

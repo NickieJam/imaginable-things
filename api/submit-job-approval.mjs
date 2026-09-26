@@ -88,16 +88,52 @@ function parseApprovalToken(token) {
   return { recordId, secret };
 }
 
-function approvalProofHash({ job_number, recipient_name, proof_version, proof_url, summary, policy_version }) {
+function approvalProofHash({
+  job_number, recipient_name, proof_version, proof_url, proof_pathname,
+  proof_filename, proof_content_type, proof_etag, summary, policy_version
+}) {
+  // Preserve the exact 7.4-B fingerprint for legacy URL-based approvals.
+  if (!normalize(proof_pathname)) {
+    const legacy = [
+      normalize(job_number),
+      normalize(recipient_name),
+      normalize(proof_version),
+      normalize(proof_url),
+      normalize(summary),
+      normalize(policy_version)
+    ].join("\n---\n");
+    return crypto.createHash("sha256").update(legacy).digest("hex");
+  }
+
   const canonical = [
+    "IMAGINABLE_APPROVAL_PROOF_V2",
     normalize(job_number),
     normalize(recipient_name),
     normalize(proof_version),
-    normalize(proof_url),
+    normalize(proof_pathname),
+    normalize(proof_filename),
+    normalize(proof_content_type),
+    normalize(proof_etag),
     normalize(summary),
     normalize(policy_version)
   ].join("\n---\n");
   return crypto.createHash("sha256").update(canonical).digest("hex");
+}
+
+function approvalHashForJob(job) {
+  const a = job?.approval || {};
+  return approvalProofHash({
+    job_number:normalize(job?.job_number),
+    recipient_name:a.recipient_name,
+    proof_version:a.proof_version,
+    proof_url:a.proof_url,
+    proof_pathname:a.proof_pathname,
+    proof_filename:a.proof_filename,
+    proof_content_type:a.proof_content_type,
+    proof_etag:a.proof_etag,
+    summary:a.summary,
+    policy_version:a.policy_version
+  });
 }
 
 function requestOrigin(req) {
@@ -143,14 +179,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const expectedProofHash = approvalProofHash({
-      job_number:normalize(job.job_number),
-      recipient_name:a.recipient_name,
-      proof_version:a.proof_version,
-      proof_url:a.proof_url,
-      summary:a.summary,
-      policy_version:a.policy_version
-    });
+    const expectedProofHash = approvalHashForJob(job);
     if (!secureEqualHex(expectedProofHash, a.proof_hash)) {
       return send(res, 409, { error:"The approval details changed. Please request a new proof link before approving." });
     }
@@ -161,13 +190,26 @@ export default async function handler(req, res) {
 
     const approvedAt = new Date().toISOString();
     const salt = crypto.randomBytes(16).toString("hex");
+
     a.status = "approved";
     a.approved_at = approvedAt;
     a.approval_method = "typed-name-and-checkbox";
     a.approval_name_salt = salt;
-    a.approval_name_hash = crypto.createHash("sha256").update(`${salt}|${normalizeName(typedName)}`).digest("hex");
+    a.approval_name_hash = crypto
+      .createHash("sha256")
+      .update(`${salt}|${normalizeName(typedName)}`)
+      .digest("hex");
     a.affirmation_version = "1";
     a.approved_proof_hash = a.proof_hash;
+
+    job.production_clearance = {
+      status:"cleared",
+      reason:"customer-proof-approved",
+      approval_record_id:a.record_id,
+      proof_version:a.proof_version,
+      cleared_at:approvedAt,
+      updated_at:approvedAt
+    };
 
     await writeJobs(json, sha, `content: customer approved proof ${normalize(job.job_number)}`);
 
@@ -177,10 +219,13 @@ export default async function handler(req, res) {
       proof_version:a.proof_version,
       approved_at:approvedAt,
       record_id:a.record_id,
-      status:"approved"
+      status:"approved",
+      production_clearance:"cleared"
     });
   } catch (error) {
     console.error("submit-job-approval", error);
-    return send(res, error.statusCode === 409 ? 409 : 500, { error:error.message || "Approval could not be recorded." });
+    return send(res, error.statusCode === 409 ? 409 : 500, {
+      error:error?.message || "Approval could not be recorded."
+    });
   }
 }
