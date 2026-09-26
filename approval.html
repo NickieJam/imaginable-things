@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#05060a">
+  <title>Final Proof Approval | Imaginable Things</title>
+  <link rel="icon" href="/assets/images/logo.webp">
+  <link rel="stylesheet" href="/approval.css">
+</head>
+<body>
+  <header class="approval-header">
+    <a class="approval-brand" href="/" aria-label="Imaginable Things home">
+      <img src="/assets/images/logo.webp" alt="Imaginable Things">
+      <span><strong>IMAGINABLE THINGS</strong><small>You Name It. We Make It.</small></span>
+    </a>
+    <span class="secure-label">FINAL PROOF APPROVAL</span>
+  </header>
+
+  <main class="approval-shell">
+    <section id="approval-loading" class="approval-state">
+      <div class="spinner" aria-hidden="true"></div>
+      <h1>Loading your proof…</h1>
+      <p>Please wait while we retrieve the approval request.</p>
+    </section>
+
+    <section id="approval-error" class="approval-state" hidden>
+      <div class="state-icon">!</div>
+      <h1>We could not open this approval.</h1>
+      <p id="approval-error-message">The link may be invalid, expired, or replaced by a newer proof.</p>
+      <a class="secondary-link" href="/#contact">Contact Imaginable Things</a>
+    </section>
+
+    <section id="approval-complete" class="approval-state success" hidden>
+      <div class="state-icon check">✓</div>
+      <p class="eyebrow">APPROVED FOR PRODUCTION</p>
+      <h1>Thank you.</h1>
+      <p id="approval-complete-message">Your final proof approval has been recorded.</p>
+      <div class="approval-receipt" id="approval-receipt"></div>
+      <p class="small-note">Please keep this page for your records.</p>
+    </section>
+
+    <section id="approval-content" hidden>
+      <div class="approval-hero">
+        <p class="eyebrow">FINAL PROOF</p>
+        <h1>Please review everything<br><span>before we make it.</span></h1>
+        <p>Check the design and order details carefully. Production should begin only after you are satisfied with the proof shown here.</p>
+      </div>
+
+      <section class="summary-card">
+        <div class="summary-head">
+          <div>
+            <span class="mini-label">ORDER</span>
+            <strong id="job-number">—</strong>
+          </div>
+          <span class="status-pill" id="approval-status">AWAITING APPROVAL</span>
+        </div>
+        <div class="summary-grid">
+          <div><span>Customer</span><strong id="recipient-name">—</strong></div>
+          <div><span>Product</span><strong id="product">—</strong></div>
+          <div><span>Quantity</span><strong id="quantity">—</strong></div>
+          <div><span>Technique</span><strong id="technique">—</strong></div>
+          <div><span>Proof version</span><strong id="proof-version">—</strong></div>
+          <div><span>Due date</span><strong id="due-date">—</strong></div>
+        </div>
+      </section>
+
+      <section class="proof-card">
+        <div class="card-title-row">
+          <div>
+            <p class="mini-label">DESIGN PROOF</p>
+            <h2>What you are approving</h2>
+          </div>
+          <a id="open-proof" class="proof-link" href="#" target="_blank" rel="noopener noreferrer">Open full proof</a>
+        </div>
+        <div id="proof-media" class="proof-media"></div>
+      </section>
+
+      <section class="details-card">
+        <p class="mini-label">ORDER / PROOF NOTES</p>
+        <h2>Details to review</h2>
+        <p id="proof-summary" class="proof-summary"></p>
+      </section>
+
+      <section class="approval-form-card">
+        <p class="mini-label">FINAL AUTHORIZATION</p>
+        <h2>Approve for production</h2>
+        <p class="form-intro">
+          By approving, you confirm that you reviewed the proof and the order details shown above.
+        </p>
+
+        <label class="name-field">
+          <span>Type your name exactly as shown above *</span>
+          <input id="approval-name" type="text" autocomplete="name" placeholder="Your name">
+        </label>
+
+        <label class="approval-check">
+          <input id="approval-checkbox" type="checkbox">
+          <span>
+            I reviewed the design and order details, including spelling, names, dates, colors,
+            sizes, quantities and placement as applicable. I approve this proof for production
+            and understand that personalized/custom-made items are final regarding the approved
+            details once production begins.
+          </span>
+        </label>
+
+        <p class="policy-copy">
+          By approving, you also acknowledge the
+          <a href="/custom-order-policy.html" target="_blank" rel="noopener">Custom Order &amp; Design Approval Policy</a>.
+        </p>
+
+        <div id="approval-form-error" class="form-error" hidden></div>
+        <button id="approve-button" class="approve-button" type="button">Approve for Production</button>
+        <p class="small-note">Do not approve if anything needs to be changed. Contact Imaginable Things first.</p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="approval-footer">
+    <span>© <span id="year"></span> Imaginable Things, LLC</span>
+    <a href="/custom-order-policy.html">Custom Order &amp; Approval Policy</a>
+  </footer>
+
+  <script src="/approval.js" defer></script>
+</body>
+</html>

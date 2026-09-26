@@ -1,0 +1,53 @@
+/* Imaginable OS 7.4-B — Customer Proof Approval */
+.approval-chip{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 9px;
+  border-radius:999px;border:1px solid var(--line);font-size:.68rem;font-weight:900;
+}
+.approval-chip.pending{color:#ffd997;border-color:rgba(255,199,102,.38);background:rgba(255,199,102,.07)}
+.approval-chip.approved{color:#83e5aa;border-color:rgba(86,213,139,.4);background:rgba(86,213,139,.08)}
+.approval-chip.none{color:var(--muted)}
+.approval-modal[hidden]{display:none!important}
+.approval-modal{
+  position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:16px;
+}
+.approval-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(4px)}
+.approval-modal-card{
+  position:relative;width:min(680px,100%);max-height:92vh;overflow:auto;
+  border:1px solid var(--line);border-radius:20px;background:#10131b;padding:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+.approval-modal-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.approval-modal-head p{margin:0;color:#ffc28e;font-size:.69rem;font-weight:900;letter-spacing:.12em}
+.approval-modal-head h2{margin:4px 0 0;font-size:1.45rem}
+.approval-close{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;color:white;
+  cursor:pointer;font-size:1.2rem;
+}
+.approval-manager-status{
+  margin:16px 0;padding:12px 13px;border:1px solid var(--line);border-radius:13px;
+  background:rgba(255,255,255,.035);color:#d8dce5;font-size:.84rem;line-height:1.55;
+}
+.approval-manager-status strong{color:white}
+.approval-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.approval-fields label,.approval-full-field{display:grid;gap:7px}
+.approval-fields span,.approval-full-field span{font-size:.75rem;font-weight:850;color:#d7dbe4}
+.approval-fields input,.approval-full-field input,.approval-full-field textarea{
+  width:100%;border:1px solid var(--line);border-radius:12px;background:#0a0d13;color:white;
+  padding:11px 12px;font:inherit;outline:none;
+}
+.approval-full-field{margin-top:12px}
+.approval-full-field textarea{min-height:115px;resize:vertical}
+.approval-help{color:var(--muted);font-size:.72rem;line-height:1.5;margin:6px 0 0}
+.approval-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.approval-actions button{flex:1 1 150px}
+.approval-link-box{
+  margin-top:14px;padding:13px;border:1px solid rgba(86,213,139,.35);
+  border-radius:13px;background:rgba(86,213,139,.07)
+}
+.approval-link-box strong{display:block;margin-bottom:6px;color:#83e5aa}
+.approval-link-box code{display:block;word-break:break-all;color:#dfe5ee;font-size:.75rem;line-height:1.5}
+.approval-manager-error{
+  margin-top:12px;padding:10px 12px;border-radius:11px;border:1px solid rgba(255,111,125,.45);
+  background:rgba(255,111,125,.08);color:#ffb9c0;font-size:.8rem;
+}
+@media(max-width:620px){.approval-fields{grid-template-columns:1fr}.approval-modal-card{padding:18px}}
