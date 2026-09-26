@@ -102,23 +102,54 @@
       "created_date": "2026-09-26",
       "customer_recorded": false,
       "approval": {
-        "record_id": "APR-0d88891e-d2f7-4467-a351-d8f8cd00f168",
-        "status": "approved",
+        "record_id": "APR-502f0a20-ff30-4fa9-b9f9-2e99c1b088f9",
+        "status": "pending",
         "recipient_name": "Annellys Ortiz",
-        "proof_version": "1",
-        "proof_url": "https://www.imaginablethingsllc.com/assets/images/logo.webp",
+        "proof_version": "2",
+        "proof_url": "",
+        "proof_pathname": "approval-proofs/IT-09-2026-115/1790463777155-45d08eb6-04b4-4bc2-ad8c-53fcb740aea5-A73144E8-16E8-4BB5-BB74-104F5060C4B6.PNG",
+        "proof_filename": "A73144E8-16E8-4BB5-BB74-104F5060C4B6.PNG",
+        "proof_content_type": "image/png",
+        "proof_etag": "\"8ec354487d600ef472e249a77607406b\"",
         "summary": "TEST ONLY - Final Proof Approval test. Do not produce.",
         "policy_version": "2026-09-26",
         "policy_url": "/custom-order-policy.html",
-        "proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f",
-        "token_hash": "2674eac2a13c962f451b5366f9d4cd52c59592d8db3e0e439fe8003ae14e0967",
-        "created_at": "2026-09-26T22:41:43.336Z",
-        "approved_at": "2026-09-26T22:44:46.893Z",
-        "approval_method": "typed-name-and-checkbox",
-        "approval_name_hash": "2cebecc56ecd86e7e853708b01f273a6f46a05cf74f31dfe1f4f3b1346929b46",
-        "approval_name_salt": "60cc9241a5187c07b1c6868193444874",
-        "affirmation_version": "1",
-        "approved_proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f"
+        "token_hash": "b9e60d102c8f604bd8b1cc7962e8dcc6ad7ba504c40c8745b0ada72be3e2aec7",
+        "created_at": "2026-09-26T23:02:58.970Z",
+        "approved_at": null,
+        "approval_method": null,
+        "approval_name_hash": null,
+        "approval_name_salt": null,
+        "affirmation_version": null,
+        "proof_hash": "ec5c045854fbdff569db1412ceed6b733ae269dd01477accebd34cd7744364dc"
+      },
+      "approval_history": [
+        {
+          "record_id": "APR-0d88891e-d2f7-4467-a351-d8f8cd00f168",
+          "status": "approved",
+          "recipient_name": "Annellys Ortiz",
+          "proof_version": "1",
+          "proof_url": "https://www.imaginablethingsllc.com/assets/images/logo.webp",
+          "summary": "TEST ONLY - Final Proof Approval test. Do not produce.",
+          "policy_version": "2026-09-26",
+          "policy_url": "/custom-order-policy.html",
+          "proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f",
+          "token_hash": "2674eac2a13c962f451b5366f9d4cd52c59592d8db3e0e439fe8003ae14e0967",
+          "created_at": "2026-09-26T22:41:43.336Z",
+          "approved_at": "2026-09-26T22:44:46.893Z",
+          "approval_method": "typed-name-and-checkbox",
+          "approval_name_hash": "2cebecc56ecd86e7e853708b01f273a6f46a05cf74f31dfe1f4f3b1346929b46",
+          "approval_name_salt": "60cc9241a5187c07b1c6868193444874",
+          "affirmation_version": "1",
+          "approved_proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f",
+          "archived_at": "2026-09-26T23:02:58.970Z"
+        }
+      ],
+      "production_clearance": {
+        "status": "blocked",
+        "reason": "customer-approval-required",
+        "approval_record_id": "APR-502f0a20-ff30-4fa9-b9f9-2e99c1b088f9",
+        "updated_at": "2026-09-26T23:02:58.970Z"
       }
     }
   ]
