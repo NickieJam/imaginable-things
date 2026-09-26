@@ -83,6 +83,24 @@
       "visible": true,
       "created_date": "2026-09-02",
       "customer_recorded": false
+    },
+    {
+      "job_number": "IT-09-2026-115",
+      "client": "Annellys Ortiz",
+      "product": "Tshirt",
+      "quantity": 5,
+      "technique": "DTF Printing",
+      "status": "quote",
+      "priority": "normal",
+      "due_date": "2026-09-26",
+      "amount_paid": 0,
+      "order_total": 100,
+      "deposit_required": 25,
+      "balance_due": 75,
+      "payment_status": "deposit-due",
+      "visible": true,
+      "created_date": "2026-09-26",
+      "customer_recorded": false
     }
   ]
 }
