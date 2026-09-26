@@ -103,7 +103,7 @@
       "customer_recorded": false,
       "approval": {
         "record_id": "APR-0d88891e-d2f7-4467-a351-d8f8cd00f168",
-        "status": "pending",
+        "status": "approved",
         "recipient_name": "Annellys Ortiz",
         "proof_version": "1",
         "proof_url": "https://www.imaginablethingsllc.com/assets/images/logo.webp",
@@ -113,11 +113,12 @@
         "proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f",
         "token_hash": "2674eac2a13c962f451b5366f9d4cd52c59592d8db3e0e439fe8003ae14e0967",
         "created_at": "2026-09-26T22:41:43.336Z",
-        "approved_at": null,
-        "approval_method": null,
-        "approval_name_hash": null,
-        "approval_name_salt": null,
-        "affirmation_version": null
+        "approved_at": "2026-09-26T22:44:46.893Z",
+        "approval_method": "typed-name-and-checkbox",
+        "approval_name_hash": "2cebecc56ecd86e7e853708b01f273a6f46a05cf74f31dfe1f4f3b1346929b46",
+        "approval_name_salt": "60cc9241a5187c07b1c6868193444874",
+        "affirmation_version": "1",
+        "approved_proof_hash": "903f2d4dedc3a58204f254307d144bbf46455bc177cefb666e0af9bdde4c553f"
       }
     }
   ]
