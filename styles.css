@@ -1436,3 +1436,39 @@ body.smart-quote-open {
 .testimonial-person{display:flex;align-items:center;gap:.85rem;margin-top:1.25rem}
 .testimonial-person>div{display:flex;flex-direction:column;gap:.15rem}
 .testimonial-photo{width:48px;height:48px;object-fit:cover;border-radius:50%;flex:0 0 48px}
+
+
+/* 7.4-A Custom Order Policy notice */
+.custom-policy-notice {
+  margin: 14px 0 16px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255, 122, 24, 0.38);
+  border-radius: 14px;
+  background: rgba(255, 122, 24, 0.06);
+  color: #d3d6df;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.custom-policy-notice strong {
+  color: #ffc28e;
+}
+
+.custom-policy-notice a {
+  color: #ffc28e;
+  font-weight: 850;
+}
+
+.footer-policy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.footer-policy-links a {
+  color: #d8dbe4;
+  font-size: 0.78rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
