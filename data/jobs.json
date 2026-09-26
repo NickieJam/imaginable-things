@@ -103,7 +103,7 @@
       "customer_recorded": false,
       "approval": {
         "record_id": "APR-502f0a20-ff30-4fa9-b9f9-2e99c1b088f9",
-        "status": "pending",
+        "status": "approved",
         "recipient_name": "Annellys Ortiz",
         "proof_version": "2",
         "proof_url": "",
@@ -116,12 +116,13 @@
         "policy_url": "/custom-order-policy.html",
         "token_hash": "b9e60d102c8f604bd8b1cc7962e8dcc6ad7ba504c40c8745b0ada72be3e2aec7",
         "created_at": "2026-09-26T23:02:58.970Z",
-        "approved_at": null,
-        "approval_method": null,
-        "approval_name_hash": null,
-        "approval_name_salt": null,
-        "affirmation_version": null,
-        "proof_hash": "ec5c045854fbdff569db1412ceed6b733ae269dd01477accebd34cd7744364dc"
+        "approved_at": "2026-09-26T23:06:22.071Z",
+        "approval_method": "typed-name-and-checkbox",
+        "approval_name_hash": "f76903e355bd19358028a228be5bac8160edf4244051f0f55233f8f27d02f9da",
+        "approval_name_salt": "a9bc87d6ae3c634548dfea99ee1f4d6a",
+        "affirmation_version": "1",
+        "proof_hash": "ec5c045854fbdff569db1412ceed6b733ae269dd01477accebd34cd7744364dc",
+        "approved_proof_hash": "ec5c045854fbdff569db1412ceed6b733ae269dd01477accebd34cd7744364dc"
       },
       "approval_history": [
         {
@@ -146,10 +147,12 @@
         }
       ],
       "production_clearance": {
-        "status": "blocked",
-        "reason": "customer-approval-required",
+        "status": "cleared",
+        "reason": "customer-proof-approved",
         "approval_record_id": "APR-502f0a20-ff30-4fa9-b9f9-2e99c1b088f9",
-        "updated_at": "2026-09-26T23:02:58.970Z"
+        "proof_version": "2",
+        "cleared_at": "2026-09-26T23:06:22.071Z",
+        "updated_at": "2026-09-26T23:06:22.071Z"
       }
     }
   ]
